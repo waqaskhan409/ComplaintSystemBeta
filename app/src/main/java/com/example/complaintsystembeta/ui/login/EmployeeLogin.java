@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
@@ -58,6 +59,7 @@ public class EmployeeLogin extends BaseActivity {
         Log.d(TAG, "submitData: Clicked submit");
         gettingValues();
         verificationValues();
+        Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
     }
 
     private void verificationValues() {
@@ -99,6 +101,7 @@ public class EmployeeLogin extends BaseActivity {
             permanentLoginRepository.updateUser(new PermanentLogin(cnicS, true, ""));
             checkCon = true;
             getDataFromSqlite();
+            
 
         }
 
