@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/minutesForAudio"
+        android:padding="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="Time count"></TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:layout_below="@+id/minutesForAudio"
+        android:id="@+id/audioLayoutDialogue"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/stop"
+            android:id="@+id/stop"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="3"
+            android:background="@color/white"
+            ></ImageButton>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mic_black_24dp"
+            android:id="@+id/record"
+
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="4"
+            android:background="@color/white"
+            ></ImageButton>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/play"
+            android:id="@+id/play"
+
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="3"
+            android:background="@color/white"
+            ></ImageButton>
+    </LinearLayout>
+
+</RelativeLayout>
