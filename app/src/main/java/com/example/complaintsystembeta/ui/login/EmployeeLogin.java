@@ -60,6 +60,7 @@ public class EmployeeLogin extends BaseActivity {
         gettingValues();
         verificationValues();
         Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
     }
 
     private void verificationValues() {
