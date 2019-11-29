@@ -7,17 +7,33 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "PermanentLogin")
 public class PermanentLogin {
 
-    public int getId() {
-        return id;
-    }
-
     @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String CNIC;
 
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public Boolean getEmployee() {
+        return isEmployee;
+    }
+
+    public void setEmployee(Boolean employee) {
+        isEmployee = employee;
+    }
+
+    private String accountNumber;
+
     private Boolean isLoggedIn;
     private String userName;
+    private Boolean isEmployee;
+
 
 
     public String getCNIC() {
@@ -36,10 +52,17 @@ public class PermanentLogin {
         return userName;
     }
 
-    public PermanentLogin(String CNIC, Boolean isLoggedIn, String userName) {
+    public int getId() {
+        return id;
+    }
+
+
+    public PermanentLogin( String CNIC, String accountNumber, Boolean isLoggedIn, String userName, Boolean isEmployee) {
         this.CNIC = CNIC;
+        this.accountNumber = accountNumber;
         this.isLoggedIn = isLoggedIn;
         this.userName = userName;
+        this.isEmployee = isEmployee;
     }
 }
 

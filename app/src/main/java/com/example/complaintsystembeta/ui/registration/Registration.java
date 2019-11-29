@@ -31,6 +31,8 @@ import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.Posts;
+import com.example.complaintsystembeta.model.SignUpData;
+import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,7 +69,7 @@ public class Registration extends BaseActivity {
     private static final int RESULT_LOAD_IMG_FOR_WASA_BILL = 7007;
 
     private Unbinder unbinder;
-    private String cnic, userName, email, mobileNumber, address, password, confirmPassword, gender;
+    private String cnic, userName, email, mobileNumber, address, password, confirmPassword, gender, account;
     private Uri imageUriForFront, imageUriForBack, imageUriForWasaBill;
     private PermanentLoginRepository dao;
     private ArrayList<String> strings;
@@ -94,6 +96,9 @@ public class Registration extends BaseActivity {
 
     @BindView(R.id.confirmPassword)
     TextInputLayout confirmPasswordED;
+
+    @BindView(R.id.account)
+    TextInputLayout accountED;
 
     @BindView(R.id.submit)
     Button submit;
@@ -125,6 +130,7 @@ public class Registration extends BaseActivity {
         dao = new PermanentLoginRepository(getApplication());
         isStoragePermissionGranted();
         isGenderListNull();
+        testData();
 
 
     }
@@ -166,12 +172,14 @@ public class Registration extends BaseActivity {
 
     @SuppressLint("ResourceType")
     private void verificationValues() {
+
         if(cnic == null ||
                 address == null ||
                 password == null ||
                 confirmPassword ==  null ||
                 userName == null ||
-                mobileNumber == null
+                mobileNumber == null ||
+                account == null
         ){
             showSnackBar(getString(R.string.error_message_registration), "");
             Log.d(TAG, "varificationValues:  User Registration failed");
@@ -180,6 +188,11 @@ public class Registration extends BaseActivity {
         if(cnic.equals("") || cnic.isEmpty()){
             cnicED.setError(getString(R.string.error_cnic));
             cnicED.requestFocus();
+            Log.d(TAG, "varificationValues:  User Registration failed");
+            return;
+        }else if(account.equals("") || account.isEmpty()){
+            userNameED.setError(getString(R.string.error_account));
+            userNameED.requestFocus();
             Log.d(TAG, "varificationValues:  User Registration failed");
             return;
         }else if(userName.equals("") || userName.isEmpty()){
@@ -202,7 +215,12 @@ public class Registration extends BaseActivity {
             passwordED.requestFocus();
             Log.d(TAG, "varificationValues:  User Registration failed");
             return;
-        }else if(!checkCNICFormat(cnic)){
+        }else if(!checkAccountNumber(account)){
+            cnicED.setError(getString(R.string.error_account_syntax));
+            cnicED.requestFocus();
+            Log.d(TAG, "varificationValues:  User Registration failed");
+            return;
+        } else if(!checkCNICFormat(cnic)){
             cnicED.setError(getString(R.string.error_cnic_check));
             cnicED.requestFocus();
             Log.d(TAG, "varificationValues:  User Registration failed");
@@ -220,12 +238,9 @@ public class Registration extends BaseActivity {
         }
         else {
 
-                getDataFromRestApi();
-
-//                dao.insert(new PermanentLogin(cnic, true, userName));
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                startActivity(intent);
-
+            showProgressDialogue(getString(R.string.registration_title), getString(R.string.login_message));
+            getDataFromRestApi();
+//
         }
     }
 
@@ -267,10 +282,49 @@ public class Registration extends BaseActivity {
         }
     }
 
+    void testData(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.43.31:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+//        Call<SignUpData> call = service.postData(fileuploadFront, fileuploadBack, fileWasaBillUpload, cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst
+//        );
+        Call<SignUpData> call = service.testData(new SignUpData("id",
+                "54401-6275270-3",
+                "Waqas",
+                "kwaas@gmail,com",
+                "123123123",
+                "123123123",
+                "123123123",
+                "123123123",
+                "asdasdasd"));
+
+        call.enqueue(new Callback<SignUpData>() {
+            @Override
+            public void onResponse(Call<SignUpData> call, Response<SignUpData> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), response.body().getUser_cnic(), Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "onResponse: cnic:" + response.body().getUser_cnic());
+                    Log.d(TAG, "onResponse: email:" + response.body().getUser_email());
+                    Log.d(TAG, "onResponse: userName:" + response.body().getUser_name());
+                    Log.d(TAG, "onResponse: userName:" + response.body().getUser_name());
+//                    Log.d(TAG, "onResponse: userName:" + response.body().getSign_up_id());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SignUpData> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     private void getDataFromRestApi() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.theoriginschoolsystem.com/send_mail_test/config/")
+                .baseUrl("http://192.168.43.31:3000/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -283,18 +337,19 @@ public class Registration extends BaseActivity {
             Toast.makeText(this, "Null", Toast.LENGTH_SHORT).show();
             return;
         }
-        RequestBody requestBodyFront = RequestBody.create(MediaType.parse("image/*"), frontImage);
+        RequestBody requestBodyFront = RequestBody.create(MediaType.parse("image/jpg"), frontImage);
         MultipartBody.Part fileuploadFront = MultipartBody.Part.createFormData("front", frontImage.getName(), requestBodyFront);
         RequestBody filenameFront = RequestBody.create(MediaType.parse("text/plain"), frontImage.getName());
 
-        RequestBody requestBodyBack = RequestBody.create(MediaType.parse("image/*"), backImage);
+        RequestBody requestBodyBack = RequestBody.create(MediaType.parse("image/jpg"), backImage);
         MultipartBody.Part fileuploadBack = MultipartBody.Part.createFormData("back", backImage.getName(), requestBodyBack);
         RequestBody filenameBack = RequestBody.create(MediaType.parse("text/plain"), backImage.getName());
 
-        RequestBody requestWasaBill = RequestBody.create(MediaType.parse("image/*"), wasaBill);
+        RequestBody requestWasaBill = RequestBody.create(MediaType.parse("image/jpg"), wasaBill);
         MultipartBody.Part fileWasaBillUpload = MultipartBody.Part.createFormData("wasa", wasaBill.getName(), requestWasaBill);
         RequestBody filenameWasaBill = RequestBody.create(MediaType.parse("text/plain"), wasaBill.getName());
 
+        RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), account);
         RequestBody cnicRqst = RequestBody.create(MediaType.parse("text/plain"), cnic);
         RequestBody nameRqst = RequestBody.create(MediaType.parse("text/plain"), userName);
         RequestBody emailRqst = RequestBody.create(MediaType.parse("text/plain"), email);
@@ -304,20 +359,44 @@ public class Registration extends BaseActivity {
         RequestBody genderRqst = RequestBody.create(MediaType.parse("text/plain"), gender);
 
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-        Call<PostResponse> call = service.postData(fileuploadFront, fileuploadBack, fileWasaBillUpload, cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst
+        Call<TestClas> call = service.postData(fileuploadFront, fileuploadBack, fileWasaBillUpload, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst
         );
+//        Call<SignUpData> call = service.testData(new SignUpData("id",
+//                "54401-6275270-3",
+//                "Waqas",
+//                "kwaas@gmail,com",
+//                "123123123",
+//                "123123123",
+//                "123123123",
+//                "123123123",
+//                "asdasdasd"));
 
-        call.enqueue(new Callback<PostResponse>() {
+        call.enqueue(new Callback<TestClas>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(Call<TestClas> call, Response<TestClas> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(getApplicationContext(), response.body().getSuccess(), Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
+
+                    if(response.body().getSuccess().equals("new user registered")){
+                    dao.insert(new PermanentLogin(cnic, account, true, userName, false));
+                    Intent intent = new Intent(Registration.this, LoginActivity.class);
+                    intent.putExtra(getString(R.string.permanentlogin_name), userName);
+                    intent.putExtra(getString(R.string.account_number), account);
+                    intent.putExtra(getString(R.string.permanentlogin_cnic), cnic);
+                    startActivity(intent);
+                    dissmissProgressDialogue();
+                    }
+
+                }else {
+                    showSnackBar(response.body().getError(), "");
+
                 }
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<TestClas> call, Throwable t) {
+                showSnackBar(t.getMessage(), "");
             }
         });
     }
@@ -331,6 +410,8 @@ public class Registration extends BaseActivity {
         password = passwordED.getEditText().getText().toString();
         confirmPassword = confirmPasswordED.getEditText().getText().toString();
         gender = spinnerGender.getSelectedItem().toString();
+        account =accountED.getEditText().getText().toString();
+
 
     }
 

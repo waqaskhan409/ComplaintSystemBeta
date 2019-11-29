@@ -5,10 +5,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.complaints.ComposeComplaints">
+    <FrameLayout
+        android:id="@+id/flContent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/composeComplains"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/audioLayout"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/layout_bg"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/audioToText"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/checkEmployee"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="3"
+                android:clickable="true"
+                android:src="@drawable/record_off"></ImageView>
+
+            <ImageView
+                android:id="@+id/attachement"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/checkEmployee"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="4"
+                android:clickable="true"
+                android:src="@drawable/attachement"></ImageView>
+
+            <ImageView
+                android:id="@+id/audio"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/checkEmployee"
+                android:layout_marginTop="20dp"
+
+                android:layout_marginBottom="20dp"
+                android:layout_weight="3"
+                android:clickable="true"
+                android:src="@drawable/audio"></ImageView>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:id="@+id/seekBarLayout"
+        android:weightSum="10"
+        android:layout_marginBottom="10dp"
+
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_above="@id/flContent"
+        android:layout_height="wrap_content">
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/play"
+        android:layout_weight="1"
+        android:id="@+id/audioPlay"
+
+        android:background="@drawable/layout_bg"
+        ></ImageButton>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="9"
+        android:background="@drawable/layout_bg"
+
+        android:id="@+id/seekBarAudio"
+        ></SeekBar>
+    </LinearLayout>
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/submitCompliant">
+        android:layout_marginLeft="4dp"
+        android:layout_above="@+id/seekBarLayout">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="200dp"
@@ -17,64 +102,33 @@
         ></LinearLayout>
     </HorizontalScrollView>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:weightSum="10"
-        android:id="@+id/audioLayout">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-           android:layout_marginTop="20dp"
-           android:layout_marginBottom="20dp"
-            android:layout_weight="3"
-            android:clickable="true"
-            android:id="@+id/audioToText"
-            android:layout_below="@+id/checkEmployee"
-            android:src="@drawable/audio_to_text"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_weight="4"
-            android:clickable="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/attachement"
-            android:layout_below="@+id/checkEmployee"
-            android:src="@drawable/attachement"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_weight="3"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
+        android:gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:background="@drawable/layout_bg"
+        android:layout_above="@+id/submitCompliant"
+        android:id="@+id/composeComplains"
+        android:layout_height="100dp">
 
-            android:layout_marginBottom="20dp"
-            android:id="@+id/audio"
-            android:layout_below="@+id/checkEmployee"
-            android:src="@drawable/audio"></ImageView>
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_margin="4dp"
+            android:layout_height="match_parent"
+            android:hint="@string/account" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-    <EditText
-        android:inputType="textMultiLine"
-        android:id="@+id/composeComplain"
-    android:lines="8"
-    android:minLines="6"
-    android:gravity="top|left"
-        android:hint="@string/compose_complain"
-        android:layout_above="@+id/audioLayout"
-    android:maxLines="10"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:scrollbars="vertical"
-    />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submit"
-        android:background="@color/white"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:background="@drawable/layout_bg"
         android:id="@+id/submitCompliant"
-        android:layout_above="@+id/composeComplain"
+        android:layout_alignParentBottom="true"
         ></Button>
 </RelativeLayout>

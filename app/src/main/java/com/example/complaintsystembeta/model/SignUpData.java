@@ -3,8 +3,8 @@ package com.example.complaintsystembeta.model;
 import com.google.gson.annotations.SerializedName;
 
 public class SignUpData {
-    @SerializedName("sign_up_id")
-    String sign_up_id;
+    @SerializedName("account_number")
+    String account_number;
     @SerializedName("user_cnic")
     String user_cnic;
     @SerializedName("user_name")
@@ -17,13 +17,17 @@ public class SignUpData {
     String user_cnic_front_image;
     @SerializedName("user_cnic_back_image")
     String user_cnic_back_image;
+    @SerializedName("user_wasa_bill_image")
+    String user_wasa_bill_image;
     @SerializedName("user_address")
     String user_address;
     @SerializedName("user_contact")
     String user_contact;
+    @SerializedName("user_gender")
+    String user_gender;
 
-    public SignUpData(String sign_up_id, String user_cnic, String user_name, String user_email, String user_password, String user_cnic_front_image, String user_cnic_back_image, String user_address, String user_contact) {
-        this.sign_up_id = sign_up_id;
+    public SignUpData(String account_number, String user_cnic, String user_name, String user_email, String user_password, String user_cnic_front_image, String user_cnic_back_image, String user_address, String user_contact) {
+        this.account_number = account_number;
         this.user_cnic = user_cnic;
         this.user_name = user_name;
         this.user_email = user_email;
@@ -34,12 +38,20 @@ public class SignUpData {
         this.user_contact = user_contact;
     }
 
-    public String  getSign_up_id() {
-        return sign_up_id;
+    public String getAccount_number() {
+        return account_number;
     }
 
-    public void setSign_up_id(String sign_up_id) {
-        this.sign_up_id = sign_up_id;
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
+
+    public String getUser_wasa_bill_image() {
+        return user_wasa_bill_image;
+    }
+
+    public void setUser_wasa_bill_image(String user_wasa_bill_image) {
+        this.user_wasa_bill_image = user_wasa_bill_image;
     }
 
     public String getUser_cnic() {

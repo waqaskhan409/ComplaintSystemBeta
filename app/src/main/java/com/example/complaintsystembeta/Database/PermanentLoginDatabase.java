@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.complaintsystembeta.interfaace.PermanentLoginDao;
 import com.example.complaintsystembeta.model.PermanentLogin;
 
-@Database(entities = {PermanentLogin.class},  version = 2, exportSchema = false)
+@Database(entities = {PermanentLogin.class},  version = 3, exportSchema = false)
 public abstract class PermanentLoginDatabase extends RoomDatabase {
 
     private static PermanentLoginDatabase instance;
@@ -50,11 +50,6 @@ public abstract class PermanentLoginDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            dao.insert(new PermanentLogin("12312312312", true, "Soud"));
-            dao.insert(new PermanentLogin("12312312312", false, "Pamir"));
-            dao.insert(new PermanentLogin("12312312312", false, "Zainullah"));
-            dao.insert(new PermanentLogin("12312312312", false, "Sharoo"));
-
             return null;
         }
     }

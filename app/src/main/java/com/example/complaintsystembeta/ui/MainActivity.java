@@ -2,6 +2,7 @@ package com.example.complaintsystembeta.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,11 +18,16 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.ui.about.About;
+import com.example.complaintsystembeta.ui.complaints.AllComplainsFragment;
 import com.example.complaintsystembeta.ui.complaints.Compliants;
 import com.example.complaintsystembeta.ui.feedback.Feedback;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.example.complaintsystembeta.ui.profile.Profile;
 import com.google.android.material.navigation.NavigationView;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -34,7 +40,9 @@ public class MainActivity extends BaseActivity
     String cnicS;
     String nameS;
     String idS;
+    String accountNumber;
     Bundle data;
+    private PermanentLoginRepository permanentLoginRepository;
 
     @BindView(R.id.imageView) ImageView imageView;
     @BindView(R.id.name) TextView name;
@@ -67,10 +75,12 @@ public class MainActivity extends BaseActivity
         nameS = data.getString(getString(R.string.permanentlogin_name));
         idS = data.getString(getString(R.string.permanentlogin_id));
         cnicS = data.getString(getString(R.string.permanentlogin_cnic));
+        accountNumber = data.getString(getString(R.string.account_number));
 
         name.setText(nameS);
-        email.setText(cnicS);
-        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Compliants()).commit();
+        email.setText(accountNumber);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
 
 
 
@@ -122,15 +132,16 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.complaints) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Compliants()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
         } else if (id == R.id.profile) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile()).commit();
         }   else if (id == R.id.logout) {
-            dao.updateUser(new PermanentLogin(cnicS, false, nameS));
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
+              getDataFromSqlite();
+              Intent intent = new Intent(this, LoginActivity.class);
+              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+              startActivity(intent);
         } else if (id == R.id.about) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new About()).commit();
         }
@@ -138,7 +149,25 @@ public class MainActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void getDataFromSqlite() {
 
+
+        permanentLoginRepository = new PermanentLoginRepository(getApplication());
+        List<PermanentLogin> list = permanentLoginRepository.getIsLoggedIn();
+        Log.d(TAG, "getDataFromSqlite: " + list.size());
+        for(PermanentLogin permanentLogin : list){
+            Log.d(TAG, "getDataFromSqlite: " + permanentLogin.getCNIC());
+            Log.d(TAG, "getDataFromSqlite: " + permanentLogin.getLoggedIn());
+            Log.d(TAG, "getDataFromSqlite: " + permanentLogin.getUserName());
+
+        }
+
+//        if(checkCon) {
+//            showSnackBar(getString(R.string.need_registered), "");
+//            checkCon = false;
+//        }
+
+    }
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 

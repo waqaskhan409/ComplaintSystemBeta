@@ -2,10 +2,13 @@ package com.example.complaintsystembeta.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
@@ -14,6 +17,7 @@ import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.SignUpData;
+import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.registration.Registration;
 
@@ -35,6 +39,7 @@ public class LoginActivity extends BaseActivity {
     private PermanentLoginRepository permanentLoginRepository;
     private List<PermanentLogin> list;
     String cnicS, passwordS;
+    private PermanentLoginRepository dao;
     boolean checkCon = false;
 
 
@@ -62,6 +67,30 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         unbinder = ButterKnife.bind(this);
 
+        dao = new PermanentLoginRepository(getApplication());
+
+        userName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 5){
+                    userName.append("-");
+                }else if(s.length() == 13){
+                    userName.append("-");
+                }else if(s.length() > 15){
+                    Toast.makeText(LoginActivity.this, "CNIC maximum 15 chracters", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
     }
@@ -83,6 +112,7 @@ public class LoginActivity extends BaseActivity {
     @OnClick({R.id.loginSubmit})
     public void submit(){
         Log.d(TAG, "submitData: Clicked submit");
+        showProgressDialogue(getString(R.string.login_title), getString(R.string.login_message));
         gettingValues();
         verificationValues();
     }
@@ -125,14 +155,11 @@ public class LoginActivity extends BaseActivity {
             return;
         }
         else {
-            //TODO make Retrofit2 request to local server to post the credentials of users
-            //TODO Also, retrieve the local server response
-            //Implement login request here
             Log.d(TAG, "varificationValues:  User Login");
-//            getDataThroughRetrofit2();
-            permanentLoginRepository.updateUser(new PermanentLogin(cnicS, true, ""));
-            checkCon = true;
-            getDataFromSqlite();
+            getDataThroughRetrofit2();
+//            permanentLoginRepository.updateUser(new PermanentLogin(cnicS, "" ,true, "", false));
+//            checkCon = true;
+//            getDataFromSqlite();
 
         }
 
@@ -140,7 +167,7 @@ public class LoginActivity extends BaseActivity {
 
     private void getDataThroughRetrofit2() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.theoriginschoolsystem.com/send_mail_test/config/")
+                .baseUrl("http://192.168.43.31:3000/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -151,27 +178,32 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(Call<List<SignUpData>> call, Response<List<SignUpData>> response) {
                 if(!response.isSuccessful()){
-                    Log.d(TAG, "onResponse: " + response.message());
+                    Log.d(TAG, "onResponseUnsuccefull: " + response.message());
                     return;
                 }
                 Log.d(TAG, "onResponse: " + response.message());
                 List<SignUpData>  list = response.body();
                 for (SignUpData l : list){
+                    Log.d(TAG, "onResponse: " + l.getUser_cnic());
+                    Log.d(TAG, "onResponse: " + l.getUser_password());
                     if(l.getUser_cnic().equals(cnicS) && l.getUser_password().equals(passwordS)){
-                        permanentLoginRepository.updateUser(new PermanentLogin(cnicS, true, ""));
-                        getDataFromSqlite();
+                        permanentLoginRepository.updateUser(new PermanentLogin(cnicS,"", true, "", false));
+                        dissmissProgressDialogue();
+                        if(getDataFromSqlite()){
+                            dao.insert(new PermanentLogin(l.getUser_cnic(), l.getAccount_number(), true, l.getUser_name(), false));
+                        }
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<SignUpData>> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: " + t.getMessage());
             }
         });
     }
 
-    private void getDataFromSqlite() {
+    private Boolean getDataFromSqlite() {
 
 
         permanentLoginRepository = new PermanentLoginRepository(getApplication());
@@ -191,12 +223,13 @@ public class LoginActivity extends BaseActivity {
             showSnackBar(getString(R.string.need_registered), "");
             checkCon = false;
         }
-
+        return true;
     }
 
     private void signInWithExtra(PermanentLogin permanentLogin) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(getString(R.string.permanentlogin_name), permanentLogin.getUserName());
+        intent.putExtra(getString(R.string.account_number), permanentLogin.getAccountNumber());
         intent.putExtra(getString(R.string.permanentlogin_cnic), permanentLogin.getCNIC());
         intent.putExtra(getString(R.string.permanentlogin_id), permanentLogin.getId());
         startActivity(intent);

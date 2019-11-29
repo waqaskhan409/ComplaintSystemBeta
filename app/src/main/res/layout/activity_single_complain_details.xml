@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.complaints.SingleComplainDetails">
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/complain_body"
+                android:textColor="@color/black"
+                android:textSize="18sp"></TextView>
+
+            <TextView
+                android:id="@+id/compliansBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="ComplainsBody"
+                android:textColor="@color/black"></TextView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/complains_attachment"
+                android:textColor="@color/black"
+                android:textSize="18sp"></TextView>
+
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:id="@+id/imageViewPager"
+                android:visibility="gone"
+                android:background="@color/black"
+                android:layout_above="@+id/seekBarLayout"
+                >
+
+            </androidx.viewpager.widget.ViewPager>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/pointing_images"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-30dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"></LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/noFile"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="center"
+                android:text="No file Attached"
+                android:textColor="@color/black"
+                android:textSize="18sp"></TextView>
+
+            <LinearLayout
+                android:id="@+id/seekBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/flContent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="15dp"
+
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
+                android:weightSum="10">
+
+                <ImageButton
+                    android:id="@+id/audioPlay"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bg"
+
+                    android:src="@drawable/play"></ImageButton>
+
+                <SeekBar
+                    android:id="@+id/seekBarAudio"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="9"
+
+                    android:background="@drawable/layout_bg"></SeekBar>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/complains_status"
+                android:textColor="@color/black"
+                android:textSize="18sp"></TextView>
+
+
+            <TextView
+                android:id="@+id/complainsStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="ComplainsBody"
+                android:textColor="@color/black"></TextView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/confirmStatusLayout"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="2"
+                >
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/confirmStatusSpinner"
+                    ></Spinner>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bg"
+                    android:text="confirm status"
+                    android:id="@+id/confirmStatusButton"
+                    ></Button>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/complains_forwarded_by"
+                android:textColor="@color/black"
+                android:textSize="18sp"></TextView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/recyclerviewForAllRecords"
+                android:layout_above="@+id/seekBarLayout"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                >
+            </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:id="@+id/forwardsLayout">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Forward Complain"
+                    android:layout_weight="2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/layout_bg"
+                    android:id="@+id/forward"
+                    ></Button>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

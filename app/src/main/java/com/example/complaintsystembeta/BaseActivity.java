@@ -17,12 +17,12 @@ public class BaseActivity extends AppCompatActivity {
     ProgressDialog dialog;
 
     public void showProgressDialogue(String title, String message){
-        dialog = new  ProgressDialog(BaseActivity.this);
+        dialog = new ProgressDialog(BaseActivity.this);
         dialog.setTitle(title);
         dialog.setMessage(message);
         dialog.show();
     }
-    public void dissmissProgressDialogue(String title, String message){
+    public void dissmissProgressDialogue(){
        dialog.dismiss();
     }
     public  void showSnackBar(String dialogue, String color){
@@ -32,6 +32,17 @@ public class BaseActivity extends AppCompatActivity {
         view.setBackgroundColor(Color.RED);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
+    }
+    public boolean checkAccountNumber(String account){
+        String[] accountPortions = account.split("-");
+        if(accountPortions.length != 3){
+            return false;
+        }if(accountPortions[0].length() == 3 && accountPortions[1].length() == 3 && accountPortions[2].length() == 3){
+                Log.d(TAG, "checkCNICFormat: " +  String.valueOf(accountPortions[0] + accountPortions[1] + accountPortions[2]));
+            return true;
+        }
+
+        return false;
     }
     public boolean checkCNICFormat(String userName) {
         String[] cnicPortions = userName.split("-");

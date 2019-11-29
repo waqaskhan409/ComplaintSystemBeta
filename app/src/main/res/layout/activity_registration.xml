@@ -44,13 +44,29 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:layout_below="@+id/topImageLayout"
             >
+            <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+
+
+            android:id="@+id/account"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/account" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_margin="10dp"
                 android:id="@+id/cnic"
+                android:layout_below="@+id/account"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -132,10 +148,12 @@
             android:layout_below="@+id/address"
                 android:layout_marginTop="60dp"
             android:id="@+id/password"
+
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                android:inputType="textPassword"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -150,6 +168,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:inputType="textPassword"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_confirm_password" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -185,7 +204,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/black_cnic_image"
+                android:text="@string/wasa_bill_image"
                 android:layout_margin="10dp"
                 android:id="@+id/textForWasaBillImage"
                 android:layout_below="@+id/cnicBackImage"></TextView>

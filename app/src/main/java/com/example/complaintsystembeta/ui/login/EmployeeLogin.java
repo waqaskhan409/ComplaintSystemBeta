@@ -13,15 +13,26 @@ import android.widget.Toast;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
+import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.interfaace.JsonApiHolder;
+import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PermanentLogin;
+import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.ui.MainActivity;
+import com.example.complaintsystembeta.ui.complaints.AllCatigoryComplains;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EmployeeLogin extends BaseActivity {
     private static final String TAG = "EmployeeLogin";
@@ -60,11 +71,19 @@ public class EmployeeLogin extends BaseActivity {
         gettingValues();
         verificationValues();
         Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "asdasdasdasda", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getDataFromSqlite();
     }
 
     private void verificationValues() {
+        if(cnicS.equals("admin") && passwordS.equals("admin")){
+            showProgressDialogue("Loging in", "Please wait...");
+            getDataThroughRetrofit2();
+        }
         if(cnicS == null || passwordS == null){
             Log.d(TAG, "varificationValues:  User Login Failed");
             showSnackBar("asdasd","");
@@ -82,12 +101,12 @@ public class EmployeeLogin extends BaseActivity {
             Log.d(TAG, "varificationValues:  User Login Failed");
             return;
         }
-        else if(!checkCNICFormat(cnicS)){
-            this.userName.setError(getString(R.string.error_password));
-            this.userName.requestFocus();
-            Log.d(TAG, "varificationValues:  User Login Failed");
-            return;
-        }
+//        else if(!checkCNICFormat(cnicS)){
+//            this.userName.setError(getString(R.string.error_password));
+//            this.userName.requestFocus();
+//            Log.d(TAG, "varificationValues:  User Login Failed");
+//            return;
+//        }
         else if(!checkPasswordType(passwordS)){
             this.password.setError(getString(R.string.error_password));
             this.password.requestFocus();
@@ -99,15 +118,59 @@ public class EmployeeLogin extends BaseActivity {
             //TODO Also, retrieve the local server response
             //Implement login request here
             Log.d(TAG, "varificationValues:  User Login");
-//            getDataThroughRetrofit2();
-            permanentLoginRepository.updateUser(new PermanentLogin(cnicS, true, ""));
-            checkCon = true;
-            getDataFromSqlite();
-            
-
+//            if(cnicS.equals("admin") && passwordS.equals("admin")){
+//                Intent intent = new Intent(this, AllCatigoryComplains.class);
+//                startActivity(intent);
+//            }
+            showProgressDialogue("Loging in", "Please wait...");
+            getDataThroughRetrofit2();
+//            permanentLoginRepository.updateUser(new PermanentLogin(cnicS, true, ""));
+//            checkCon = true;
+//            getDataFromSqlite();
         }
 
     }
+    private void getDataThroughRetrofit2() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<Employee>> call = service.getEmployee();
+        call.enqueue(new Callback<List<Employee>>() {
+            @Override
+            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponseUnsuccefull: " + response.message());
+                    return;
+                }
+                Log.d(TAG, "onResponse: " + response.message());
+                List<Employee>  list = response.body();
+                for (Employee l : list){
+                    if(l.getCnic().equals(cnicS) && l.getCnic().equals(passwordS)){
+
+                        dissmissProgressDialogue();
+                        Log.d(TAG, "onResponse: " + l.getDes_id());
+                        Intent intent = new Intent(EmployeeLogin.this, AllCatigoryComplains.class);
+                        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, l.getDes_id());
+                        intent.putExtra(getString(R.string.permanentlogin_name), l.getDes_title());
+                        intent.putExtra(getString(R.string.permanentlogin_cnic), l.getCnic());
+                        intent.putExtra(getString(R.string.permanentlogin_id), l.getEmployee_id());
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Employee>> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

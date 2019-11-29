@@ -2,8 +2,39 @@ package com.example.complaintsystembeta.constants;
 
 public class Constants {
 
-
     public static final int RESULT_LOAD_FOR_AUDIO_TO_TEXT = 8008;
-
     public static final int RESULT_LOAD_FOR_IMAGES_FOR_PROVE = 1001;
+    public static final String ALL_COMPLAINS = "ALL";
+    public static final String NEW_COMPLAINS = "NEW";
+    public static final String RESOLVED_COMPLAINS = "RESOLVED";
+    public static final String PENDING_COMPLAINS = "PENDING";
+    public static final String EMPLOYEE_COMPLAINS = "EMPLOYEE";
+    public static final String COMPLAINS_NEW = "REGISTERED";
+    public static final String COMPLAINS_RESOLVED = "RESOLVED";
+    public static final String COMPLAINS_PENDING = "INITIATED";
+    public static final String URL_IMAGES = "http://192.168.43.31:3000/uploads/";
+
+
+    public static final String REPORTING_ID = "reporting_id";
+    public static final String FORWARD_TO = "forward_to";
+    public static final String FORWARD_FROM = "forward_from";
+    public static final String REMARKS_BODY = "remarks_body";
+    public static final String SUGGEST_DATE = "SUGGEST_DATE";
+    public static final String REST_API = "http://192.168.43.31:3000/api/";
+    public static final String PREVELDGES_ON_FORWARD = "previldges";
+    public static final String ACCOUNT_NUMBER = "cnic";
+    public static final String COMPLAIN_FILTER = "complain_filter";
+    public static final String NAME = "name";
+    public static final String FORWARD_COMPLAINS = "forwarded complains";
+    public static final String REPLY_TO_FORWARD = "reply";
+    public static final String ONLY_FORWARDED_COMPLAIN_REPORT_SHOW = "only forwarded complians";
+    public static final String DESIGNATION_ID = "des";
+    public static final String ONLY_FORWARDED_COMPLAIN_SHOW = "only forwarded complians";
+    public static final String ADMIN = "admin";
+    public static final String USER = "admin";
+    public static final String DESIGNATION_TITLE = "designation";
+    public static final String NONE = "NONE";
+    public static final String IS_REPLY = "reply";
+    public static final String IS_CURRENT = "current";
+    public static final String COMPLAIN_IN_PROCESS = "IN PROCESS";
 }

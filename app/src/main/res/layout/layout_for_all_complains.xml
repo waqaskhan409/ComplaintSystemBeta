@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/layout_bg"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+    <TextView
+        android:layout_width="5dp"
+        android:layout_height="120dp"
+        android:background="@drawable/side_boder"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+
+        android:id="@+id/leftBorder"
+        ></TextView>
+
+    <TextView
+    android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+    android:id="@+id/complaintsId"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp"
+        android:layout_alignLeft="@+id/leftBorder"
+    android:layout_height="wrap_content"
+    android:text="Complains id"
+    android:textSize="20sp"
+    ></TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/complaintsBody"
+        android:layout_marginLeft="20dp"
+        android:layout_alignLeft="@+id/leftBorder"
+        android:layout_below="@+id/complaintsId"
+        android:layout_height="wrap_content"
+        android:text="Complain Body"
+        android:layout_marginRight="20dp"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        ></TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/complainCreatedDate"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:text="Date Creation"
+        ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_bg"
+            android:id="@+id/complaintsStatus"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="7dp"
+            android:paddingRight="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/complaintsBody"
+            android:layout_height="wrap_content"
+            android:text="Complain Body"
+            android:layout_marginRight="20dp"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            ></TextView>
+</RelativeLayout>
+</androidx.cardview.widget.CardView>
+

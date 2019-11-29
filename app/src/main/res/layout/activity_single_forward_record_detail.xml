@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.complaints.SingleForwardRecordDetail">
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:orientation="vertical"
+
+        >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Remarks :"
+        android:textColor="@color/black"
+        android:textSize="18sp"></TextView>
+
+    <TextView
+        android:id="@+id/compliansBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Remarks Body"
+        android:textColor="@color/black"></TextView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Forward To :"
+            android:textColor="@color/black"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/forwardTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Forward To"
+            android:textColor="@color/black"></TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:text="Forward From :"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="18sp"></TextView>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/forwardFrom"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:hint="Forward From"-->
+<!--            android:textColor="@color/black"></TextView>-->
+
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:background="@android:color/darker_gray" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Expected Date to resolve problem :"
+            android:textColor="@color/black"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/expectedDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Forward From"
+            android:textColor="@color/black"></TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/complains_attachment"
+        android:textColor="@color/black"
+        android:textSize="18sp"></TextView>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:id="@+id/imageViewPager"
+        android:visibility="gone"
+        android:background="@color/black"
+        android:layout_above="@+id/seekBarLayout"
+        >
+
+    </androidx.viewpager.widget.ViewPager>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/pointing_images"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-30dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal"></LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/noFile"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:text="No file Attached"
+            android:textColor="@color/black"
+            android:textSize="18sp"></TextView>
+        <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+
+        <LinearLayout
+        android:id="@+id/seekBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/flContent"
+        android:layout_marginLeft="4dp"
+            android:layout_marginTop="10dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        android:weightSum="10">
+
+        <ImageButton
+            android:id="@+id/audioPlay"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/layout_bg"
+
+            android:src="@drawable/play"></ImageButton>
+
+        <SeekBar
+            android:id="@+id/seekBarAudio"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="9"
+
+            android:background="@drawable/layout_bg"></SeekBar>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+
+            >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_bg"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="Reply report"
+                android:layout_weight="1"
+                android:id="@+id/reply"
+                >
+            </Button>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_bg"
+                android:text="forward report"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:id="@+id/forward"
+                >
+            </Button>
+        </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_bg"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/acklowledged"
+            android:text="acknowledged"
+            ></Button>
+
+    </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+</ScrollView>
