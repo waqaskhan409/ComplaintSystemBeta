@@ -83,12 +83,12 @@
     <string name="COMPLAINS_NEW">Its Very first step</string>
     <string name="complain_redirect">complains</string>
     <string name="EMPLOYEE_COMPLAINS" />
-    <string name="large_text">description</string>
+    <string name="large_text">All Complaints graph  :</string>
     <string name="description">Charts</string>
-    <string name="complain_body">Complain\'s body ...</string>
-    <string name="complains_attachment">Complain\'s Attachment</string>
-    <string name="complains_forwarded_by">Complain\'s forward</string>
-    <string name="complains_status">Complains status</string>
+    <string name="complain_body">Complain\'s body:</string>
+    <string name="complains_attachment">Complain\'s Attachment:</string>
+    <string name="complains_forwarded_by">Complain\'s forward:</string>
+    <string name="complains_status">Complains status:</string>
     <string name="designation_not_found">Designation not found</string>
     <string name="complains_id">complains_id</string>
 </resources>

@@ -18,6 +18,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
+<!--        <item name="fontPath">font/font2.otf</item>-->
     </style>
 
 </resources>

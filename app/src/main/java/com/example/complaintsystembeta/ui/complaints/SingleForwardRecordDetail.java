@@ -1,7 +1,9 @@
 package com.example.complaintsystembeta.ui.complaints;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -9,6 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -53,6 +59,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     private Unbinder unbinder;
     private String reportingId, designationTitle, employeeId, forwardFrom, forwardTo, remarksBody, suggestedDate, complainId, user;
     private Toolbar toolbar;
+    private String forwardFromDes;
     private String isReply, isCurrent;
     private List<String> listReportingImages = new ArrayList<>();
     private List<String> listReportingAudio = new ArrayList<>();
@@ -91,6 +98,9 @@ public class SingleForwardRecordDetail extends BaseActivity {
     @BindView(R.id.expectedDate)
     TextView expectedDate;
 
+    @BindView(R.id.forwardFrom)
+    TextView forwardFromTv;
+
     @BindView(R.id.imageViewPager)
     ViewPager viewPager;
     @BindView(R.id.pointing_images)
@@ -109,7 +119,17 @@ public class SingleForwardRecordDetail extends BaseActivity {
         }
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         data = getIntent().getExtras();
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -127,6 +147,23 @@ public class SingleForwardRecordDetail extends BaseActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        if(item.getItemId() == R.id.reply){
+            complainReportReply();
+        }else if(item.getItemId() == R.id.forward){
+            complainReportForward();
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -169,7 +206,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
             Intent intent = new Intent(this, ComplainForwarding.class);
             intent.putExtra(getString(R.string.complains_id), complainId);
             intent.putExtra(Constants.PREVELDGES_ON_FORWARD, user);
-            intent.putExtra(Constants.FORWARD_FROM, forwardFrom);
+            intent.putExtra(Constants.FORWARD_FROM, forwardFromTv.getText().toString());
             intent.putExtra(Constants.FORWARD_TO, forwardTo);
             intent.putExtra(Constants.REPORTING_ID, reportingId);
             intent.putExtra(getString(R.string.permanentlogin_name), employeeId);
@@ -212,18 +249,18 @@ public class SingleForwardRecordDetail extends BaseActivity {
                     boolean bool = false;
                     Log.d(TAG, "onResponse: Successfull");
                     list = response.body();
-                    if(list.get(0).getEmployee_name() != null){
+                    /*if(list.get(0).getEmployee_name() != null){
                     forwardToTv.append(" Employee name : " + list.get(0).getEmployee_name());
-                    }
-                    Log.d(TAG, "onResponse:forward "+ list.size());
+                    }*/
+                    Log.d(TAG, "onResponse:forward_black "+ list.size());
 
                     for(ReportForward l : list){
                         if(l.getReporting_attachment_name() != null){
                             if(l.getReporting_attachment_file_type().contains("3gp")){
-                                Log.d(TAG, "onResponse:forward "+ list.size());
+                                Log.d(TAG, "onResponse:forward_black "+ list.size());
                                 listReportingAudio.add(l.getReporting_attachment_name());
                             }else {
-                                Log.d(TAG, "onResponse:forward " + l.getReporting_attachment_name());
+                                Log.d(TAG, "onResponse:forward_black " + l.getReporting_attachment_name());
                                 listReportingImages.add(l.getReporting_attachment_name());
                             }
                         }
@@ -283,6 +320,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
         forwardFrom = data.getString(Constants.FORWARD_FROM);
         isReply = data.getString(Constants.IS_REPLY);
         isCurrent = data.getString(Constants.IS_CURRENT);
+        forwardFromDes = data.getString(Constants.FORWARD_FROM_NAME_ID_DES);
         employeeId = data.getString(getString(R.string.permanentlogin_name));
         Log.d(TAG, "settingValues: " + employeeId);
 
@@ -301,6 +339,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
         remarks.setText(remarksBody);
         forwardToTv.setText(designationTitle);
         expectedDate.setText(suggestedDate);
+        forwardFromTv.setText(forwardFromDes);
         getSingleComplainDetail(reportingId);
 
 
@@ -386,6 +425,13 @@ public class SingleForwardRecordDetail extends BaseActivity {
         player = null;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.reply_forward_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     Runnable timerRunnable = new Runnable() {
 
         public void run() {
@@ -406,4 +452,8 @@ public class SingleForwardRecordDetail extends BaseActivity {
             }
         }
     };
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 }

@@ -65,12 +65,55 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
                 holder.imageView.setImageDrawable(context.getDrawable(R.drawable.acknowledged));
             }
         }
-        if(allReports.get(position).getIs_public().equals("1")){
+        if(allReports.get(position).getIs_public().equals("1") || name.equals("admin")){
             holder.complainBody.setText(allReports.get(position).getForwards_message());
         }else {
             holder.complainBody.setText("Private message");
 
         }
+
+//
+//        if((position%6) == 0){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.all_complains_drawables));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.all_complains_drawables));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.all_complains_drawables));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.all_complains_drawables));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.all_complains_drawables));
+//        }else if((position%6) == 1){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+//        }else if((position%6) == 2){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+//        }else if((position%6) == 3){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+//        }else if((position%6) == 4){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.complain_forward_drawable));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.complain_forward_drawable));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.complain_forward_drawable));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.complain_forward_drawable));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.complain_forward_drawable));
+//        }else if((position%6) == 5){
+//            holder.textView1.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+//            holder.textView3.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+//            holder.textView2.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+//            holder.imageViewCircle1.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+//            holder.imageViewCircle2.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+//        }
+//
+
+
+
         Log.d(TAG, "onBindViewHolder: "+allReports.get(position).getComplains_reporting_id());
         Log.d(TAG, "onBindViewHolder: "+allReports.get(position).getForwards_by());
         Log.d(TAG, "onBindViewHolder: "+allReports.get(position).getForwards_to());
@@ -81,10 +124,17 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
             public void onClick(View v) {
                 Intent intent = new Intent(context, SingleForwardRecordDetail.class);
                 intent.putExtra(Constants.REPORTING_ID, allReports.get(position).getComplains_reporting_id());
-                intent.putExtra(Constants.DESIGNATION_TITLE, allReports.get(position).getDes_title());
+                intent.putExtra(Constants.DESIGNATION_TITLE, allReports.get(position).getForwards_to()+"/"
+                        + getNameFromEmployee(allReports.get(position).getForwards_to()) +"/"
+                        + getTextFromEmployee(allReports.get(position).getForwards_to()) +"/"
+                        +getDeptFromEmployee(allReports.get(position).getForwards_to()));
                 intent.putExtra(Constants.FORWARD_TO, allReports.get(position).getForwards_to());
                 intent.putExtra(Constants.FORWARD_FROM, allReports.get(position).getForwards_by());
-                intent.putExtra(Constants.REMARKS_BODY, allReports.get(position).getForwards_message());
+                intent.putExtra(Constants.FORWARD_FROM_NAME_ID_DES, allReports.get(position).getForwards_by()+"/"
+                        + getNameFromEmployee(allReports.get(position).getForwards_by()) + "/"
+                        + getTextFromEmployee(allReports.get(position).getForwards_by()) + "/"
+                        + getDeptFromEmployee(allReports.get(position).getForwards_by()));
+                intent.putExtra(Constants.REMARKS_BODY, holder.complainBody.getText().toString());
                 intent.putExtra(Constants.SUGGEST_DATE, allReports.get(position).getSuggested_date_reply());
                 intent.putExtra(context.getString(R.string.complains_id), allReports.get(position).getComplain_id());
                 intent.putExtra(Constants.SUGGEST_DATE, allReports.get(position).getSuggested_date_reply());
@@ -111,6 +161,33 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
 
         return "";
     }
+    private String getDeptFromEmployee(String employeeId) {
+        for (int i = 0; i < allEmployees.size(); i++) {
+            Log.d(TAG, "getTextFromEmployee: " + allEmployees.get(i).getEmployee_id());
+            if(allEmployees.get(i).getEmployee_id() != null){
+                if(allEmployees.get(i).getEmployee_id().equals(employeeId)){
+                    return allEmployees.get(i).getDepartment_name();
+                }
+            }
+        }
+
+
+        return "";
+    }
+
+    private String getNameFromEmployee(String employeeId) {
+        for (int i = 0; i < allEmployees.size(); i++) {
+            Log.d(TAG, "getTextFromEmployee: " + allEmployees.get(i).getEmployee_id());
+            if(allEmployees.get(i).getEmployee_id() != null){
+                if(allEmployees.get(i).getEmployee_id().equals(employeeId)){
+                    return allEmployees.get(i).getFull_name();
+                }
+            }
+        }
+
+
+        return "";
+    }
 
     @Override
     public int getItemCount() {
@@ -121,6 +198,8 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
         private TextView complainBody, complainsDate, forwardTo, forwardFrom;
         private ImageView imageView;
 
+        private ImageView imageViewCircle1, imageViewCircle2;
+        private TextView textView1, textView2, textView3;
         public ForwardAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             complainBody = itemView.findViewById(R.id.complaintsBody);
@@ -128,6 +207,16 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
             forwardTo = itemView.findViewById(R.id.forwardTo);
             forwardFrom = itemView.findViewById(R.id.forwardBy);
             imageView = itemView.findViewById(R.id.imageForSeen);
+
+            imageViewCircle1 = itemView.findViewById(R.id.circle1);
+            imageViewCircle2 = itemView.findViewById(R.id.circle2);
+            textView1 = itemView.findViewById(R.id.textView3);
+            textView2 = itemView.findViewById(R.id.textView2);
+            textView3 = itemView.findViewById(R.id.textView3);
+
+
         }
     }
+
+
 }

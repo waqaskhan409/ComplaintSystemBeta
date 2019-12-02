@@ -1,11 +1,13 @@
 package com.example.complaintsystembeta.ui.complaints;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,6 +54,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -137,6 +141,8 @@ public class SingleComplainDetails extends BaseActivity {
         setContentView(R.layout.activity_single_complain_details);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (unbinder == null) {
             unbinder = ButterKnife.bind(this);
@@ -146,7 +152,7 @@ public class SingleComplainDetails extends BaseActivity {
         complainId = data.getString(getString(R.string.complains_id));
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
 //        desId = data.getString(Constants.DESIGNATION_ID);
-        userName = data.getString(getString(R.string.permanentlogin_name));
+        userName = data.getString(Constants.DESIGNATION_ID);
 
 //        Log.d(TAG, "onCreate: " + desId);
         Log.d(TAG, "onCreate: " + userName);
@@ -204,6 +210,17 @@ public class SingleComplainDetails extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    onBackPressed();
+                    return true;
+            }
+            return super.onOptionsItemSelected(item);
 
     }
 
@@ -310,7 +327,7 @@ public class SingleComplainDetails extends BaseActivity {
 
                     List<AllComplains> list = response.body();
                     for(AllComplains allComplains : list){
-                        Log.d(TAG, "onResponse: forward: " + allComplains.getComplain_body());
+                        Log.d(TAG, "onResponse: forward_black: " + allComplains.getComplain_body());
                         Log.d(TAG, "onResponse: " + allComplains.getComplain_status());
                         Log.d(TAG, "onResponse: " + allComplains.getComplain_id());
                         Log.d(TAG, "onResponse: " + allComplains.getAttachment_file_type());
@@ -516,4 +533,9 @@ public class SingleComplainDetails extends BaseActivity {
             }
         }
     };
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 }

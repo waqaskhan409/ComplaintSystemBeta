@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -49,6 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,6 +87,9 @@ public class ManagingComplaints extends AppCompatActivity {
         desId = data.getString(Constants.PREVELDGES_ON_FORWARD);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         recyclerView = findViewById(R.id.recyclerviewForComplains);
@@ -103,6 +108,7 @@ public class ManagingComplaints extends AppCompatActivity {
 
 
     }
+
 
     @Override
     protected void onStart() {
@@ -178,7 +184,7 @@ public class ManagingComplaints extends AppCompatActivity {
 
     private void fetchPendingComplains() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -198,7 +204,9 @@ public class ManagingComplaints extends AppCompatActivity {
                 List<AllComplains>  list = response.body();
 
                 for(AllComplains all: list){
-                    if(all.getComplain_status().equals(Constants.COMPLAINS_PENDING)){
+                    if(all.getComplain_status().equals(Constants.COMPLAINS_PENDING) ||
+                            all.getComplain_status().equals(Constants.COMPLAINS_IN_PROCESS)
+                    ){
                         allComplains.add(all);
                     }
                 }
@@ -465,6 +473,13 @@ public class ManagingComplaints extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
         if(item.getItemId() == R.id.advanceSearch){
             showDialog(this, "");
         }
@@ -540,6 +555,9 @@ public class ManagingComplaints extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 
 }

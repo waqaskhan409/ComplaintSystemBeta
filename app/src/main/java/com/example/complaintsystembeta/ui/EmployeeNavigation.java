@@ -17,31 +17,29 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
+import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.ui.about.About;
+import com.example.complaintsystembeta.ui.complaints.AllCatigoryComplainsFragment;
 import com.example.complaintsystembeta.ui.complaints.AllComplainsFragment;
-import com.example.complaintsystembeta.ui.complaints.Compliants;
-import com.example.complaintsystembeta.ui.feedback.Feedback;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.example.complaintsystembeta.ui.profile.Profile;
 import com.google.android.material.navigation.NavigationView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
-public class MainActivity extends BaseActivity
+public class EmployeeNavigation extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = "MainActivity";
     int count = 1;
     View view;
     private PermanentLoginRepository dao;
-    String cnicS;
-    String nameS;
-    String idS;
+    String userName;
+    String desId;
+    String employeeId;
     String accountNumber;
     Bundle data;
     private PermanentLoginRepository permanentLoginRepository;
@@ -49,11 +47,14 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.imageView) ImageView imageView;
     @BindView(R.id.name) TextView name;
     @BindView(R.id.email) TextView email;
+    private String cnic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_employee_navigation);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -74,15 +75,16 @@ public class MainActivity extends BaseActivity
         data = getIntent().getExtras();
 
 
-        nameS = data.getString(getString(R.string.permanentlogin_name));
-        idS = data.getString(getString(R.string.permanentlogin_id));
-        cnicS = data.getString(getString(R.string.permanentlogin_cnic));
-        accountNumber = data.getString(getString(R.string.account_number));
+        data = getIntent().getExtras();
+//        cnic = data.getString(getString(R.string.permanentlogin_cnic));
+        userName = data.getString(getString(R.string.permanentlogin_name));
+        desId = data.getString(Constants.PREVELDGES_ON_FORWARD);
+        employeeId = data.getString(getString(R.string.permanentlogin_id));
 
-        name.setText(nameS);
-        email.setText(accountNumber);
+        name.setText(userName);
+//        email.setText(accountNumber);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",desId,userName,employeeId)).commit();
 
 
 
@@ -134,12 +136,13 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.complaints) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",desId,userName,employeeId)).commit();
         } else if (id == R.id.profile) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile()).commit();
         }   else if (id == R.id.logout) {
-            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
-              getDataFromSqlite();
+//            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
+//              getDataFromSqlite();
               Intent intent = new Intent(this, LoginActivity.class);
               intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
               intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

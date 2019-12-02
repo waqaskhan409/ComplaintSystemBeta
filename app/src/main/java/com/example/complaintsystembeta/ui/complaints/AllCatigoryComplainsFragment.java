@@ -1,16 +1,15 @@
 package com.example.complaintsystembeta.ui.complaints;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,7 +18,6 @@ import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Forwards;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +26,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AllCatigoryComplains extends AppCompatActivity {
-
-    private static final String TAG = "AllCatigoryComplains";
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AllCatigoryComplainsFragment extends Fragment {
+    private static final String TAG = "AllCatigoryComplainsFra";
+    private View view;
     private Unbinder unbinder;
     private ArrayList<AllComplains> valuesForPending = new ArrayList<>();
     private ArrayList<AllComplains> valuesForNew = new ArrayList<>();
@@ -81,43 +81,29 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @BindView(R.id.allComplainsT)
     TextView allComplainsT;
-    private Toolbar toolbar;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_catigory_complains);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        if(unbinder == null){
-            unbinder = ButterKnife.bind(this);
-        }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        data = getIntent().getExtras();
-//        cnic = data.getString(getString(R.string.permanentlogin_cnic));
-        userName = data.getString(getString(R.string.permanentlogin_name));
-        desId = data.getString(Constants.PREVELDGES_ON_FORWARD);
-        employeeId = data.getString(getString(R.string.permanentlogin_id));
 
 
-        Log.d(TAG, "onResponseForwards: oncreate" + desId);
-        Log.d(TAG, "onResponseForwards: oncreate" + employeeId);
-
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-
+    public AllCatigoryComplainsFragment(String cnic, String desId, String userName, String employeeId) {
+        this.cnic = cnic;
+        this.desId = desId;
+        this.userName = userName;
+        this.employeeId = employeeId;
     }
 
+    public AllCatigoryComplainsFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.activity_all_catigory_complains, container, false);
+        // Inflate the layout for this fragment
+
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
     private void totalForwards() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)
@@ -151,7 +137,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @OnClick(R.id.allComplains)
     public void redirectToAllComplains(){
-        Intent intent = new Intent(this, ManagingComplaints.class);
+        Intent intent = new Intent(getActivity(), ManagingComplaints.class);
         intent.putExtra(getString(R.string.complain_redirect), Constants.ALL_COMPLAINS);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, desId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
@@ -161,7 +147,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @OnClick(R.id.newComplains)
     public void redirectToNewComplains(){
-        Intent intent = new Intent(this, ManagingComplaints.class);
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
         intent.putExtra(getString(R.string.complain_redirect), Constants.NEW_COMPLAINS);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, desId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
@@ -170,7 +156,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @OnClick(R.id.pendingComplains)
     public void redirectToPendingComplains(){
-        Intent intent = new Intent(this, ManagingComplaints.class);
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
         intent.putExtra( getString(R.string.complain_redirect), Constants.PENDING_COMPLAINS);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, desId);
 //        intent.putExtra(getString(R.string.permanentlogin_name), userName);
@@ -180,7 +166,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @OnClick(R.id.resolvedComplains)
     public void redirectToResolvedComplains(){
 
-        Intent intent = new Intent(this, ManagingComplaints.class);
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
         intent.putExtra( getString(R.string.complain_redirect), Constants.RESOLVED_COMPLAINS);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, desId);
 //        intent.putExtra(getString(R.string.permanentlogin_name), userName);
@@ -190,7 +176,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @OnClick(R.id.forwardComplains)
     public void redirectToEmployeeComplains(){
-        Intent intent = new Intent(this, ManagingComplaints.class);
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
         intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_COMPLAINS);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
@@ -200,13 +186,13 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @OnClick(R.id.complainAnalytics)
     public void redirectToComplainsAnalytics(){
 
-        Intent intent = new Intent(this, DescriptionAndrGraphActivity.class);
+        Intent intent = new Intent(getContext(), DescriptionAndrGraphActivity.class);
 //        intent.putExtra(Constants.ALL_COMPLAINS, getString(R.string.complain_redirect));
         startActivity(intent);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         valuesForNew.clear();
         valuesForPending.clear();
@@ -237,13 +223,17 @@ public class AllCatigoryComplains extends AppCompatActivity {
                 Log.d(TAG, "onResponse: "+ response.body());
                 List<AllComplains>  list = response.body();
                 for(AllComplains all: list){
-                        if (all.getComplain_status().equals(Constants.COMPLAINS_RESOLVED)) {
-                            valuesForResolved.add(all);
-                        }  else if (all.getComplain_status().equals(Constants.COMPLAINS_NEW)) {
-                            valuesForNew.add(all);
-                        }else {
-                            valuesForPending.add(all);
-                        }
+                    if (all.getComplain_status().equals(Constants.COMPLAINS_RESOLVED)) {
+                        valuesForResolved.add(all);
+                    } else if (
+                            all.getComplain_status().equals(Constants.COMPLAINS_PENDING) ||
+                                    all.getComplain_status().equals(Constants.COMPLAINS_IN_PROCESS)
+
+                    ) {
+                        valuesForPending.add(all);
+                    } else if (all.getComplain_status().equals(Constants.COMPLAINS_NEW)) {
+                        valuesForNew.add(all);
+                    }
                 }
                 getArrayListForGraphInteger();
             }
@@ -265,10 +255,4 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
 
     }
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-
 }

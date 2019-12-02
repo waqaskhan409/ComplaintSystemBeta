@@ -59,12 +59,13 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
         }else if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
-            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
-            }} else {
-            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+            }
+        } else {
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));

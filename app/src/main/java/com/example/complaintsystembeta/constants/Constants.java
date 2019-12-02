@@ -12,6 +12,13 @@ public class Constants {
     public static final String COMPLAINS_NEW = "REGISTERED";
     public static final String COMPLAINS_RESOLVED = "RESOLVED";
     public static final String COMPLAINS_PENDING = "INITIATED";
+    public static final String ENGINEERING = "Engineering";
+    public static final String ADMINISTRATION = "Admin";
+    public static final String ACCOUNT = "Accounts";
+    public static final String REVENUE = "Revenue";
+    public static final String TECHNICAL = "Technical";
+    public static final String SANITATION = "Sanitation";
+    public static final String ENGINA = "Engina";
     public static final String URL_IMAGES = "http://192.168.43.31:3000/uploads/";
 
 
@@ -37,4 +44,6 @@ public class Constants {
     public static final String IS_REPLY = "reply";
     public static final String IS_CURRENT = "current";
     public static final String COMPLAIN_IN_PROCESS = "IN PROCESS";
+    public static final String FORWARD_FROM_NAME_ID_DES = "name with id";
+    public static final String COMPLAINS_IN_PROCESS = "IN PROCESS";
 }

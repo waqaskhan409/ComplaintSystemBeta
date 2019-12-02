@@ -5,18 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.complaints.AllCatigoryComplains">
-
-    <include
-        layout="@layout/app_bar_main"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="?android:attr/actionBarSize">
+        >
         <!--        <ImageView-->
         <!--            android:layout_width="120dp"-->
         <!--            android:layout_gravity="center_horizontal"-->
@@ -308,5 +305,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
+    </ScrollView>
 </RelativeLayout>

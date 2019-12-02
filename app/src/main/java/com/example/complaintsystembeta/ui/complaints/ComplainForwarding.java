@@ -28,6 +28,9 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
@@ -56,6 +59,7 @@ import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
+import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
@@ -75,6 +79,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -188,12 +193,16 @@ public class ComplainForwarding extends BaseActivity {
         setContentView(R.layout.activity_complain_forwarding);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         this.data = getIntent().getExtras();
         complainId = data.getString(getString(R.string.complains_id));
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
 
         forwardTo = data.getString(Constants.FORWARD_FROM);
         employeeId = data.getString(getString(R.string.permanentlogin_id));
+        Log.d(TAG, "onCreate: " + forwardTo );
 
         //Sending report in stacks LIFO order
         forwardFrom = data.getString(Constants.FORWARD_TO);
@@ -224,6 +233,30 @@ public class ComplainForwarding extends BaseActivity {
 
 
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        if(item.getItemId() == R.id.send){
+            gettingValues();
+        }
+
+        return super.onOptionsItemSelected(item);
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.send_forward_message, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @OnClick(R.id.audioToText)
     public void audioToText(){
@@ -248,6 +281,8 @@ public class ComplainForwarding extends BaseActivity {
                 getSingleEmployee();
                 replyBoolean = 1;
                 previouseReportId = data.getString(Constants.REPORTING_ID);
+                department.setText(forwardTo);
+                department.setEnabled(false);
 
         }
         designations.clear();
@@ -467,8 +502,8 @@ public class ComplainForwarding extends BaseActivity {
                     Log.d(TAG, "onResponseUnsuccefull: " + response.message());
                     return;
                 }else {
-                   department.setText(response.body().get(0).getFull_name()+"/"+response.body().get(0).getDes_title()+"/"+response.body().get(0).getDepartment_name());
-//                    department.setEnabled(false);
+//                   department.setText(response.body().get(0).getFull_name()+"/"+response.body().get(0).getDes_title()+"/"+response.body().get(0).getDepartment_name());
+//                    department.setEnabled(false);x
                     compliantTv.getEditText().setText("Re:");
                 }
             }
@@ -642,7 +677,7 @@ public class ComplainForwarding extends BaseActivity {
     }
 
     private void redirectToAllComplains() {
-        Intent intent = new Intent(this, AllCatigoryComplains.class);
+        Intent intent = new Intent(this, EmployeeNavigation.class);
         intent.putExtra(getString(R.string.complains_id), complainId);
         intent.putExtra(getString(R.string.permanentlogin_name), user);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, forwardFrom);
@@ -809,4 +844,9 @@ public class ComplainForwarding extends BaseActivity {
             player = null;
         }
     }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
 }

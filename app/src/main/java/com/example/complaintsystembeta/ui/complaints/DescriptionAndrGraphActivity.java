@@ -1,5 +1,6 @@
 package com.example.complaintsystembeta.ui.complaints;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,10 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
@@ -42,6 +48,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,14 +68,26 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
     private ArrayList<String> list  = new ArrayList<>();
     private BarChart mBarChart ;
     private PieChart mPieChart ;
+    private Unbinder unbinder;
     private Toolbar toolbar;
     private ArrayList<Integer> valuesForGraphs = new ArrayList<>();
     private ArrayList<AllComplains> valuesForPending = new ArrayList<>();
     private ArrayList<AllComplains> valuesForNew = new ArrayList<>();
     private ArrayList<AllComplains> valuesForResolved = new ArrayList<>();
     private ArrayList<AllComplains> valuesForEmployee = new ArrayList<>();
+    ArrayList<String> allDept;
 
 
+    @BindView(R.id.graphs)
+    ViewPager viewPagerGraphs;
+
+
+    @BindView(R.id.graphsDept)
+    ViewPager viewPagerDept;
+
+
+    @BindView(R.id.spinnerDept)
+    Spinner spinnerDept;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -73,179 +95,80 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description_andr_graph);
-        mBarChart = (BarChart) findViewById(R.id.graphBarChart);
-        mPieChart = (PieChart) findViewById(R.id.graphPieChart);
-        mText = findViewById(R.id.description);
+
+        if(unbinder == null){
+            unbinder = ButterKnife.bind(this);
+        }
+
+        GraphSwipe graphSwipe = new GraphSwipe(this);
+        viewPagerGraphs.setAdapter(graphSwipe);
+
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mBarChart.setOnChartGestureListener(new OnChartGestureListener() {
-            @Override
-            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-
-            }
-
-            @Override
-            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-
-            }
-
-            @Override
-            public void onChartLongPressed(MotionEvent me) {
-                Log.d(TAG, "onChartLongPressed: zoom in");
-            }
-
-            @Override
-            public void onChartDoubleTapped(MotionEvent me) {
-                Log.d(TAG, "onChartDoubleTapped: zoom in");
-
-                String[] values = {"Jan", "Feb", "March" , "April" , "May", "June", "July", "August", "September", "October", "November", "December"};
-                XAxis xAxis = mBarChart.getXAxis();
-                xAxis.setValueFormatter(new MyAxisValueFormatter(values));
-
-
-            }
-
-            @Override
-            public void onChartSingleTapped(MotionEvent me) {
-                Log.d(TAG, "onChartSingleTapped: zoom in");
-            }
-
-            @Override
-            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-                Log.d(TAG, "onChartFling: zoom in");
-            }
-
-            @Override
-            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-                Log.d(TAG, "onChartScale: zoom in");
-                Log.d(TAG, "onChartScale: zoom in" + scaleX);
-                Log.d(TAG, "onChartScale: zoom in" + scaleY);
-                if(scaleX == 1.0){
-                    settingBarGraph();
-                }else {
-
-                }
-
-            }
-
-            @Override
-            public void onChartTranslate(MotionEvent me, float dX, float dY) {
-                Log.d(TAG, "onChartTranslate: zoom in");
-            }
-        });
-
-        mBarChart.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.d(TAG, "onScrollChange: Scroll in");
-            }
-        });
-
 
         settingupValues();
     }
 
-    private void settingPieGraph() {
-        List<PieEntry> value  = new ArrayList<>();
 
-        value.add(new PieEntry(valuesForGraphs.get(0), "Resolved"));
-        value.add(new PieEntry(valuesForGraphs.get(1), "Pending"));
-        value.add(new PieEntry(valuesForGraphs.get(2), "New"));
-
-        PieDataSet pieDataSet = new PieDataSet(value, "Complains");
-        PieData pieData = new PieData(pieDataSet);
-
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-
-        mPieChart.setData(pieData);
-
-    }
-
-    private void settingBarGraph() {
-        Log.d(TAG, "settingGraph: " + arrayListForGraph);
-        for (int i = 0; i < valuesForGraphs.size(); i++) {
-            barEntries.add(new BarEntry(i+1, Float.parseFloat(String.valueOf(valuesForGraphs.get(i))), "lopa"));
-            Log.d(TAG, "settingBarGraph: " + i);
-        }
-        String[] values = {"Year", "months", "days"};
-        new BarEntry(0f, 0);
-        final ArrayList<String> xAxisLabel = new ArrayList<>();
-        xAxisLabel.add("Year");
-
-        BarDataSet dataSetRevenue = new BarDataSet(barEntries, "Complains");
-        dataSetRevenue.setColors(ColorTemplate.COLORFUL_COLORS);
-
-//        BarDataSet dataSetMonth = new BarDataSet(months, "date");
-        mBarChart.setTouchEnabled(true);
-        mBarChart.setScaleEnabled(true);
-//        mBarChart.setDragEnabled(true);
-        BarData data = new BarData(dataSetRevenue);
-        mBarChart.setData(data);
-//        mBarChart.setFitBars(true);
-        mBarChart.setDragEnabled(false);
-
-
-
-        Description description = new Description();
-        description.setText(getString(R.string.description));
-        mBarChart.setDescription(description);
-//        mBarChart.getBarData().setValueFormatter();
-        mBarChart.invalidate();
-//        XAxis xAxis = mBarChart.getXAxis();
-//        xAxis.setValueFormatter(new MyAxisValueFormatter(values));
-    }
-
-    private void settingBarGraphForDept() {
-        Log.d(TAG, "settingGraph: " + arrayListForGraph);
-        for (int i = 0; i < valuesForGraphs.size(); i++) {
-            barEntries.add(new BarEntry(i, Float.parseFloat(String.valueOf(valuesForGraphs.get(i))), list.get(i)));
-        }
-
-        new BarEntry(0f, 0);
-
-        BarDataSet dataSetRevenue = new BarDataSet(barEntries, "Complains");
-        dataSetRevenue.setColors(ColorTemplate.COLORFUL_COLORS);
-
-//        BarDataSet dataSetMonth = new BarDataSet(months, "date");
-        mBarChart.setTouchEnabled(true);
-        mBarChart.setScaleEnabled(true);
-        mBarChart.setDragEnabled(true);
-        BarData data = new BarData(dataSetRevenue);
-        mBarChart.setData(data);
-        mBarChart.setFitBars(true);
-
-
-        Description description = new Description();
-        description.setText(getString(R.string.description));
-        mBarChart.setDescription(description);
-//        mBarChart.getBarData().setValueFormatter();
-        mBarChart.invalidate();
-    }
 
 
     private void settingupValues() {
-        fetchComplains();
+//        fetchComplains();
         data = getIntent().getExtras();
         name = "Complaints Charts";
         description = "Complaints";
-        for (int i = 0; i < 10; i++) {
-            list.add(String.valueOf(i));
-        }
+
+
+        allDept = new ArrayList<>();
+        allDept.clear();
+        allDept.add(Constants.ENGINEERING);
+        allDept.add(Constants.ADMINISTRATION);
+        allDept.add(Constants.ACCOUNT);
+        allDept.add(Constants.REVENUE);
+        allDept.add(Constants.TECHNICAL);
+        allDept.add(Constants.SANITATION);
+        allDept.add(Constants.ENGINA);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allDept);
+        spinnerDept.setAdapter(adapter);
+
+        spinnerDept.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                fetchComplains(spinnerDept.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        spinnerDept.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                fetchComplains(spinnerDept.getSelectedItem().toString());
+//            }
+//        });
+
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mText.setText(description);
+//        mText.setText(description);
     }
-
-
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
 
-    private void fetchComplains() {
+    }
+    private void fetchComplains(String departments) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -253,7 +176,7 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
 
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
-        Call<List<AllComplains>> call = service.getComplains();
+        Call<List<AllComplains>> call = service.getTotalCoplainsByDepartment(departments);
 
         call.enqueue(new Callback<List<AllComplains>>() {
             @Override
@@ -264,15 +187,21 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
                 }
                 Log.d(TAG, "onResponse: "+ response.body());
                 List<AllComplains>  list = response.body();
+                valuesForNew.clear();
+                valuesForPending.clear();
+                valuesForResolved.clear();
                 for(AllComplains all: list){
                     if(all.getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
                         valuesForResolved.add(all);
-                    }else if(all.getComplain_status().equals(Constants.COMPLAINS_PENDING)) {
-                        valuesForPending.add(all);
                     }else if(all.getComplain_status().equals(Constants.COMPLAINS_NEW)) {
                         valuesForNew.add(all);
+                    }else {
+                        valuesForPending.add(all);
                     }
                 }
+                Log.d(TAG, "onResponse: sizeResolved" + valuesForResolved.size());
+                Log.d(TAG, "onResponse: sizePending" + valuesForPending.size());
+                Log.d(TAG, "onResponse: sizeNew" + valuesForNew.size());
                 getArrayListForGraphInteger();
 
             }
@@ -290,25 +219,23 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         valuesForGraphs.add(valuesForResolved.size());
         valuesForGraphs.add(valuesForPending.size());
         valuesForGraphs.add(valuesForNew.size());
-        settingPieGraph();
-        settingBarGraph();
+        setupPagerAdapter(valuesForGraphs, valuesForNew, valuesForPending, valuesForResolved);
 
 
     }
 
-    public class MyAxisValueFormatter extends ValueFormatter {
-        private String values[];
-
-        public MyAxisValueFormatter(String[] values) {
-            this.values = values;
-        }
-
-        @Override
-        public String getFormattedValue(float value) {
-            return values[(int) value];
-        }
+    private void setupPagerAdapter(ArrayList<Integer> valuesForGraphs, ArrayList<AllComplains> valuesForNew, ArrayList<AllComplains> valuesForPending, ArrayList<AllComplains> valuesForResolved) {
+        GraphSwipeForDeptEngineering adapter = new GraphSwipeForDeptEngineering(getApplicationContext(),
+                valuesForGraphs,
+                valuesForNew,
+                valuesForPending,
+                valuesForResolved
+                );
+        viewPagerDept.setAdapter(adapter);
     }
 
-
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 }

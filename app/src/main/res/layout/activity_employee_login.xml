@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:background="@color/white"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
+            android:background="#FF8713"
             android:layout_height="250dp">
             <ImageView
                 android:layout_width="120dp"
@@ -31,6 +33,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="20dp"
                 android:text="@string/login_text"
+                android:textColor="@color/white"
                 android:textSize="25sp"
                 ></TextView>
         </RelativeLayout>

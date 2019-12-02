@@ -2,12 +2,14 @@ package com.example.complaintsystembeta.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.complaintsystembeta.R;
@@ -39,12 +41,38 @@ public class ConsumerComplaints extends RecyclerView.Adapter<ConsumerComplaints.
         return new ConsumerComplaintViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull ConsumerComplaintViewHolder holder, int position) {
         holder.complainsStatus.setText( allComplains.get(position).getComplain_status());
-        holder.complainsDate.setText("10/10/1000");
+        holder.complainsDate.setText(allComplains.get(position).getCreated_us());
 //        holder.complainsDate.setText( allComplains.get(position).getCreated_us());
         holder.complainsBody.setText( allComplains.get(position).getComplain_body());
+
+        if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+            holder.complainsStatus.setPadding(50, 7, 50, 7);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.complainsStatus.setTextColor(context.getColor(R.color.white));
+            }
+        }else  if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_PENDING)){
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+            holder.complainsStatus.setPadding(50, 7, 50, 7);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.complainsStatus.setTextColor(context.getColor(R.color.white));
+            }
+        }else  if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)){
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+            holder.complainsStatus.setPadding(50, 7, 50, 7);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.complainsStatus.setTextColor(context.getColor(R.color.white));
+            }
+        }
+
+
+
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +91,14 @@ public class ConsumerComplaints extends RecyclerView.Adapter<ConsumerComplaints.
 
     class ConsumerComplaintViewHolder extends RecyclerView.ViewHolder{
         private TextView complainsDate, complainsBody, complainsStatus;
-
+        private TextView complainTitle, complainBar;
         public ConsumerComplaintViewHolder(@NonNull View itemView) {
             super(itemView);
             complainsBody = itemView.findViewById(R.id.complaintsBody);
             complainsDate = itemView.findViewById(R.id.complainCreatedDate);
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
-
+            complainTitle = itemView.findViewById(R.id.complaintsTitle);
+            complainBar = itemView.findViewById(R.id.complainBar);
         }
     }
 }

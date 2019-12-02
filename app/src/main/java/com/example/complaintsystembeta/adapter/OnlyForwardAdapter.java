@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,8 +51,8 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
         holder.complainsDate.setText(allComplains.get(position).getCreated_us());
         holder.complainsStatus.setText(allComplains.get(position).getComplain_status());
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
-        holder.complainerName.setText(employeId);
-        Log.d(TAG, "onBindViewHolder: " + allComplains.get(position).getComplain_id());
+//        holder.complainerName.setText(allC);
+        Log.d(TAG, "onBindViewHolder: f" + allComplains.get(position).getComplain_id());
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
@@ -59,17 +60,22 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
         }else if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
-            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
-            holder.complainsStatus.setPadding(50, 7, 50, 7);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.complainsStatus.setTextColor(context.getColor(R.color.white));
-            }} else {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
+        } else {
+            holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+            holder.complainsStatus.setPadding(50, 7, 50, 7);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.complainsStatus.setTextColor(context.getColor(R.color.white));
+            }
         }
+
+
+        Log.d(TAG, "onBindViewHolder: userName:" + userName);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,13 +97,22 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
 
     class OnlyForwardViewHolder extends RecyclerView.ViewHolder{
         private TextView complainerName, complainsDate, complainsBody, complainsStatus;
-
+        private ImageView imageViewCircle1, imageViewCircle2;
+        private TextView textView1, textView2, textView3;
         public OnlyForwardViewHolder(@NonNull View itemView) {
             super(itemView);
             complainerName = itemView.findViewById(R.id.complaintsId);
             complainsDate = itemView.findViewById(R.id.complainCreatedDate);
             complainsBody = itemView.findViewById(R.id.complaintsBody);
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
+
+//
+//            imageViewCircle1 = itemView.findViewById(R.id.circle1);
+//            imageViewCircle2 = itemView.findViewById(R.id.circle2);
+//            textView1 = itemView.findViewById(R.id.textView3);
+//            textView2 = itemView.findViewById(R.id.textView2);
+//            textView3 = itemView.findViewById(R.id.textView3);
+
         }
     }
 }

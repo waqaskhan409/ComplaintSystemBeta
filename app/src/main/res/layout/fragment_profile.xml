@@ -3,121 +3,105 @@
     xmlns:android="http://schemas.android.com/apk/res-auto"
     xmlns:android1="http://schemas.android.com/apk/res/android"
     tools:ignore="NamespaceTypo"
+    android1:layout_marginTop="?android:attr/actionBarSize"
     android1:layout_height="match_parent"
     android1:layout_width="match_parent">
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@+id/topImageLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout android1:layout_width="match_parent"
+    android1:layout_height="match_parent"
+    android1:layout_below="@+id/topImageLayout">
+    <LinearLayout
+        android1:layout_width="match_parent"
+        android1:orientation="vertical"
+        android1:layout_height="match_parent">
+    <LinearLayout
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_marginLeft="50dp"
+        android1:gravity="bottom"
+        android1:layout_marginTop="30dp"
+        android1:orientation="horizontal">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android1:layout_width="80dp"
+            android1:layout_height="80dp"
+            android1:src="@drawable/account_image"
+            ></de.hdodenhof.circleimageview.CircleImageView>
+       <!-- <ImageView
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:layout_marginLeft="-23dp"
+            android1:layout_marginBottom="14dp"
+            android1:src="@drawable/add">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:id="@+id/cnic"
-        android:layout_height="wrap_content">
+        </ImageView>-->
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/cnin" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/cnic"
-        android:id="@+id/userName"
-        android:layout_height="wrap_content">
+        <LinearLayout
+            android1:layout_width="match_parent"
+            android1:layout_height="match_parent"
+            android1:layout_marginLeft="50dp"
+            android1:gravity="center_vertical"
+            android1:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/userName" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/userName"
-        android:id="@+id/mobileNumber"
-        android:layout_height="wrap_content">
+            <TextView
+                android1:layout_width="wrap_content"
+                android1:layout_height="wrap_content"
+                android1:text="Name"
+                android1:textColor="@color/black"
+                android1:textSize="20sp"></TextView>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/mobileNumber" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/mobileNumber"
-        android:id="@+id/address"
-        android:layout_height="wrap_content">
+            <TextView
+                android1:layout_width="wrap_content"
+                android1:layout_height="wrap_content"
+                android1:layout_marginTop="10dp"
+                android1:id="@+id/accountNumber"
+                android1:text="CNIC number"></TextView>
+        </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/address" />
-    </com.google.android.material.textfield.TextInputLayout>      <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_margin="10dp"
-    android:layout_below="@+id/address"
-    android:id="@+id/password"
-    android:layout_height="wrap_content">
+    </LinearLayout>
+        <View
+            android1:layout_width="match_parent"
+            android1:layout_height="1dp"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="40dp"
+            android1:layout_marginRight="40dp"
+            android1:background="@color/colorAccent"
+            />
+        <EditText
+            android1:layout_width="match_parent"
+            android1:layout_height="50dp"
+            android1:id="@+id/email"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:hint="Email"
+            android1:paddingLeft="10dp"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></EditText>
+        <EditText
+            android1:layout_width="match_parent"
+            android1:layout_height="50dp"
+            android1:id="@+id/contactNumber"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:hint="Contact number"
+            android1:paddingLeft="10dp"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></EditText>
+        <EditText
+            android1:layout_width="match_parent"
+            android1:layout_height="50dp"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:hint="Contact Address"
+            android1:id="@+id/contactAddress"
+            android1:paddingLeft="10dp"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></EditText>
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/prompt_password" />
-</com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/password"
-        android:id="@+id/confirmPassword"
-
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_confirm_password" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/front_cnic_image"
-        android:layout_margin="10dp"
-        android:id="@+id/textForFrontCnicImage"
-        android:layout_below="@+id/confirmPassword"></TextView>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/cnicFrontImage"
-        android:src="@drawable/ic_camera_black_24dp"
-        android:layout_below="@+id/textForFrontCnicImage"></ImageView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/black_cnic_image"
-        android:layout_margin="10dp"
-        android:id="@+id/textForBackCnicImage"
-        android:layout_below="@+id/cnicFrontImage"></TextView>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/cnicBackImage"
-        android:src="@drawable/ic_camera_black_24dp"
-        android:layout_below="@+id/textForBackCnicImage"></ImageView>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/update"
-        android:id="@+id/submit"
-        android:layout_below="@id/cnicBackImage"
-        android:background="@color/white"
-        android:textColor="@color/black"
-        ></Button>
+    </LinearLayout>
 </RelativeLayout>
 </ScrollView>

@@ -48,6 +48,11 @@ public interface JsonApiHolder {
                                                                     @Field("status") String status);
 
 
+    @POST("get_total_coplains_by_department")
+    @FormUrlEncoded
+    Call<List<AllComplains>> getTotalCoplainsByDepartment(@Field("department_name") String deptName);
+
+
     @POST("get_single_employee")
     @FormUrlEncoded
     Call<List<Employee>> getSingleEmployee(@Field("des_id") String des_id);

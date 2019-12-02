@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
@@ -58,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -93,6 +95,8 @@ public class ComposeComplaints extends BaseActivity {
     TextView textView;
     private Bundle data;
     private String account, name;
+    Toolbar toolbar;
+
 
 
     // Requesting permission to RECORD_AUDIO
@@ -150,6 +154,11 @@ public class ComposeComplaints extends BaseActivity {
         data = getIntent().getExtras();
         account = data.getString(getString(R.string.account_number));
         name = data.getString(getString(R.string.userName));
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
 
@@ -240,7 +249,16 @@ public class ComposeComplaints extends BaseActivity {
             stopPlaying();
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
 
+    }
     private void startPlaying() {
         player = new MediaPlayer();
         try {
@@ -334,6 +352,7 @@ public class ComposeComplaints extends BaseActivity {
             }
         });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean isStoragePermissionGranted () {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -600,4 +619,9 @@ public class ComposeComplaints extends BaseActivity {
             player = null;
         }
     }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
 }

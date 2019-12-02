@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/reply"
+        app:showAsAction="always"
+        android:icon="@drawable/reply"
+        android:title="reply"></item>
+    <item
+        android:id="@+id/forward"
+        app:showAsAction="always"
+        android:icon="@drawable/forward_black"
+        android:title="forward"></item>
+</menu>

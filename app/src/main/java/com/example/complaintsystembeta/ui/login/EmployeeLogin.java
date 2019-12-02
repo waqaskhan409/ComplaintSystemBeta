@@ -1,10 +1,13 @@
 package com.example.complaintsystembeta.ui.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
+import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.complaints.AllCatigoryComplains;
 
@@ -28,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -153,7 +158,7 @@ public class EmployeeLogin extends BaseActivity {
 
                         dissmissProgressDialogue();
                         Log.d(TAG, "onResponse: " + l.getDes_id());
-                        Intent intent = new Intent(EmployeeLogin.this, AllCatigoryComplains.class);
+                        Intent intent = new Intent(EmployeeLogin.this, EmployeeNavigation.class);
                         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, l.getDes_id());
                         intent.putExtra(getString(R.string.permanentlogin_name), l.getDes_title());
                         intent.putExtra(getString(R.string.permanentlogin_cnic), l.getCnic());
@@ -203,5 +208,21 @@ public class EmployeeLogin extends BaseActivity {
             cnicS = userName.getText().toString();
             passwordS = password.getText().toString();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
 
 }

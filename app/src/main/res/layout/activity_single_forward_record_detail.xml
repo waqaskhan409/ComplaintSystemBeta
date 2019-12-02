@@ -19,14 +19,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
         >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?android:attr/actionBarSize"
         android:orientation="vertical"
-
         >
 
     <TextView
@@ -40,7 +39,10 @@
     <TextView
         android:id="@+id/compliansBody"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:background="@drawable/layout_bg"
         android:layout_margin="10dp"
         android:hint="Remarks Body"
         android:textColor="@color/black"></TextView>
@@ -61,9 +63,35 @@
         <TextView
             android:id="@+id/forwardTo"
             android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/layout_bg"
+            android:hint="Forward To"
+            android:textColor="@color/black"></TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="Forward To"
+            android:text="Forward From :"
+            android:textColor="@color/black"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/forwardFrom"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/layout_bg"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:hint="Forward from"
             android:textColor="@color/black"></TextView>
 
         <View
@@ -101,9 +129,12 @@
         <TextView
             android:id="@+id/expectedDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_margin="10dp"
-            android:hint="Forward From"
+            android:hint="Expected date"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/layout_bg"
             android:textColor="@color/black"></TextView>
 
         <View
@@ -141,10 +172,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/noFile"
             android:layout_marginTop="25dp"
+            android:textColor="@color/red"
             android:layout_gravity="center"
             android:text="No file Attached"
-            android:textColor="@color/black"
-            android:textSize="18sp"></TextView>
+            android:textSize="15sp"></TextView>
         <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

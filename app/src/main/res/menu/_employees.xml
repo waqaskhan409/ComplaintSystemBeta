@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/complaints"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="Complaints" />
+        <item
+            android:id="@+id/profile"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="Profile" />
+        <item
+            android:id="@+id/allEmployees"
+            android:icon="@drawable/advance_search"
+            android:title="Employees" />
+
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/about"
+                android:icon="@android:drawable/star_big_off"
+                android:title="About" />
+            <item
+                android:id="@+id/logout"
+                android:icon="@android:drawable/ic_lock_idle_lock"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>

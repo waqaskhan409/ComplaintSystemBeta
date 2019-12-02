@@ -24,32 +24,48 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/graphsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/black"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/large_text" />
-
-        <com.github.mikephil.charting.charts.BarChart
+        <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
             android:layout_height="400dp"
-            android:id="@+id/graphBarChart">
-        </com.github.mikephil.charting.charts.BarChart>
-        <TextView
-            android:id="@+id/barChartText"
+            android:layout_margin="10dp"
+            android:id="@+id/graphs">
+        </androidx.viewpager.widget.ViewPager>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/large_text" />
-
-        <com.github.mikephil.charting.charts.PieChart
-            android:layout_width="match_parent"
+            android:orientation="horizontal"
             android:layout_margin="10dp"
-            android:layout_height="400dp"
-            android:id="@+id/graphPieChart">
-        </com.github.mikephil.charting.charts.PieChart>
+            android:weightSum="8"
+            >
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Departments  :"
+               android:textSize="20sp"
+               android:textColor="@color/black"
+               android:layout_weight="4">
+           </TextView>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerDept"
+                android:layout_weight="4">
 
+            </Spinner>
+        </LinearLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_margin="10dp"
+            android:id="@+id/graphsDept">
+        </androidx.viewpager.widget.ViewPager>
     </LinearLayout>
     </ScrollView>
 

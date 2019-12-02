@@ -3,9 +3,67 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_marginLeft="10dp"
+    android:background="@drawable/round_dailogue"
     android:layout_marginRight="10dp"
     android:layout_marginTop="10dp"
     android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="3dp"
+        android:gravity="center_horizontal"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="2dp"
+            android:layout_marginTop="-3dp"
+            android:layout_weight="4"
+            android:id="@+id/textView1"
+            android:layout_marginBottom="-3dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/new_complains_drawables"
+            ></TextView>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/linking"
+            android:id="@+id/circle1"
+            android:rotation="90"
+            ></ImageView>
+
+        <TextView
+            android:layout_width="2dp"
+            android:layout_marginTop="-3dp"
+            android:layout_weight="2"
+            android:id="@+id/textView2"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="-3dp"
+            android:background="@drawable/new_complains_drawables"
+            ></TextView>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/circle2"
+            android:src="@drawable/linking"
+            android:rotation="90"
+            ></ImageView>
+        <TextView
+            android:layout_width="2dp"
+            android:layout_marginBottom="-3dp"
+            android:layout_marginTop="-3dp"
+            android:layout_weight="2"
+            android:id="@+id/textView3"
+            android:layout_height="match_parent"
+            android:background="@drawable/new_complains_drawables"
+            ></TextView>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_weight="1"
@@ -19,14 +77,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="8"
+            android:weightSum="15"
             >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/complaintsRemarks"
             android:text="Remarks:"
-            android:layout_weight="7"
+            android:layout_weight="14"
             android:textColor="@color/black"
             ></TextView>
 
@@ -50,17 +108,20 @@
             android:layout_height="wrap_content"
             android:text="forward to"
             android:layout_gravity="left"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:layout_marginBottom="5dp"
             android:id="@+id/forwardTo"
-            android:background="@drawable/layout_bg"
+            android:background="@drawable/resloved_complains_drawables"
             android:layout_marginLeft="8dp"
             android:textSize="12sp"
             android:maxLength="30"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             >
         </TextView>
         <TextView
@@ -68,43 +129,49 @@
             android:layout_height="wrap_content"
             android:text="forward by"
             android:layout_gravity="left"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:layout_marginBottom="5dp"
             android:id="@+id/forwardBy"
-            android:background="@drawable/layout_bg"
+
+            android:background="@drawable/complain_forward_drawable"
             android:layout_marginLeft="8dp"
             android:textSize="12sp"
             android:maxLength="30"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             >
         </TextView>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Expected Date"
-            android:layout_gravity="left"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:id="@+id/expectedDate"
-            android:background="@drawable/layout_bg"
-            android:layout_marginLeft="8dp"
-            android:textSize="12sp"
-            android:maxLength="30"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            >
-        </TextView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
             android:layout_marginLeft="8dp"
             android:orientation="horizontal">
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expected Date"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:id="@+id/expectedDate"
+                android:background="@drawable/layout_bg"
+                android:layout_marginLeft="0dp"
+                android:textSize="12sp"
+                android:layout_marginRight="20dp"
+                android:maxLength="30"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                >
+            </TextView>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,5 +179,6 @@
                 ></ImageView>
         </LinearLayout>
 
+    </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

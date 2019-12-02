@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.complaints.SingleComplainDetails">
     <include
         layout="@layout/app_bar_main"
@@ -26,15 +26,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+
                 android:text="@string/complain_body"
                 android:textColor="@color/black"
-                android:textSize="18sp"></TextView>
+                android:textFontWeight="700"
+                android:textSize="22sp"></TextView>
 
             <TextView
                 android:id="@+id/compliansBody"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@drawable/layout_bg"
                 android:hint="ComplainsBody"
                 android:textColor="@color/black"></TextView>
 
@@ -49,7 +55,8 @@
                 android:layout_margin="10dp"
                 android:text="@string/complains_attachment"
                 android:textColor="@color/black"
-                android:textSize="18sp"></TextView>
+                android:textFontWeight="700"
+                android:textSize="22sp"></TextView>
 
             <androidx.viewpager.widget.ViewPager
                 android:layout_width="wrap_content"
@@ -76,8 +83,9 @@
                 android:layout_marginTop="25dp"
                 android:layout_gravity="center"
                 android:text="No file Attached"
-                android:textColor="@color/black"
-                android:textSize="18sp"></TextView>
+                android:textFontWeight="400"
+                android:textColor="@color/red"
+                android:textSize="15sp"></TextView>
 
             <LinearLayout
                 android:id="@+id/seekBarLayout"
@@ -121,14 +129,18 @@
                 android:layout_margin="10dp"
                 android:text="@string/complains_status"
                 android:textColor="@color/black"
-                android:textSize="18sp"></TextView>
+                android:textSize="22sp"
+                android:textFontWeight="700"></TextView>
 
 
             <TextView
                 android:id="@+id/complainsStatus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/layout_bg"
                 android:hint="ComplainsBody"
                 android:textColor="@color/black"></TextView>
             <LinearLayout

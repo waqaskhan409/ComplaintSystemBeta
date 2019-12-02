@@ -1,20 +1,28 @@
 package com.example.complaintsystembeta;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     Snackbar snackbar;
     ProgressDialog dialog;
+
 
     public void showProgressDialogue(String title, String message){
         dialog = new ProgressDialog(BaseActivity.this);
@@ -59,4 +67,8 @@ public class BaseActivity extends AppCompatActivity {
         return passwordS.length() > 7;
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 }

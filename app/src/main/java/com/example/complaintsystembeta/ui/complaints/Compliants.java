@@ -1,57 +1,46 @@
 package com.example.complaintsystembeta.ui.complaints;
 
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
-import com.example.complaintsystembeta.adapter.AllComplainsAdapter;
 import com.example.complaintsystembeta.adapter.ConsumerComplaints;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
-import com.example.complaintsystembeta.interfaace.OnBackPressedListener;
-import com.example.complaintsystembeta.interfaace.PermanentLoginDao;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.PermanentLogin;
-import com.example.complaintsystembeta.model.Posts;
 import com.example.complaintsystembeta.model.SignUpData;
-import com.example.complaintsystembeta.ui.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,6 +54,8 @@ public class Compliants extends BaseActivity{
     private List<AllComplains> allComplains = new ArrayList<>();
     private RecyclerView recyclerView;
     private Bundle data;
+    private Toolbar toolbar;
+
 
 
     @BindView(R.id.fp_btn)
@@ -72,6 +63,7 @@ public class Compliants extends BaseActivity{
 
 //    @BindView(R.id.text)
     TextView textView;
+    private ArrayList<AllComplains> allComplainsFilter = new ArrayList();
 
     public Compliants() {
         // Required empty public constructor
@@ -90,9 +82,13 @@ public class Compliants extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_compliants);
         recyclerView = findViewById(R.id.recyclerviewForComplains);
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         recyclerView.setLayoutManager(linearLayoutManager);
 
         data = getIntent().getExtras();
@@ -123,7 +119,7 @@ public class Compliants extends BaseActivity{
 
     private void fetchAllComplains() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -158,7 +154,7 @@ public class Compliants extends BaseActivity{
                     }
                 }
                 }
-                setupAdapter();
+                setupAdapter((ArrayList<AllComplains>) allComplains);
             }
 
             @Override
@@ -169,7 +165,7 @@ public class Compliants extends BaseActivity{
 
     }
 
-    private void setupAdapter() {
+    private void setupAdapter(ArrayList<AllComplains> allComplains) {
         ConsumerComplaints allComplainsAdapter  = new ConsumerComplaints(allComplains, this, name);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
@@ -234,6 +230,53 @@ public class Compliants extends BaseActivity{
 
             }
         });
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem menuItem = menu.findItem(R.id.search);
+
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
+                allComplainsFilter.clear();
+                for (int i = 0; i < allComplains.size(); i++) {
+                    if(allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
+                            || allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
+                            || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
+                            || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
+                    ){
+                        allComplainsFilter.add(allComplains.get(i));
+                    }
+                }
+                setupAdapter(allComplainsFilter);
+                return false;
+            }
+        });
+
+
+        return super.onCreateOptionsMenu(menu);
     }
 
 
