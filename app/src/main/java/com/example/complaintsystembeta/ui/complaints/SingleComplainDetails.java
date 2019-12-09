@@ -69,7 +69,7 @@ public class SingleComplainDetails extends BaseActivity {
     private static final String TAG = "SingleComplainDetails";
     private Unbinder unbinder;
     private Bundle data;
-    private String complainId, user, userName = "";
+    private String complainId, user, userName = "", employeeId;
     private MediaPlayer   player = null;
 //    private String urlImages = "http://192.168.43.31:3000/uploads/";
     private ArrayList<String> arrayListStatus = new ArrayList<>();
@@ -151,17 +151,22 @@ public class SingleComplainDetails extends BaseActivity {
         data = getIntent().getExtras();
         complainId = data.getString(getString(R.string.complains_id));
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
+        employeeId = data.getString(Constants.EMPLOYEE_ID);
+        Log.d(TAG, "onCreate: usernAME" + user);
 //        desId = data.getString(Constants.DESIGNATION_ID);
         userName = data.getString(Constants.DESIGNATION_ID);
 
 //        Log.d(TAG, "onCreate: " + desId);
-        Log.d(TAG, "onCreate: " + userName);
+        Log.d(TAG, "onCreate: userName" + userName);
+        Log.d(TAG, "onCreate: complainId" + complainId);
 
 
         if(userName == null){
             userName ="";
         }
-
+        if(employeeId == null){
+            employeeId = "";
+        }
 
         getSingleComplainDetail(complainId);
         arrayListStatus.add(Constants.COMPLAIN_IN_PROCESS);
@@ -171,17 +176,19 @@ public class SingleComplainDetails extends BaseActivity {
 
         if(userName.equals(Constants.ADMIN)){
 //            forwardsLayout.setVisibility(View.VISIBLE);
-            }else {
-            confirmStatusLayout.setVisibility(View.GONE);
-        }
+            Log.d(TAG, "onCreate: COMPLAIN ID ADMIN" + complainId);
 
-
-        if (complainId != null && (user.equals("admin"))) {
-//            forwardsLayout.setVisibility(View.VISIBLE);
             getFilterSingleComplainForwardingDetail(complainId);
-        }else if(complainId != null){
+            }else {
+            Log.d(TAG, "onCreate: COMPLAIN IS NOT ADMIN" + complainId);
+            confirmStatusLayout.setVisibility(View.GONE);
             getSingleComplainForwardingDetail(complainId);
+
         }
+
+
+
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
 
@@ -459,7 +466,7 @@ public class SingleComplainDetails extends BaseActivity {
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
-        Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwarding(complainId, userName);
+        Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwarding(complainId, employeeId);
 
         listCall.enqueue(new Callback<List<ReportForward>>() {
             @Override

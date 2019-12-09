@@ -2,9 +2,10 @@ package com.example.complaintsystembeta.ui.complaints;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,6 +21,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
@@ -29,7 +31,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,13 +39,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.complaintsystembeta.BaseActivity;
+import com.example.complaintsystembeta.BuildConfig;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.MainActivity;
-import com.example.complaintsystembeta.ui.login.LoginActivity;
-import com.google.android.material.textfield.TextInputEditText;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueCompose;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
@@ -52,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
@@ -68,6 +70,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static java.security.AccessController.getContext;
 
 public class ComposeComplaints extends BaseActivity {
     private static final String TAG = "ComposeComplaints";
@@ -93,6 +97,7 @@ public class ComposeComplaints extends BaseActivity {
     private ImageButton play = null;
     private MediaPlayer   player = null;
     TextView textView;
+    private Uri cameraImage = null;
     private Bundle data;
     private String account, name;
     Toolbar toolbar;
@@ -147,10 +152,12 @@ public class ComposeComplaints extends BaseActivity {
         setContentView(R.layout.activity_compose_complaints);
         unbinder = ButterKnife.bind(this);
 //        setSupportActionBar(toolbar);
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             isStoragePermissionGranted();
-        }
+            isImagePermissionGranted();
+        }*/
+
         data = getIntent().getExtras();
         account = data.getString(getString(R.string.account_number));
         name = data.getString(getString(R.string.userName));
@@ -162,6 +169,22 @@ public class ComposeComplaints extends BaseActivity {
 
     }
 
+    /*private void isImagePermissionGranted() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        Constants.MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+
+        }
+    }
+*/
     @OnClick(R.id.audioToText)
     public void audioToText(){
         audioToText.startAnimation(buttonClick);
@@ -192,10 +215,33 @@ public class ComposeComplaints extends BaseActivity {
 
     }
 
+    public void gallery(){
+        functionForImages();
+
+    }
+    public void camera() {
+        functionForCamera();
+    }
+
+    private void functionForCamera() {
+        long secs = (new Date().getTime())/1000;
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File photo = new File(Environment.getExternalStorageDirectory(),  String.valueOf(secs) + "Pic.jpg");
+        cameraImage = FileProvider.getUriForFile(this, "com.example.complaintsystembeta.fileprovider", photo);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                    cameraImage);
+            cameraImage = Uri.fromFile(photo);
+            startActivityForResult(intent, Constants.CAMERA);
+
+    }
+
     @OnClick(R.id.attachement)
     public void attachement(){
         attachement.startAnimation(buttonClick);
-        functionForImages();
+//        functionForImages();
+        BottomSheetDialogueCompose bottomSheetDialogueCompose = new BottomSheetDialogueCompose();
+        bottomSheetDialogueCompose.show(getSupportFragmentManager(), Constants.TAG_DIALOGUE_BOTTOM_SHEET);
+
     }
     @OnClick(R.id.audio)
     public void audioAttachment(){
@@ -229,6 +275,14 @@ public class ComposeComplaints extends BaseActivity {
             case REQUEST_RECORD_AUDIO_PERMISSION:
                 permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
+            case Constants.MY_PERMISSIONS_REQUEST_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();}
+
         }
         if (!permissionToRecordAccepted ) finish();
 
@@ -282,7 +336,7 @@ public class ComposeComplaints extends BaseActivity {
         recorder.setOutputFile(fileName);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        try {
+        try {  
             recorder.prepare();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
@@ -478,6 +532,7 @@ public class ComposeComplaints extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: " + cameraImage);
         switch (requestCode){
             case Constants.RESULT_LOAD_FOR_AUDIO_TO_TEXT:
                 if(resultCode == RESULT_OK && data != null){
@@ -489,6 +544,14 @@ public class ComposeComplaints extends BaseActivity {
             case Constants.RESULT_LOAD_FOR_IMAGES_FOR_PROVE:
                 if(resultCode == RESULT_OK && data != null){
                     uriArrayList.add(data.getData());
+                    setupOnImagesLinearLayout();
+                }
+                break;
+            case Constants.CAMERA:
+                Log.d(TAG, "onActivityResult: Executed");
+                if(resultCode == RESULT_OK){
+                    Log.d(TAG, "onActivityResult: " + cameraImage);
+                    uriArrayList.add(cameraImage);
                     setupOnImagesLinearLayout();
                 }
                 break;

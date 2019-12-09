@@ -95,10 +95,10 @@ public class AutoCompleteAdapter extends ArrayAdapter<Employee> {
                 for(Employee emplyee : allEmployee){
                     Log.d(TAG, "performFiltering: " + emplyee.getFull_name());
                     Log.d(TAG, "performFiltering: " + filterPattern);
-                    if(emplyee.getFull_name().toLowerCase().contains(filterPattern)||
-                            emplyee.getDepartment_name().toLowerCase().contains(filterPattern)||
+                    if(emplyee.getFull_name().toLowerCase().contains(filterPattern)
+                            /*emplyee.getDepartment_name().toLowerCase().contains(filterPattern)||
                             emplyee.getEmployee_id().toLowerCase().contains(filterPattern)||
-                            emplyee.getDes_title().toLowerCase().contains(filterPattern)
+                            emplyee.getDes_title().toLowerCase().contains(filterPattern)*/
                     ){
                         suggestions.add(emplyee);
                     }
@@ -112,7 +112,11 @@ public class AutoCompleteAdapter extends ArrayAdapter<Employee> {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             clear();
-            addAll((List) results.values);
+            try {
+                addAll((List) results.values);
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
             notifyDataSetChanged();
         }
 

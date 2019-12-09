@@ -130,7 +130,7 @@ public class Registration extends BaseActivity {
             unbinder = ButterKnife.bind(this);
         }
         dao = new PermanentLoginRepository(getApplication());
-        isStoragePermissionGranted();
+//        isStoragePermissionGranted();
         isGenderListNull();
         testData();
 

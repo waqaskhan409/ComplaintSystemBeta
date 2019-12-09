@@ -1,7 +1,11 @@
 package com.example.complaintsystembeta.ui.login;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,15 +15,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
+import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.MainActivity;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueForgetPassword;
 import com.example.complaintsystembeta.ui.registration.Registration;
 
 import java.util.List;
@@ -43,7 +53,13 @@ public class LoginActivity extends BaseActivity {
     String cnicS, passwordS;
     private PermanentLoginRepository dao;
     boolean checkCon = false;
+    // Requesting permission to RECORD_AUDIO
+    private boolean permissionToRecordAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
 
+    public static final int RequestPermissionCode = 1;
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     @BindView(R.id.username)
     EditText userName;
@@ -71,6 +87,12 @@ public class LoginActivity extends BaseActivity {
 
         dao = new PermanentLoginRepository(getApplication());
 
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            isStoragePermissionGranted();
+            isImagePermissionGranted();
+        }
+
         userName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,11 +118,53 @@ public class LoginActivity extends BaseActivity {
 
 
     }
+    private void isImagePermissionGranted() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        Constants.MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public boolean isStoragePermissionGranted () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            return true;
+        }
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
         getDataFromSqlite();
+    }
+
+    @OnClick(R.id.forgetPassword)
+    public void forgetPassword(){
+        BottomSheetDialogueForgetPassword forgetPassword = new BottomSheetDialogueForgetPassword();
+        forgetPassword.show(getSupportFragmentManager(), Constants.TAG_DIALOGUE_BOTTOM_SHEET);
+
+
     }
 
     @OnClick(R.id.registration)
@@ -166,10 +230,44 @@ public class LoginActivity extends BaseActivity {
         }
 
     }
+    public void getDataFromServer(String email) {
+        showProgressDialogue("Email sending", "Please wait...");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<TestClas> call = service.forget(email);
+
+        call.enqueue(new Callback<TestClas>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onResponse(Call<TestClas> call, Response<TestClas> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(LoginActivity.this, "Mail send", Toast.LENGTH_SHORT).show();
+                    dissmissProgressDialogue();
+                }else {
+                    Log.d(TAG, "onResponse: Failed!");
+                    showSnackBar("onFailure: SerFailed!" , "");
+                    dissmissProgressDialogue();
+                }
+
+            }
+
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onFailure(Call<TestClas> call, Throwable t) {
+                Log.d(TAG, "onFailure: Failed with message"+ t.getMessage());
+                showSnackBar("onFailure: Failed with message"+ t.getMessage() , "");
+                dissmissProgressDialogue();
+            }
+        });
+    }
     private void getDataThroughRetrofit2() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -180,7 +278,9 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(Call<List<SignUpData>> call, Response<List<SignUpData>> response) {
                 if(!response.isSuccessful()){
+                    dissmissProgressDialogue();
                     Log.d(TAG, "onResponseUnsuccefull: " + response.message());
+                    showSnackBar("your request to the server is failed", "");
                     return;
                 }
                 Log.d(TAG, "onResponse: " + response.message());
@@ -193,20 +293,26 @@ public class LoginActivity extends BaseActivity {
                         dissmissProgressDialogue();
                         if(getDataFromSqlite()){
                             dao.insert(new PermanentLogin(l.getUser_cnic(), l.getAccount_number(), true, l.getUser_name(), false));
+                            getDataFromSqlite();
                         }
+                        break;
                     }
                 }
+                dissmissProgressDialogue();
+                showSnackBar("You need to register your self", "");
+
             }
 
             @Override
             public void onFailure(Call<List<SignUpData>> call, Throwable t) {
+                dissmissProgressDialogue();
                 Log.d(TAG, "onFailure: " + t.getMessage());
+                showSnackBar("Connection Failed: "+ t.getMessage() , "");
             }
         });
     }
 
     private Boolean getDataFromSqlite() {
-
 
         permanentLoginRepository = new PermanentLoginRepository(getApplication());
         list = permanentLoginRepository.getIsLoggedIn();

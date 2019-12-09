@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/round_dailogue"
+    android:layout_margin="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply Filter according to your needs"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"
+
+        android:textColor="@color/black"
+        ></TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:background="@drawable/layout_bg"
+        android:weightSum="8"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Select Department"
+            android:textSize="20sp"
+            android:layout_weight="5"
+            ></TextView>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:id="@+id/spinnerAdvance"
+            ></Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="15dp"
+        android:background="@drawable/layout_bg"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Date to:"
+            android:textSize="20sp"
+            android:layout_weight="3"
+            ></TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:padding="10dp"
+            android:background="@drawable/layout_bg"
+            android:id="@+id/dateTo"
+            android:hint="click me"
+            ></EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="15dp"
+        android:background="@drawable/layout_bg"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Date from:"
+            android:textSize="20sp"
+            android:layout_weight="2"
+            ></TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:padding="10dp"
+            android:id="@+id/dateFrom"
+            android:background="@drawable/layout_bg"
+            android:hint="click me"
+            ></EditText>
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:id="@+id/thisMonth"
+        android:background="@drawable/layout_bg"
+        android:text="This month statistics"
+        android:layout_height="wrap_content">
+
+    </Button>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Cancel"
+            android:id="@+id/cancel"
+            android:background="@drawable/layout_bg"
+            android:layout_weight="4"
+            ></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:layout_marginLeft="10dp"
+            android:text="Submit"
+            android:id="@+id/submit"
+            android:background="@drawable/layout_bg"
+            ></Button>
+    </LinearLayout>
+
+</LinearLayout>

@@ -40,10 +40,18 @@ import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Employee;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueCompose;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueFilterSearch;
 import com.google.android.gms.vision.text.Line;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,12 +70,14 @@ public class ManagingComplaints extends AppCompatActivity {
     private List<AllComplains> allComplains = new ArrayList<>();
     private List<Employee> allEmployee = new ArrayList<>();
     private List<AllComplains> allComplainsFilter = new ArrayList<>();
+    private List<AllComplains> allComplainsFilterMore = new ArrayList<>();
     private RecyclerView recyclerView;
     private String complainData = "", desId, userName;
     private Bundle data;
     private DatePickerDialog.OnDateSetListener mDateListenerTo, mDateListenerFrom;
 
     private Unbinder unbinder;
+    private SearchView searchView;
 
 
 
@@ -85,6 +95,7 @@ public class ManagingComplaints extends AppCompatActivity {
         complainData = data.getString(getString(R.string.complain_redirect));
         userName = data.getString(getString(R.string.permanentlogin_name));
         desId = data.getString(Constants.PREVELDGES_ON_FORWARD);
+        Log.d(TAG, "onCreate: Designation id" + desId);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -264,7 +275,7 @@ public class ManagingComplaints extends AppCompatActivity {
 
     private void fetchForwardComplains() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -481,11 +492,61 @@ public class ManagingComplaints extends AppCompatActivity {
         }
 
         if(item.getItemId() == R.id.advanceSearch){
-            showDialog(this, "");
+//            showDialog(this, "");
+            BottomSheetDialogueFilterSearch bottomSheetDialogueFilterSearch = new BottomSheetDialogueFilterSearch();
+            bottomSheetDialogueFilterSearch.show(getSupportFragmentManager(), Constants.TAG_DIALOGUE_BOTTOM_SHEET);
+
+        }else if(item.getItemId() == R.id.today){
+            filterListToday();
+        }else if(item.getItemId() == R.id.weeklyComplains){
+            filterListWeekly();
+
+        }else if(item.getItemId() == R.id.monthlyComlains){
+            filterListMonthly();
+
         }
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void filterListMonthly() {
+        allComplainsFilter.clear();
+
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        Log.d(TAG, "filterListMonthly: " + currentMonth);
+        searchView.setQuery("-"+String.valueOf(currentMonth)+"-", false);
+//        searchViewMethod("-"+String.valueOf(currentMonth)+"-");
+    }
+
+    private void filterListWeekly() {
+        Calendar calendar = Calendar.getInstance();
+//        int currentDay = calendar.DAY_OF_WEEK;
+        //Logic not clear
+//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        String input = "20160115";
+        String format = "yyyyMMdd";
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int week = cal.get(Calendar.WEEK_OF_YEAR);
+
+//        System.out.println("Input " + input + " is in week " + week);
+//        final DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
+//        final DayOfWeek lastDayOfWeek = DayOfWeek.of(((firstDayOfWeek.getValue() + 5) % DayOfWeek.values().length) + 1);
+
+//            return week;
+        //        Log.d(TAG, "filterListWeekly: " + dayOfWeek);
+    }
+
+    private void filterListToday() {
+        allComplainsFilter.clear();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String dateString = dateFormat.format(date);
+        Log.d(TAG, "filterListToday: " + dateString);
+      searchViewMethod(dateString);
     }
 
     @Override
@@ -495,7 +556,7 @@ public class ManagingComplaints extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.search);
 
 
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -506,17 +567,7 @@ public class ManagingComplaints extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 newText = newText.toLowerCase();
-                allComplainsFilter.clear();
-                for (int i = 0; i < allComplains.size(); i++) {
-                    if(allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
-                            || allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
-                            || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
-                            || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
-                    ){
-                        allComplainsFilter.add(allComplains.get(i));
-                    }
-                }
-                setupAdapter(allComplainsFilter);
+                searchViewMethod(newText);
                 return false;
             }
         });
@@ -525,7 +576,22 @@ public class ManagingComplaints extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void getDataFromServer(String dateTo, String dateFrom, String status) {
+    private void searchViewMethod(String newText) {
+        allComplainsFilter.clear();
+        for (int i = 0; i < allComplains.size(); i++) {
+            if(allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
+                    || allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
+                    || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
+                    || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
+            ){
+                allComplainsFilter.add(allComplains.get(i));
+            }
+        }
+        setupAdapter(allComplainsFilter);
+    }
+
+
+    public void getDataFromServer(String dateTo, String dateFrom, String status) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())

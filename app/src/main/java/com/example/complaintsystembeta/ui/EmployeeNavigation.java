@@ -76,7 +76,7 @@ public class EmployeeNavigation extends BaseActivity
 
 
         data = getIntent().getExtras();
-//        cnic = data.getString(getString(R.string.permanentlogin_cnic));
+        cnic = data.getString(getString(R.string.permanentlogin_cnic));
         userName = data.getString(getString(R.string.permanentlogin_name));
         desId = data.getString(Constants.PREVELDGES_ON_FORWARD);
         employeeId = data.getString(getString(R.string.permanentlogin_id));
@@ -84,7 +84,7 @@ public class EmployeeNavigation extends BaseActivity
         name.setText(userName);
 //        email.setText(accountNumber);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",desId,userName,employeeId)).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",employeeId,userName,employeeId)).commit();
 
 
 
@@ -137,9 +137,9 @@ public class EmployeeNavigation extends BaseActivity
         int id = item.getItemId();
         if (id == R.id.complaints) {
 //            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",desId,userName,employeeId)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",employeeId,userName,employeeId)).commit();
         } else if (id == R.id.profile) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile(userName,cnic,employeeId)).commit();
         }   else if (id == R.id.logout) {
 //            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
 //              getDataFromSqlite();

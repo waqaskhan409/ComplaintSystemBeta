@@ -1,11 +1,13 @@
 package com.example.complaintsystembeta.ui.complaints;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueAnalyticsFilterSearch;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -129,14 +132,19 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         allDept.add(Constants.TECHNICAL);
         allDept.add(Constants.SANITATION);
         allDept.add(Constants.ENGINA);
-
+        allDept.add(Constants.FILTERS_ANALYTICS);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allDept);
         spinnerDept.setAdapter(adapter);
 
         spinnerDept.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                fetchComplains(spinnerDept.getSelectedItem().toString());
+                if(spinnerDept.getSelectedItem().toString().equals(Constants.FILTERS_ANALYTICS)){
+                    BottomSheetDialogueAnalyticsFilterSearch filterSearch = new BottomSheetDialogueAnalyticsFilterSearch();
+                    filterSearch.show(getSupportFragmentManager(), "Filters");
+                }else {
+                    fetchComplains(spinnerDept.getSelectedItem().toString());
+                }
             }
 
             @Override
@@ -165,8 +173,49 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
                 onBackPressed();
                 return true;
         }
+
+        if(item.getItemId() == R.id.advanceSearch){
+            BottomSheetDialogueAnalyticsFilterSearch filterSearch = new BottomSheetDialogueAnalyticsFilterSearch();
+            filterSearch.show(getSupportFragmentManager(), "Filters");
+        }
+
+
+
         return super.onOptionsItemSelected(item);
 
+    }
+
+
+    public void getDataFromServer(String dateTo, String dateFrom, String status) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<AllComplains>> call = service.getSortedComplainsAgainstDateAndStatus(dateTo, dateFrom, status);
+
+        call.enqueue(new Callback<List<AllComplains>>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
+//                allComplains.clear();
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Failed!");
+                    return;
+                }
+                Log.d(TAG, "onResponse: "+ response.body());
+                List<AllComplains>  list = response.body();
+//                allComplains = list;
+//                setupAdapter(allComplains);
+            }
+
+            @Override
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
     }
     private void fetchComplains(String departments) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -214,6 +263,51 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
 
     }
 
+    public void fetchComplains(String departments, String dateTo, String dateFrom) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<AllComplains>> call = service.getTotalCoplainsByDepartmentSortByTime(departments, dateTo, dateFrom);
+
+        call.enqueue(new Callback<List<AllComplains>>() {
+            @Override
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Failed!");
+                    return;
+                }
+                Log.d(TAG, "onResponse: "+ response.body());
+                List<AllComplains>  list = response.body();
+                valuesForNew.clear();
+                valuesForPending.clear();
+                valuesForResolved.clear();
+                for(AllComplains all: list){
+                    if(all.getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
+                        valuesForResolved.add(all);
+                    }else if(all.getComplain_status().equals(Constants.COMPLAINS_NEW)) {
+                        valuesForNew.add(all);
+                    }else {
+                        valuesForPending.add(all);
+                    }
+                }
+                Log.d(TAG, "onResponse: sizeResolved" + valuesForResolved.size());
+                Log.d(TAG, "onResponse: sizePending" + valuesForPending.size());
+                Log.d(TAG, "onResponse: sizeNew" + valuesForNew.size());
+                getArrayListForGraphInteger();
+
+            }
+
+            @Override
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
+
+    }
     private void getArrayListForGraphInteger() {
         valuesForGraphs.clear();
         valuesForGraphs.add(valuesForResolved.size());
@@ -232,6 +326,18 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
                 valuesForResolved
                 );
         viewPagerDept.setAdapter(adapter);
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_filter_analytics, menu);
+//        MenuItem menuItem = menu.findItem(R.id.search);
+
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

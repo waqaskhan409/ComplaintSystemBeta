@@ -51,7 +51,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         holder.complainsDate.setText(allComplains.get(position).getCreated_us());
         holder.complainsStatus.setText(allComplains.get(position).getComplain_status());
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
-        holder.complainerName.setText(name);
+        holder.complainerName.setText(allComplains.get(position).getAccount_number());
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
@@ -86,13 +86,14 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(holder.complainsStatus.getText().equals(Constants.COMPLAINS_RESOLVED)){
+//                if(holder.complainsStatus.getText().equals(Constants.COMPLAINS_RESOLVED)){
                     Intent intent = new Intent(context, ComplainStatistics.class);
                     intent.putExtra(holder.itemView.getContext().getString(R.string.complains_id), allComplains.get(position).getComplain_id());
                     intent.putExtra(Constants.PREVELDGES_ON_FORWARD, "only view");
+                    intent.putExtra(Constants.STATUS_COMPLAIN,  holder.complainsStatus.getText().toString());
                     context.startActivity(intent);
 
-                }
+//                }
                 return false;
             }
         });

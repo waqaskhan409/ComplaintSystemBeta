@@ -1,12 +1,14 @@
 package com.example.complaintsystembeta.ui.complaints;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.complaintsystembeta.R;
@@ -26,6 +28,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
@@ -108,25 +111,43 @@ public class GraphSwipe extends PagerAdapter {
     public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
         return view == o;
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void settingBarGraphForDept() {
         Log.d(TAG, "settingGraph: " + arrayListForGraph);
-        for (int i = 0; i < 10; i++) {
-            list.add(String.valueOf(i));
-        }
-        for (int i = 0; i < valuesForGraphs.size(); i++) {
-            barEntries.add(new BarEntry(i, Float.parseFloat(String.valueOf(valuesForGraphs.get(i))), list.get(i)));
-        }
+//        for (int i = 0; i < 10; i++) {
+//            list.add(String.valueOf(i));
+//        }
+//        for (int i = 0; i < valuesForGraphs.size(); i++) {
+//            barEntries.add(new BarEntry(i, Float.parseFloat(String.valueOf(valuesForGraphs.get(i))), list.get(i)));
+//        }
 
-        new BarEntry(0f, 0);
+        List<BarEntry> value0  = new ArrayList<>();
+        List<BarEntry> value1  = new ArrayList<>();
+        List<BarEntry> value2  = new ArrayList<>();
+        ArrayList<String> label  = new ArrayList<>();
 
-        BarDataSet dataSetRevenue = new BarDataSet(barEntries, "Complains");
-        dataSetRevenue.setColors(ColorTemplate.COLORFUL_COLORS);
+        value0.add(new BarEntry(0,valuesForGraphs.get(0), "Resolved"));
+        value1.add(new BarEntry(1,valuesForGraphs.get(1), "Pending"));
+        value2.add(new BarEntry(2,valuesForGraphs.get(2), "New"));
 
-//        BarDataSet dataSetMonth = new BarDataSet(months, "date");
+        BarDataSet dataSetRevenue0 = new BarDataSet(value0, "Resolved");
+        BarDataSet dataSetRevenue1 = new BarDataSet(value1, "Pending");
+        BarDataSet dataSetRevenue2 = new BarDataSet(value2, "New");
+        dataSetRevenue0.setColor(mContext.getColor(R.color.resolved));
+        dataSetRevenue1.setColor(mContext.getColor(R.color.pending));
+        dataSetRevenue2.setColor(mContext.getColor(R.color.new_complains));
+
+
+
+
         mBarChart.setTouchEnabled(true);
         mBarChart.setScaleEnabled(true);
         mBarChart.setDragEnabled(true);
-        BarData data = new BarData(dataSetRevenue);
+        List<IBarDataSet> bars = new ArrayList<>();
+        bars.add(dataSetRevenue0);
+        bars.add(dataSetRevenue1);
+        bars.add(dataSetRevenue2);
+        BarData data = new BarData(bars);
         mBarChart.setData(data);
         mBarChart.setFitBars(true);
 
@@ -146,7 +167,8 @@ public class GraphSwipe extends PagerAdapter {
         PieDataSet pieDataSet = new PieDataSet(value, "Complains");
         PieData pieData = new PieData(pieDataSet);
 
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setColors(new int[]{R.color.resolved, R.color.pending, R.color.new_complains}, mContext);
+
 
         pieChart.setData(pieData);
 

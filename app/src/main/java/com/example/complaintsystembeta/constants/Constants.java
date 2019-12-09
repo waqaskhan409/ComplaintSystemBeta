@@ -19,6 +19,7 @@ public class Constants {
     public static final String TECHNICAL = "Technical";
     public static final String SANITATION = "Sanitation";
     public static final String ENGINA = "Engina";
+    public static final String FILTERS_ANALYTICS = "Apply filters";
     public static final String URL_IMAGES = "http://192.168.43.31:3000/uploads/";
 
 
@@ -46,4 +47,9 @@ public class Constants {
     public static final String COMPLAIN_IN_PROCESS = "IN PROCESS";
     public static final String FORWARD_FROM_NAME_ID_DES = "name with id";
     public static final String COMPLAINS_IN_PROCESS = "IN PROCESS";
+    public static final String EMPLOYEE_ID = "employee_id";
+    public static final String TAG_DIALOGUE_BOTTOM_SHEET = "BottomSheetDailague";
+    public static final int CAMERA = 10001;
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 10002;
+    public static final String STATUS_COMPLAIN = "statusComplain";
 }

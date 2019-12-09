@@ -8,8 +8,26 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"></item>
     <item
+        android:id="@+id/today"
+        android:title="Today Complains"
+        android:icon="@android:drawable/ic_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="never"></item>
+    <item
+        android:id="@+id/weeklyComplains"
+        android:title="Weekly Complains"
+        android:icon="@android:drawable/ic_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="never"></item>
+    <item
+        android:id="@+id/monthlyComlains"
+        android:title="Monthly Complains"
+        android:icon="@android:drawable/ic_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="never"></item>
+    <item
         android:id="@+id/advanceSearch"
-        android:title="search"
+        android:title="Apply Filters"
         android:icon="@android:drawable/ic_menu_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="never"></item>

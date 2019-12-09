@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.ForwardAdapter;
+import com.example.complaintsystembeta.adapter.TimelineAdapter;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
@@ -37,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ComplainStatistics extends BaseActivity {
     private static final String TAG = "ComplainStatistics";
     private Bundle data;
-    private String complainsId, user, userName = "";
+    private String complainsId, user, userName = "", status;
     private List<ReportForward> listForwardBy, listForwardTo;
     private Unbinder unbinder;
 
@@ -89,6 +90,8 @@ public class ComplainStatistics extends BaseActivity {
         data = getIntent().getExtras();
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
         complainsId = data.getString(getString(R.string.complains_id));
+        status = data.getString(Constants.STATUS_COMPLAIN);
+        Log.d(TAG, "onStart: " + status);
         getSingleComplainForwardingDetail(complainsId);
     }
 
@@ -163,9 +166,9 @@ public class ComplainStatistics extends BaseActivity {
     }
 
     private void setupAdapter(List<ReportForward> list, List<Employee> listEmployees) {
-        ForwardAdapter allComplainsAdapter  = new ForwardAdapter(list, this, userName, user, listEmployees);
+        TimelineAdapter timelineAdapter  = new TimelineAdapter(list, this, userName, user, listEmployees, status);
         treeRecycler.setHasFixedSize(true);
-        treeRecycler.setAdapter(allComplainsAdapter);
+        treeRecycler.setAdapter(timelineAdapter);
     }
 
     private void getSingleComplainForwardingDetail(String complainId) {

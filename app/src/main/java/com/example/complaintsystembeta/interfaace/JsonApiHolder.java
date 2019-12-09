@@ -48,9 +48,23 @@ public interface JsonApiHolder {
                                                                     @Field("status") String status);
 
 
+
+    @POST("get_total_coplains_by_department_sort_by_time")
+    @FormUrlEncoded
+    Call<List<AllComplains>> getTotalCoplainsByDepartmentSortByTime(@Field("department_name") String deptName,
+                                                                    @Field("date_to") String to,
+                                                                    @Field("date_from") String from);
+
+
     @POST("get_total_coplains_by_department")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalCoplainsByDepartment(@Field("department_name") String deptName);
+
+    @POST("get_single_employee_for_profile")
+    @FormUrlEncoded
+    Call<Employee> getSingleEmployeeForProfile(@Field("employee_id") String employeeId);
+
+
 
 
     @POST("get_single_employee")
@@ -60,6 +74,10 @@ public interface JsonApiHolder {
     @POST("update_is_seen")
     @FormUrlEncoded
     Call<TestClas> updateIsSeen(@Field("reporting_id") String reportingId);
+
+    @POST("forget_password")
+    @FormUrlEncoded
+    Call<TestClas> forget(@Field("email") String email);
 
 
     @POST("update_is_acknowledged")

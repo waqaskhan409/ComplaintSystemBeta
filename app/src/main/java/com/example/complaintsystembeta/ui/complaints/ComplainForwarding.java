@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,6 +25,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
@@ -61,6 +63,8 @@ import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueCompose;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueForward;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -71,6 +75,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -184,6 +189,7 @@ public class ComplainForwarding extends BaseActivity {
     @BindView(R.id.seekBarLayout)
     LinearLayout layout;
     private ArrayList<String> arrayListStatus = new ArrayList<>();
+    private Uri cameraImage;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -233,6 +239,28 @@ public class ComplainForwarding extends BaseActivity {
 
 
     }
+
+
+    public void gallery(){
+        functionForImages();
+
+    }
+    public void camera() {
+        functionForCamera();
+    }
+    private void functionForCamera() {
+        long secs = (new Date().getTime())/1000;
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo = new File(Environment.getExternalStorageDirectory(),  String.valueOf(secs) + "Pic.jpg");
+        cameraImage = FileProvider.getUriForFile(this, "com.example.complaintsystembeta.fileprovider", photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                cameraImage);
+        cameraImage = Uri.fromFile(photo);
+        startActivityForResult(intent, Constants.CAMERA);
+
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -331,7 +359,9 @@ public class ComplainForwarding extends BaseActivity {
     @OnClick(R.id.attachement)
     public void attachement(){
         attachement.startAnimation(buttonClick);
-        functionForImages();
+        BottomSheetDialogueForward bottomSheetDialogueForward = new BottomSheetDialogueForward();
+        bottomSheetDialogueForward.show(getSupportFragmentManager(), Constants.TAG_DIALOGUE_BOTTOM_SHEET);
+
     }
     @OnClick(R.id.audio)
     public void audioAttachment(){
@@ -714,6 +744,15 @@ public class ComplainForwarding extends BaseActivity {
             case Constants.RESULT_LOAD_FOR_IMAGES_FOR_PROVE:
                 if(resultCode == RESULT_OK && data != null){
                     uriArrayList.add(data.getData());
+                    setupOnImagesLinearLayout();
+                }
+                break;
+
+            case Constants.CAMERA:
+                Log.d(TAG, "onActivityResult: Executed");
+                if(resultCode == RESULT_OK){
+                    Log.d(TAG, "onActivityResult: " + cameraImage);
+                    uriArrayList.add(cameraImage);
                     setupOnImagesLinearLayout();
                 }
                 break;

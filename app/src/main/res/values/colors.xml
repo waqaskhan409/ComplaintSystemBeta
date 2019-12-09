@@ -8,4 +8,11 @@
     <color name="red">#FF0000</color>
     <color name="green">#008000</color>
     <color name="blue">#0000ff</color>
+    <color name="all">#6666ff</color>
+    <color name="resolved">#009900</color>
+    <color name="pending">#FFA500</color>
+    <color name="new_complains">#ff4c4c</color>
+    <color name="forward">#7c7f89</color>
+    <color name="analytics">#d82f2f</color>
+
 </resources>

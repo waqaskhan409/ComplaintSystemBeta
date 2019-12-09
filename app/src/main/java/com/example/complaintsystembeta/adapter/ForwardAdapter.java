@@ -208,11 +208,11 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
             forwardFrom = itemView.findViewById(R.id.forwardBy);
             imageView = itemView.findViewById(R.id.imageForSeen);
 
-            imageViewCircle1 = itemView.findViewById(R.id.circle1);
-            imageViewCircle2 = itemView.findViewById(R.id.circle2);
-            textView1 = itemView.findViewById(R.id.textView3);
-            textView2 = itemView.findViewById(R.id.textView2);
-            textView3 = itemView.findViewById(R.id.textView3);
+//            imageViewCircle1 = itemView.findViewById(R.id.circle1);
+//            imageViewCircle2 = itemView.findViewById(R.id.circle2);
+//            textView1 = itemView.findViewById(R.id.textView3);
+//            textView2 = itemView.findViewById(R.id.textView2);
+//            textView3 = itemView.findViewById(R.id.textView3);
 
 
         }

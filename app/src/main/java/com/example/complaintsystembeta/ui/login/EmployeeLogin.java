@@ -148,7 +148,9 @@ public class EmployeeLogin extends BaseActivity {
             @Override
             public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
                 if(!response.isSuccessful()){
+                    dissmissProgressDialogue();
                     Log.d(TAG, "onResponseUnsuccefull: " + response.message());
+                    showSnackBar("your request to the server is failed", "");
                     return;
                 }
                 Log.d(TAG, "onResponse: " + response.message());
@@ -172,6 +174,9 @@ public class EmployeeLogin extends BaseActivity {
             @Override
             public void onFailure(Call<List<Employee>> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
+                dissmissProgressDialogue();
+                showSnackBar("Connection Failed: "+ t.getMessage() , "");
+
             }
         });
     }

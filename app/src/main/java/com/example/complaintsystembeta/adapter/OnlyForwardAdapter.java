@@ -53,6 +53,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
 //        holder.complainerName.setText(allC);
         Log.d(TAG, "onBindViewHolder: f" + allComplains.get(position).getComplain_id());
+        Log.d(TAG, "onBindViewHolder: f" + employeId);
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
@@ -74,7 +75,8 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
         }
 
 
-        Log.d(TAG, "onBindViewHolder: userName:" + userName);
+        Log.d(TAG, "onBindViewHolder: userName:" + allComplains.get(position).getComplain_id());
+//        Log.d(TAG, "onBindViewHolder: emplyee Id:" + allComplains.get(position).g);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +86,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
                 intent.putExtra(Constants.PREVELDGES_ON_FORWARD, "admin");
                 intent.putExtra(Constants.ONLY_FORWARDED_COMPLAIN_SHOW, "admin");
                 intent.putExtra(Constants.DESIGNATION_ID, userName);
+                intent.putExtra(Constants.EMPLOYEE_ID, employeId);
                 intent.putExtra(context.getString(R.string.permanentlogin_name), employeId);
                 holder.itemView.getContext().startActivity(intent);
             }
