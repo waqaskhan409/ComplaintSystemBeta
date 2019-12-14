@@ -217,6 +217,8 @@ public class SingleComplainDetails extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkConnection();
+
 
     }
 

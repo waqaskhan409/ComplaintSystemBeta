@@ -27,10 +27,10 @@
     <string name="forget_password">forget password</string>
     <string name="is_wasa_employee">Wasa Employee</string>
     <string name="cnin">CNIC</string>
-    <string name="userName">User name</string>
+    <string name="userName">Full Name</string>
     <string name="prompt_confirm_password">Confirm password</string>
-    <string name="front_cnic_image">Front side image of CNIC(Click on the below icon)</string>
-    <string name="black_cnic_image">Back side image of CNIC (Click on the below icon)</string>
+    <string name="front_cnic_image">Front side image of CNIC(Click on the below icon) for verification</string>
+    <string name="black_cnic_image">Back side image of CNIC (Click on the below icon) for verification</string>
     <string name="wasa_bill_image">Wasa bill image (Click on the below icon)</string>
     <string name="submit">Submit</string>
     <string name="update">submit update</string>
@@ -95,4 +95,11 @@
     <string name="attatchement_type">Choose Attachement type</string>
     <string name="camera">camera</string>
     <string name="gallery">gallery</string>
+    <string name="attach_evidence">Attach some evidence please</string>
+    <string name="noteForInstruction">Note: 1. Please attach some evidence other wise your complain won\'t be submited. \n 2. Please don\'t upload irrelevant stuff regarded complain be specific to the problem. \n 3. Kindly, cast audio instead writing english in order to understand the complains. \n 4. Please attach last paid bill if you didn\'t have any evidence. </string>
+    <string name="password_hint">Password</string>
+    <string name="edit_and_submit">Edit Fields</string>
+    <string name="please_wait">Please wait ...</string>
+    <string name="detail_employee">DetailEmployee</string>
+    <string name="revoke_message">The employee is not response in his suggested date</string>
 </resources>

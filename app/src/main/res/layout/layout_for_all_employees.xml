@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:gravity="center_vertical"
+
+       android:orientation="horizontal">
+       <TextView
+           android:layout_width="70dp"
+           android:background="@drawable/all_employees"
+           android:id="@+id/employeeTag"
+           android:layout_marginLeft="10dp"
+           android:gravity="center"
+           android:text="A"
+           android:textColor="@color/white"
+           android:textSize="30sp"
+           android:layout_height="70dp">
+
+       </TextView>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:gravity="center_vertical"
+           android:layout_marginLeft="10dp"
+           android:orientation="vertical"
+           >
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/black"
+               android:text="Employee Name"
+               android:textSize="20sp"
+               android:id="@+id/employeeName"
+               ></TextView>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Designation"
+               android:id="@+id/employeeDesignation"
+               ></TextView>
+
+       </LinearLayout>
+
+   </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

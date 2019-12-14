@@ -5,10 +5,7 @@
     android:layout_marginBottom="5dp"
     android:background="@drawable/layout_bg"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:layout_width="match_parent"
-        app:shimmer_duration="800"
-        android:layout_height="match_parent">
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="150dp">
@@ -76,6 +73,5 @@
             android:maxLines="1"
             ></TextView>
 </RelativeLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
 </androidx.cardview.widget.CardView>
 

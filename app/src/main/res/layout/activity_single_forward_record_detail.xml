@@ -258,6 +258,17 @@
             android:id="@+id/acklowledged"
             android:text="acknowledged"
             ></Button>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_bg"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"
+            android:id="@+id/revoke"
+            android:text="REVOKE"
+            ></Button>
 
     </LinearLayout>
     </ScrollView>

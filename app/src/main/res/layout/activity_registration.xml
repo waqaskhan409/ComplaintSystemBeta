@@ -58,6 +58,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="12"
                 android:hint="@string/account" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,6 +72,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:maxLength="15"
                     android:layout_height="wrap_content"
                     android:hint="@string/cnin" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -173,33 +175,33 @@
                     android:hint="@string/prompt_confirm_password" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/front_cnic_image"
-                android:layout_margin="10dp"
-                android:id="@+id/textForFrontCnicImage"
-                android:layout_below="@+id/confirmPassword"></TextView>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:id="@+id/cnicFrontImage"
-                android:src="@drawable/front_cnic"
-                android:layout_below="@+id/textForFrontCnicImage"></ImageView>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/front_cnic_image"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:id="@+id/textForFrontCnicImage"-->
+<!--                android:layout_below="@+id/confirmPassword"></TextView>-->
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="250dp"-->
+<!--                android:id="@+id/cnicFrontImage"-->
+<!--                android:src="@drawable/front_cnic"-->
+<!--                android:layout_below="@+id/textForFrontCnicImage"></ImageView>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/black_cnic_image"
-                android:layout_margin="10dp"
-                android:id="@+id/textForBackCnicImage"
-                android:layout_below="@+id/cnicFrontImage"></TextView>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:id="@+id/cnicBackImage"
-                android:src="@drawable/back_cnic"
-                android:layout_below="@+id/textForBackCnicImage"></ImageView>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/black_cnic_image"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:id="@+id/textForBackCnicImage"-->
+<!--                android:layout_below="@+id/cnicFrontImage"></TextView>-->
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="250dp"-->
+<!--                android:id="@+id/cnicBackImage"-->
+<!--                android:src="@drawable/back_cnic"-->
+<!--                android:layout_below="@+id/textForBackCnicImage"></ImageView>-->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -207,7 +209,7 @@
                 android:text="@string/wasa_bill_image"
                 android:layout_margin="10dp"
                 android:id="@+id/textForWasaBillImage"
-                android:layout_below="@+id/cnicBackImage"></TextView>
+                android:layout_below="@+id/confirmPassword"></TextView>
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"

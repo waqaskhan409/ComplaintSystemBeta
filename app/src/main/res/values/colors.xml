@@ -14,5 +14,7 @@
     <color name="new_complains">#ff4c4c</color>
     <color name="forward">#7c7f89</color>
     <color name="analytics">#d82f2f</color>
+    <color name="forward_to">#D5008E</color>
+    <color name="delay_complains_employees">#FC766A</color>
 
 </resources>

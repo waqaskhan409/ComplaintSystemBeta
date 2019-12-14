@@ -17,6 +17,17 @@
 <!--            android:layout_height="120dp"-->
 <!--            android:src="@drawable/complains_message"-->
 <!--            ></ImageView>-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/topbarVerifiedUser"
+            android:background="@color/red"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:text="Please verify your self"
+            android:visibility="gone"
+            android:padding="5dp"
+            ></TextView>
         <ImageView
             android:layout_width="150dp"
             android:layout_gravity="center_horizontal"
@@ -153,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pending  "
+                        android:text="In Process  "
                         android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/white"

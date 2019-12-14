@@ -181,7 +181,7 @@ public class GraphSwipe extends PagerAdapter {
 
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
-        Call<List<AllComplains>> call = service.getComplains();
+        Call<List<AllComplains>> call = service.getTotalCoplainsByDepartment(Constants.ALL_COMPLAINS);
 
         call.enqueue(new Callback<List<AllComplains>>() {
             @Override
@@ -198,7 +198,9 @@ public class GraphSwipe extends PagerAdapter {
                 for(AllComplains all: list){
                     if(all.getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
                         valuesForResolved.add(all);
-                    }else if(all.getComplain_status().equals(Constants.COMPLAINS_PENDING)) {
+                    }else if(all.getComplain_status().equals(Constants.COMPLAINS_PENDING)
+                    || all.getComplain_status().equals(Constants.COMPLAINS_IN_PROCESS)
+                    ) {
                         valuesForPending.add(all);
                     }else if(all.getComplain_status().equals(Constants.COMPLAINS_NEW)) {
                         valuesForNew.add(all);

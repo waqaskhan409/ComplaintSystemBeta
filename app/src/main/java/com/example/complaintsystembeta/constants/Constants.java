@@ -21,7 +21,9 @@ public class Constants {
     public static final String ENGINA = "Engina";
     public static final String FILTERS_ANALYTICS = "Apply filters";
     public static final String URL_IMAGES = "http://192.168.43.31:3000/uploads/";
-
+    public static final int RESULT_LOAD_IMG_FOR_FRONT = 9009;
+    public static final int RESULT_LOAD_IMG_FOR_BACK = 8008;
+    public static final int RESULT_LOAD_IMG_FOR_WASA_BILL = 7007;
 
     public static final String REPORTING_ID = "reporting_id";
     public static final String FORWARD_TO = "forward_to";

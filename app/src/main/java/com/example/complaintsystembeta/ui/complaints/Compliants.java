@@ -2,10 +2,12 @@ package com.example.complaintsystembeta.ui.complaints;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -27,6 +29,7 @@ import com.example.complaintsystembeta.adapter.ConsumerComplaints;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.model.Consumer;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -63,6 +66,7 @@ public class Compliants extends BaseActivity{
 
 //    @BindView(R.id.text)
     TextView textView;
+
     private ArrayList<AllComplains> allComplainsFilter = new ArrayList();
 
     public Compliants() {
@@ -95,13 +99,20 @@ public class Compliants extends BaseActivity{
 
         cnic = data.getString(Constants.ACCOUNT_NUMBER);
         name = data.getString(Constants.NAME);
+
         complainsFilter = data.getString(Constants.COMPLAIN_FILTER);
 
         Log.d(TAG, "onCreate: " +complainsFilter);
 
-
-        fetchAllComplains();
-
+        if(complainsFilter != null) {
+            if (complainsFilter.equals(Constants.PENDING_COMPLAINS) || complainsFilter.equals(Constants.COMPLAINS_IN_PROCESS)) {
+                fetchPendingComplains();
+                Log.d(TAG, "onCreate: pending executes");
+            } else {
+                fetchAllComplains();
+                Log.d(TAG, "onCreate: all executes");
+            }
+        }
 
         FloatingActionButton floatingActionButton = findViewById(R.id.fp_btn);
         textView = findViewById(R.id.text);
@@ -115,6 +126,14 @@ public class Compliants extends BaseActivity{
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
+    }
+
+
 
 
     private void fetchAllComplains() {
@@ -145,12 +164,12 @@ public class Compliants extends BaseActivity{
                         }
                     }
                 }else {
-                for (AllComplains l : list){
-                    Log.d(TAG, "onResponse: " + l.getAccount_number() +"==" + cnic);
-                    if(l.getAccount_number().equals(cnic)){
-                     if(complainsFilter.equals(l.getComplain_status())){
-                        allComplains.add(l);
-                     }
+                for (AllComplains l : list) {
+                    Log.d(TAG, "onResponse: " + l.getAccount_number() + "==" + cnic);
+                    if (l.getAccount_number().equals(cnic)) {
+                        if (complainsFilter.equals(l.getComplain_status())) {
+                            allComplains.add(l);
+                        }
                     }
                 }
                 }
@@ -159,6 +178,52 @@ public class Compliants extends BaseActivity{
 
             @Override
             public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void fetchPendingComplains() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<AllComplains>> call = service.getComplains();
+
+        call.enqueue(new Callback<List<AllComplains>>() {
+            @Override
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
+                allComplains.clear();
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Failed!");
+                    return;
+                }
+                Log.d(TAG, "onResponse: Pending complains "+ response.body());
+                List<AllComplains>  list = response.body();
+
+                for(AllComplains all: list){
+                    if (all.getAccount_number().equals(cnic)) {
+
+                        if (all.getComplain_status().equals(Constants.COMPLAINS_PENDING) ||
+                                all.getComplain_status().equals(Constants.COMPLAINS_IN_PROCESS)
+                        ) {
+                            Log.d(TAG, "onResponse: pend");
+                            allComplains.add(all);
+                        }
+                    }
+                }
+                Log.d(TAG, "onResponse: "+ allComplains.size());
+
+                setupAdapter((ArrayList<AllComplains>) allComplains);
+            }
+
+            @Override
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+                showSnackBar("Connection Failed", "");
 
             }
         });
@@ -195,7 +260,7 @@ public class Compliants extends BaseActivity{
         PermanentLoginRepository dao = new PermanentLoginRepository(this.getApplication()) ;
 
 //        dao.insert(new PermanentLogin("12312312312", true, "Soud"));
-//        dao.insert(new PermanentLogin("12312312312", false, "Soud"));
+//        dao.insert( PermanentLogin("12312312312", false, "Soud"));
 //        dao.insert(new PermanentLogin("12312312312", false, "Soud"));
 
     }

@@ -93,6 +93,8 @@ public class ComplainStatistics extends BaseActivity {
         status = data.getString(Constants.STATUS_COMPLAIN);
         Log.d(TAG, "onStart: " + status);
         getSingleComplainForwardingDetail(complainsId);
+        checkConnection();
+
     }
 
     private void get_forward_by(String complainId) {

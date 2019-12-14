@@ -20,14 +20,10 @@ import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.ui.about.About;
 import com.example.complaintsystembeta.ui.complaints.AllComplainsFragment;
-import com.example.complaintsystembeta.ui.complaints.Compliants;
-import com.example.complaintsystembeta.ui.feedback.Feedback;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.example.complaintsystembeta.ui.profile.Profile;
 import com.google.android.material.navigation.NavigationView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -106,6 +102,11 @@ public class MainActivity extends BaseActivity
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
+    }
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -136,14 +137,14 @@ public class MainActivity extends BaseActivity
         if (id == R.id.complaints) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
         } else if (id == R.id.profile) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile(nameS, accountNumber, cnicS)).commit();
         }   else if (id == R.id.logout) {
-            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
+            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false, "null"));
               getDataFromSqlite();
               Intent intent = new Intent(this, LoginActivity.class);
-              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-              startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            startActivity(intent);
         } else if (id == R.id.about) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new About()).commit();
         }

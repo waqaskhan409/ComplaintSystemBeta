@@ -27,8 +27,11 @@ import com.example.complaintsystembeta.ui.complaints.DescriptionAndrGraphActivit
 import com.example.complaintsystembeta.ui.complaints.ManagingComplaints;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -63,13 +66,16 @@ public class BottomSheetDialogueAnalyticsFilterSearch extends BottomSheetDialogF
         list.add(Constants.TECHNICAL);
         list.add(Constants.SANITATION);
         list.add(Constants.ENGINA);
+        list.add(Constants.ALL_COMPLAINS);
         ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, list);
         spinnerAdvance.setAdapter(adapter);
 
-        Button cancel, submit, thisMonth;
+        Button cancel, submit, thisMonth, today, week;
         cancel = view.findViewById(R.id.cancel);
         submit = view.findViewById(R.id.submit);
         thisMonth = view.findViewById(R.id.thisMonth);
+        today = view.findViewById(R.id.today);
+        week = view.findViewById(R.id.week);
 
 
         EditText edTo, edFrom;
@@ -107,7 +113,20 @@ public class BottomSheetDialogueAnalyticsFilterSearch extends BottomSheetDialogF
                 dismiss();
             }
         });
-
+        today.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterListDaily(spinnerAdvance.getSelectedItem().toString());
+                dismiss();
+            }
+        });
+        week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterListWeekly(spinnerAdvance.getSelectedItem().toString());
+                dismiss();
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("LongLogTag")
             @Override
@@ -160,6 +179,66 @@ public class BottomSheetDialogueAnalyticsFilterSearch extends BottomSheetDialogF
 
         return view;
 }
+    @SuppressLint("LongLogTag")
+    private void filterListDaily(String status) {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String dateString = dateFormat.format(date);
+
+
+
+        ((DescriptionAndrGraphActivity) getActivity()).fetchComplains(status, dateString, dateString);
+
+    } @SuppressLint("LongLogTag")
+    private void filterListWeekly(String status) {
+//        int week = cal.get(Calendar.WEEK_OF_YEAR);
+//        Calendar cal = Calendar.getInstance();
+//        int currentMonth =  Calendar.getInstance().get(Calendar.YEAR);
+//        int currentYear =  Calendar.getInstance().get(Calendar.MONTH);
+//        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//
+//        cal.set(currentYear, currentMonth, currentDay);
+//
+//        // "calculate" the start date of the week
+//        Calendar first = (Calendar) cal.clone();
+//        first.add(Calendar.DAY_OF_WEEK,
+//                first.getFirstDayOfWeek() - first.get(Calendar.DAY_OF_WEEK));
+//
+//        // and add six days to the end date
+//        Calendar last = (Calendar) first.clone();
+//        last.add(Calendar.DAY_OF_YEAR, 6);
+//
+//        // print the result
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        Log.d(TAG, "filterListWeekly: "+ df.format(first.getTime()) + " -> " +
+//                df.format(last.getTime()));
+//        System.out.println();
+
+
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+        c.add(Calendar.DAY_OF_MONTH, -dayOfWeek);
+
+        Date weekStart = c.getTime();
+        // we do not need the same day a week after, that's why use 6, not 7
+        c.add(Calendar.DAY_OF_MONTH, 6);
+        Date weekEnd = c.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startWeekly, endWeekly;
+        startWeekly = dateFormat.format(weekStart);
+        endWeekly = dateFormat.format(weekEnd);
+
+
+        Log.d(TAG, "filterListWeekly: start day:" + startWeekly);
+        Log.d(TAG, "filterListWeekly: start End:" + endWeekly);
+
+        ((DescriptionAndrGraphActivity) getActivity()).fetchComplains(status, startWeekly, endWeekly);
+
+    }
+
     public void datePickerFrom() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

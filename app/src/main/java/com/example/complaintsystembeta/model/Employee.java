@@ -1,9 +1,16 @@
 package com.example.complaintsystembeta.model;
 
-public class Employee {
+import java.io.Serializable;
 
+@SuppressWarnings("serial")
+public class Employee implements Serializable {
+
+
+    public Employee() {
+    }
     private String emp_des_id;
     private String employee_id;
+
     private String des_id;
     private String cnic;
     private String full_name;

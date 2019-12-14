@@ -156,7 +156,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pending  "
+                        android:text="In Process"
                         android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/white"
@@ -247,7 +247,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Forwarded  "
+                        android:text="Forward To  "
                         android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/white"
@@ -260,6 +260,7 @@
                         android:src="@drawable/forward"></ImageView>
                 </LinearLayout>
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/complainAnalytics"
@@ -303,7 +304,102 @@
                         android:src="@drawable/complains_analytics"></ImageView>
                 </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:weightSum="2"
+
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/forward_to_drawable"
+                android:paddingBottom="10dp"
+                android:id="@+id/forwardFrom"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_margin="10dp"
+                    android:layout_height="50dp"
+                    android:text="0"
+                    android:id="@+id/forwardFromT"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"
+                    ></TextView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Forward From "
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/white"
+                        ></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/reply"></ImageView>
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/delay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/delay_drawable"
+                android:orientation="vertical"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/delayT"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/all_complains"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"></TextView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:text="Delay "
+                        android:textColor="@color/white"
+                        android:textSize="18sp"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/delay"></ImageView>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
     </ScrollView>
 </RelativeLayout>

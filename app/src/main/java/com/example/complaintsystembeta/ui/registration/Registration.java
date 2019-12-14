@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,9 +16,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,10 +29,9 @@ import android.widget.Toast;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
+import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
-import com.example.complaintsystembeta.model.PostResponse;
-import com.example.complaintsystembeta.model.Posts;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
@@ -46,10 +45,8 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,9 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Registration extends BaseActivity {
     private static final String TAG = "Registration";
-    private static final int RESULT_LOAD_IMG_FOR_FRONT = 9009;
-    private static final int RESULT_LOAD_IMG_FOR_BACK = 8008;
-    private static final int RESULT_LOAD_IMG_FOR_WASA_BILL = 7007;
+
 
     private Unbinder unbinder;
     private String cnic, userName, email, mobileNumber, address, password, confirmPassword, gender, account;
@@ -105,11 +100,11 @@ public class Registration extends BaseActivity {
     @BindView(R.id.submit)
     Button submit;
 
-    @BindView(R.id.cnicFrontImage)
-    ImageView imageForFrontCNIC;
-
-    @BindView(R.id.cnicBackImage)
-    ImageView imageForbackCNIC;
+//    @BindView(R.id.cnicFrontImage)
+//    ImageView imageForFrontCNIC;
+//
+//    @BindView(R.id.cnicBackImage)
+//    ImageView imageForbackCNIC;
 
     @BindView(R.id.wasaBillImage)
     ImageView imageForWasaBill;
@@ -134,6 +129,58 @@ public class Registration extends BaseActivity {
         isGenderListNull();
         testData();
 
+        accountED.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() == 3){
+                    accountED.getEditText().append("-");
+                }else if(s.length() == 6){
+                    accountED.getEditText().append("-");
+                }
+            }
+        });
+
+        cnicED.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() == 5){
+                    cnicED.getEditText().append("-");
+                }else if(s.length() == 13){
+                    cnicED.getEditText().append("-");
+                }else if(s.length() > 15){
+                    Toast.makeText(Registration.this, "CNIC maximum 15 chracters", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
 
     }
 
@@ -286,7 +333,7 @@ public class Registration extends BaseActivity {
 
     void testData(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
@@ -326,27 +373,27 @@ public class Registration extends BaseActivity {
 
     private void getDataFromRestApi() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        File frontImage = new File(getRealPathFromURI(imageUriForFront));
-        File backImage = new File(getRealPathFromURI(imageUriForBack));
+//        File frontImage = new File(getRealPathFromURI(imageUriForFront));
+//        File backImage = new File(getRealPathFromURI(imageUriForBack));
         File wasaBill = new File(getRealPathFromURI(imageUriForWasaBill));
-            Log.d(TAG, "getDataFromRestApi: " + frontImage);
-            Log.d(TAG, "getDataFromRestApi: " + backImage);
-        if(frontImage == null || backImage == null || wasaBill == null){
-            Toast.makeText(this, "Null", Toast.LENGTH_SHORT).show();
+//            Log.d(TAG, "getDataFromRestApi: " + frontImage);
+//            Log.d(TAG, "getDataFromRestApi: " + backImage);
+        if(/*frontImage == null || backImage == null ||*/ wasaBill == null){
+            showSnackBar("Kindly, attach the bill as a evidence", "");
             return;
         }
-        RequestBody requestBodyFront = RequestBody.create(MediaType.parse("image/jpg"), frontImage);
+       /* RequestBody requestBodyFront = RequestBody.create(MediaType.parse("image/jpg"), frontImage);
         MultipartBody.Part fileuploadFront = MultipartBody.Part.createFormData("front", frontImage.getName(), requestBodyFront);
         RequestBody filenameFront = RequestBody.create(MediaType.parse("text/plain"), frontImage.getName());
 
         RequestBody requestBodyBack = RequestBody.create(MediaType.parse("image/jpg"), backImage);
         MultipartBody.Part fileuploadBack = MultipartBody.Part.createFormData("back", backImage.getName(), requestBodyBack);
         RequestBody filenameBack = RequestBody.create(MediaType.parse("text/plain"), backImage.getName());
-
+*/
         RequestBody requestWasaBill = RequestBody.create(MediaType.parse("image/jpg"), wasaBill);
         MultipartBody.Part fileWasaBillUpload = MultipartBody.Part.createFormData("wasa", wasaBill.getName(), requestWasaBill);
         RequestBody filenameWasaBill = RequestBody.create(MediaType.parse("text/plain"), wasaBill.getName());
@@ -361,8 +408,7 @@ public class Registration extends BaseActivity {
         RequestBody genderRqst = RequestBody.create(MediaType.parse("text/plain"), gender);
 
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-        Call<TestClas> call = service.postData(fileuploadFront, fileuploadBack, fileWasaBillUpload, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst
-        );
+        Call<TestClas> call = service.postData(fileWasaBillUpload, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst);
 //        Call<SignUpData> call = service.testData(new SignUpData("id",
 //                "54401-6275270-3",
 //                "Waqas",
@@ -377,20 +423,20 @@ public class Registration extends BaseActivity {
             @Override
             public void onResponse(Call<TestClas> call, Response<TestClas> response) {
                 if(response.isSuccessful()){
+                    dissmissProgressDialogue();
                     Toast.makeText(getApplicationContext(), response.body().getSuccess(), Toast.LENGTH_LONG).show();
                     Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
-
                     if(response.body().getSuccess().equals("new user registered")){
-                    dao.insert(new PermanentLogin(cnic, account, true, userName, false));
+                    dao.insert(new PermanentLogin(cnic, account, true, userName, false, "null"));
                     Intent intent = new Intent(Registration.this, LoginActivity.class);
                     intent.putExtra(getString(R.string.permanentlogin_name), userName);
                     intent.putExtra(getString(R.string.account_number), account);
                     intent.putExtra(getString(R.string.permanentlogin_cnic), cnic);
                     startActivity(intent);
-                    dissmissProgressDialogue();
                     }
 
                 }else {
+                    dissmissProgressDialogue();
                     showSnackBar(response.body().getError(), "");
 
                 }
@@ -398,6 +444,7 @@ public class Registration extends BaseActivity {
 
             @Override
             public void onFailure(Call<TestClas> call, Throwable t) {
+                dissmissProgressDialogue();
                 showSnackBar(t.getMessage(), "");
             }
         });
@@ -420,17 +467,17 @@ public class Registration extends BaseActivity {
 
     @OnClick(R.id.wasaBillImage)
     public void gettingImageofWasaBill(){
-        functionForBothImageFrontAndBack(RESULT_LOAD_IMG_FOR_WASA_BILL);
+        functionForBothImageFrontAndBack(Constants.RESULT_LOAD_IMG_FOR_WASA_BILL);
 
     }
-    @OnClick(R.id.cnicFrontImage)
+//    @OnClick(R.id.cnicFrontImage)
     public void gettingImageofFrontCnic(){
-        functionForBothImageFrontAndBack(RESULT_LOAD_IMG_FOR_FRONT);
+        functionForBothImageFrontAndBack(Constants.RESULT_LOAD_IMG_FOR_FRONT);
     }
 
-    @OnClick(R.id.cnicBackImage)
+//    @OnClick(R.id.cnicBackImage)
     public void gettingImageofBackCnic(){
-        functionForBothImageFrontAndBack(RESULT_LOAD_IMG_FOR_BACK);
+        functionForBothImageFrontAndBack(Constants.RESULT_LOAD_IMG_FOR_BACK);
     }
 
     public void functionForBothImageFrontAndBack(int f) {
@@ -459,21 +506,21 @@ public class Registration extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             try {
-                if(requestCode == RESULT_LOAD_IMG_FOR_FRONT){
+                if(requestCode == Constants.RESULT_LOAD_IMG_FOR_FRONT){
                     imageUriForFront = data.getData();
                     File i = new File(getRealPathFromURI(imageUriForFront));
                     Log.d(TAG, "onActivityResult: " + i);
                     final InputStream imageStream = getContentResolver().openInputStream(imageUriForFront);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    imageForFrontCNIC.setImageBitmap(selectedImage);
+//                    imageForFrontCNIC.setImageBitmap(selectedImage);
                     scanTextFromUri(imageUriForFront);
-                }else if(requestCode == RESULT_LOAD_IMG_FOR_BACK){
+                }else if(requestCode == Constants.RESULT_LOAD_IMG_FOR_BACK){
                     imageUriForBack = data.getData();
                     final InputStream imageStream = getContentResolver().openInputStream(imageUriForBack);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    imageForbackCNIC.setImageBitmap(selectedImage);
+//                    imageForbackCNIC.setImageBitmap(selectedImage);
 //                    scanTextFromUri(imageUriForBack);
-                }else if(requestCode == RESULT_LOAD_IMG_FOR_WASA_BILL){
+                }else if(requestCode == Constants.RESULT_LOAD_IMG_FOR_WASA_BILL){
                     imageUriForWasaBill = data.getData();
                     final InputStream imageStream = getContentResolver().openInputStream(imageUriForWasaBill);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);

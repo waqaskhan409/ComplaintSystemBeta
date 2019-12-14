@@ -13,16 +13,29 @@
         android1:layout_width="match_parent"
         android1:orientation="vertical"
         android1:layout_height="match_parent">
+        <TextView
+            android1:layout_width="match_parent"
+            android1:layout_height="30dp"
+            android1:id="@+id/topbarVerifiedUser"
+            android1:background="@color/red"
+            android1:gravity="center_horizontal"
+            android1:visibility="gone"
+            android1:textColor="@color/white"
+            android1:text="Please verify your self"
+            android1:padding="5dp"
+            ></TextView>
+
     <LinearLayout
-        android1:layout_width="wrap_content"
+        android1:layout_width="match_parent"
         android1:layout_height="wrap_content"
         android1:layout_marginLeft="50dp"
-        android1:gravity="bottom"
+        android1:layout_marginRight="50dp"
         android1:layout_marginTop="30dp"
         android1:orientation="horizontal">
         <de.hdodenhof.circleimageview.CircleImageView
             android1:layout_width="80dp"
             android1:layout_height="80dp"
+            android1:id="@+id/deepee"
             android1:src="@drawable/account_image"
             ></de.hdodenhof.circleimageview.CircleImageView>
        <!-- <ImageView
@@ -35,7 +48,7 @@
         </ImageView>-->
 
         <LinearLayout
-            android1:layout_width="match_parent"
+            android1:layout_width="wrap_content"
             android1:layout_height="match_parent"
             android1:layout_marginLeft="50dp"
             android1:gravity="center_vertical"
@@ -57,6 +70,7 @@
                 android1:text="CNIC number"></TextView>
         </LinearLayout>
 
+
     </LinearLayout>
         <View
             android1:layout_width="match_parent"
@@ -66,10 +80,25 @@
             android1:layout_marginRight="40dp"
             android1:background="@color/colorAccent"
             />
+
+        <Button
+            android1:layout_width="match_parent"
+            android1:layout_height="50dp"
+            android1:id="@+id/editSubmit"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:hint="Email"
+            android1:text="@string/edit_and_submit"
+            android1:paddingLeft="10dp"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></Button>
         <EditText
             android1:layout_width="match_parent"
             android1:layout_height="50dp"
             android1:id="@+id/email"
+            android1:enabled="false"
             android1:layout_marginTop="20dp"
             android1:layout_marginLeft="20dp"
             android1:layout_marginRight="20dp"
@@ -84,6 +113,7 @@
             android1:id="@+id/contactNumber"
             android1:layout_marginTop="20dp"
             android1:layout_marginLeft="20dp"
+            android1:enabled="false"
             android1:layout_marginRight="20dp"
             android1:hint="Contact number"
             android1:paddingLeft="10dp"
@@ -98,10 +128,83 @@
             android1:layout_marginRight="20dp"
             android1:hint="Contact Address"
             android1:id="@+id/contactAddress"
+            android1:enabled="false"
             android1:paddingLeft="10dp"
             android1:paddingRight="10dp"
             android1:background="@drawable/layout_bg"
             ></EditText>
+
+        <TextView
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:text="@string/front_cnic_image"
+            android1:id="@+id/CNICfront"
+            android1:textColor="@color/black"
+            android1:textSize="20sp"></TextView>
+
+        <ImageView
+            android1:layout_width="match_parent"
+            android1:layout_height="200dp"
+            android1:layout_marginTop="10dp"
+            android1:src="@drawable/front_cnic"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:paddingLeft="10dp"
+            android1:paddingRight="10dp"
+            android1:id="@+id/cnicFront"
+            android1:background="@drawable/layout_bg"
+            ></ImageView>
+        <TextView
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:text="@string/black_cnic_image"
+            android1:id="@+id/CNICback"
+            android1:textColor="@color/black"
+            android1:textSize="20sp"></TextView>
+
+        <ImageView
+            android1:layout_width="match_parent"
+            android1:layout_height="200dp"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:paddingLeft="10dp"
+            android1:id="@+id/cnicBack"
+            android1:src="@drawable/back_cnic"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></ImageView>
+        <TextView
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:text="@string/wasa_bill_image"
+            android1:id="@+id/wasaBill"
+
+            android1:textColor="@color/black"
+            android1:textSize="20sp"></TextView>
+
+        <ImageView
+            android1:layout_width="match_parent"
+            android1:layout_height="200dp"
+            android1:layout_marginTop="20dp"
+            android1:layout_marginLeft="20dp"
+            android1:layout_marginRight="20dp"
+            android1:paddingLeft="10dp"
+            android1:id="@+id/wasaBillImage"
+            android1:src="@drawable/wasa_bill"
+            android1:paddingRight="10dp"
+            android1:background="@drawable/layout_bg"
+            ></ImageView>
+
 
     </LinearLayout>
 </RelativeLayout>

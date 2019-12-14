@@ -91,6 +91,33 @@
             android:hint="click me"
             ></EditText>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="8"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/today"
+            android:layout_marginRight="4dp"
+            android:layout_weight="4"
+            android:background="@drawable/layout_bg"
+            android:text="Today"
+            android:layout_height="wrap_content">
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/week"
+            android:layout_weight="4"
+            android:layout_marginLeft="4dp"
+            android:background="@drawable/layout_bg"
+            android:text="THis week"
+            android:layout_height="wrap_content">
+
+        </Button>
+    </LinearLayout>
     <Button
         android:layout_width="match_parent"
         android:layout_marginTop="20dp"

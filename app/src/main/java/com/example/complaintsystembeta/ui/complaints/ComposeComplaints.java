@@ -169,22 +169,28 @@ public class ComposeComplaints extends BaseActivity {
 
     }
 
-    /*private void isImagePermissionGranted() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-
-
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA},
-                        Constants.MY_PERMISSIONS_REQUEST_CAMERA);
-            }
-
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
     }
-*/
+
+    /*private void isImagePermissionGranted() {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CAMERA},
+                            Constants.MY_PERMISSIONS_REQUEST_CAMERA);
+                }
+
+            }
+        }
+    */
     @OnClick(R.id.audioToText)
     public void audioToText(){
         audioToText.startAnimation(buttonClick);
@@ -336,7 +342,7 @@ public class ComposeComplaints extends BaseActivity {
         recorder.setOutputFile(fileName);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        try {  
+        try {
             recorder.prepare();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
@@ -364,6 +370,8 @@ public class ComposeComplaints extends BaseActivity {
         if(complian.equals("") || complian == null){
             compliantTv.setError(getString(R.string.complain_body_error));
             compliantTv.requestFocus();
+        }else if(uriArrayList.size() == 0){
+            showSnackBar(getString(R.string.attach_evidence), "");
         }else {
             showProgressDialogue(getString(R.string.complains_title), getString(R.string.login_message));
             submitComplainBody(complainId,complian);
@@ -636,6 +644,9 @@ public class ComposeComplaints extends BaseActivity {
         });
 
         stop.setOnClickListener(v -> {
+            if(recorder != null) {
+                onRecord(false);
+            }
             visibleAudio();
             dialog.dismiss();
         });

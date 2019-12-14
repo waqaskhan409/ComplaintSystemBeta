@@ -25,9 +25,9 @@ import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
-import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
+import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueForgetPassword;
 import com.example.complaintsystembeta.ui.registration.Registration;
@@ -55,7 +55,7 @@ public class LoginActivity extends BaseActivity {
     boolean checkCon = false;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public static final int RequestPermissionCode = 1;
     private static final String LOG_TAG = "AudioRecordTest";
@@ -79,6 +79,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.isEmployee)
     TextView employee;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,10 +89,8 @@ public class LoginActivity extends BaseActivity {
         dao = new PermanentLoginRepository(getApplication());
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            isStoragePermissionGranted();
-            isImagePermissionGranted();
-        }
+//        isStoragePermissionGranted();
+//        isImagePermissionGranted();
 
         userName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,8 +155,11 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkConnection();
         getDataFromSqlite();
+
     }
+
 
     @OnClick(R.id.forgetPassword)
     public void forgetPassword(){
@@ -178,7 +180,6 @@ public class LoginActivity extends BaseActivity {
     @OnClick({R.id.loginSubmit})
     public void submit(){
         Log.d(TAG, "submitData: Clicked submit");
-        showProgressDialogue(getString(R.string.login_title), getString(R.string.login_message));
         gettingValues();
         verificationValues();
     }
@@ -221,6 +222,7 @@ public class LoginActivity extends BaseActivity {
             return;
         }
         else {
+            showProgressDialogue(getString(R.string.login_title), getString(R.string.login_message));
             Log.d(TAG, "varificationValues:  User Login");
             getDataThroughRetrofit2();
 //            permanentLoginRepository.updateUser(new PermanentLogin(cnicS, "" ,true, "", false));
@@ -289,10 +291,10 @@ public class LoginActivity extends BaseActivity {
                     Log.d(TAG, "onResponse: " + l.getUser_cnic());
                     Log.d(TAG, "onResponse: " + l.getUser_password());
                     if(l.getUser_cnic().equals(cnicS) && l.getUser_password().equals(passwordS)){
-                        permanentLoginRepository.updateUser(new PermanentLogin(cnicS,"", true, "", false));
+                        permanentLoginRepository.updateUser(new PermanentLogin(cnicS,"", true, "", false, "null"));
                         dissmissProgressDialogue();
                         if(getDataFromSqlite()){
-                            dao.insert(new PermanentLogin(l.getUser_cnic(), l.getAccount_number(), true, l.getUser_name(), false));
+                            dao.insert(new PermanentLogin(l.getUser_cnic(), l.getAccount_number(), true, l.getUser_name(), false, "null"));
                             getDataFromSqlite();
                         }
                         break;
@@ -322,8 +324,13 @@ public class LoginActivity extends BaseActivity {
             Log.d(TAG, "getDataFromSqlite: " + permanentLogin.getLoggedIn());
             Log.d(TAG, "getDataFromSqlite: " + permanentLogin.getUserName());
             if(permanentLogin.getLoggedIn()){
-                signInWithExtra(permanentLogin);
-                finish();
+                if(permanentLogin.getEmployee()){
+                    signInWithExtraWithEmployee(permanentLogin);
+                    finish();
+                }else {
+                    signInWithExtra(permanentLogin);
+                    finish();
+                }
             }
         }
 
@@ -332,6 +339,15 @@ public class LoginActivity extends BaseActivity {
             checkCon = false;
         }
         return true;
+    }
+
+    private void signInWithExtraWithEmployee(PermanentLogin permanentLogin) {
+        Intent intent = new Intent(LoginActivity.this, EmployeeNavigation.class);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, permanentLogin.getAccountNumber());
+        intent.putExtra(getString(R.string.permanentlogin_name), permanentLogin.getUserName());
+        intent.putExtra(getString(R.string.permanentlogin_cnic), permanentLogin.getCNIC());
+        intent.putExtra(getString(R.string.permanentlogin_id), permanentLogin.getEmployeeId());
+        startActivity(intent);
     }
 
     private void signInWithExtra(PermanentLogin permanentLogin) {

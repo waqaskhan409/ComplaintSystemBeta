@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.complaintsystembeta.interfaace.PermanentLoginDao;
 import com.example.complaintsystembeta.model.PermanentLogin;
 
-@Database(entities = {PermanentLogin.class},  version = 3, exportSchema = false)
+@Database(entities = {PermanentLogin.class},  version = 4, exportSchema = false)
 public abstract class PermanentLoginDatabase extends RoomDatabase {
 
     private static PermanentLoginDatabase instance;

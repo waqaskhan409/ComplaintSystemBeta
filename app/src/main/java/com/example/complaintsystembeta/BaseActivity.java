@@ -1,5 +1,6 @@
 package com.example.complaintsystembeta;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +10,26 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.interfaace.JsonApiHolder;
+import com.example.complaintsystembeta.model.TestClas;
+import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -48,12 +59,10 @@ public class BaseActivity extends AppCompatActivity {
         String[] accountPortions = account.split("-");
         if(accountPortions.length != 3){
             return false;
-        }if(accountPortions[0].length() == 3 && accountPortions[1].length() == 3 && accountPortions[2].length() == 3){
-                Log.d(TAG, "checkCNICFormat: " +  String.valueOf(accountPortions[0] + accountPortions[1] + accountPortions[2]));
+        }else {
             return true;
         }
 
-        return false;
     }
     public boolean checkCNICFormat(String userName) {
         String[] cnicPortions = userName.split("-");
@@ -80,4 +89,37 @@ public class BaseActivity extends AppCompatActivity {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+    public void checkConnection() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<TestClas> call = service.checkConnection();
+
+        call.enqueue(new Callback<TestClas>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onResponse(Call<TestClas> call, Response<TestClas> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Successfully create connection" + response.body().getSuccess());
+                }else {
+                    Log.d(TAG, "onResponse: Failed!");
+                    showSnackBar("Please check connection please" , "");
+                }
+
+            }
+
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onFailure(Call<TestClas> call, Throwable t) {
+                Log.d(TAG, "onFailure: Failed with message"+ t.getMessage());
+                showSnackBar("Please check the connection either wifi or data network." , "");
+            }
+        });
+    }
+
+
 }

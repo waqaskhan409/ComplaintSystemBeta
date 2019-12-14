@@ -46,6 +46,8 @@ public class EmployeeLogin extends BaseActivity {
     private List<PermanentLogin> list;
     String cnicS, passwordS;
     boolean checkCon = false;
+    private PermanentLoginRepository dao;
+
 
 
     @BindView(R.id.username)
@@ -66,6 +68,7 @@ public class EmployeeLogin extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_login);
         unbinder = ButterKnife.bind(this);
+        dao = new PermanentLoginRepository(getApplication());
 
     }
 
@@ -81,6 +84,7 @@ public class EmployeeLogin extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkConnection();
         getDataFromSqlite();
     }
 
@@ -160,11 +164,12 @@ public class EmployeeLogin extends BaseActivity {
 
                         dissmissProgressDialogue();
                         Log.d(TAG, "onResponse: " + l.getDes_id());
-                        Intent intent = new Intent(EmployeeLogin.this, EmployeeNavigation.class);
-                        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, l.getDes_id());
-                        intent.putExtra(getString(R.string.permanentlogin_name), l.getDes_title());
-                        intent.putExtra(getString(R.string.permanentlogin_cnic), l.getCnic());
-                        intent.putExtra(getString(R.string.permanentlogin_id), l.getEmployee_id());
+                        dao.insert(new PermanentLogin(l.getCnic(), l.getDes_title(), true, l.getFull_name(),true, l.getEmployee_id()));
+                        Intent intent = new Intent(EmployeeLogin.this, LoginActivity.class);
+//                        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, l.getDes_id());
+//                        intent.putExtra(getString(R.string.permanentlogin_name), l.getDes_title());
+//                        intent.putExtra(getString(R.string.permanentlogin_cnic), l.getCnic());
+//                        intent.putExtra(getString(R.string.permanentlogin_id), l.getEmployee_id());
                         startActivity(intent);
                         finish();
                     }

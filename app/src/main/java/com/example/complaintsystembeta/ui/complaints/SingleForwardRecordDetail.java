@@ -36,7 +36,9 @@ import com.example.complaintsystembeta.model.TestClas;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +68,11 @@ public class SingleForwardRecordDetail extends BaseActivity {
     private List<ReportForward> list;
     private ImagesSwipe mImageSwipe;
     private TextView[] mDots;
+    private MediaPlayer player = null;
+    private boolean boolForAudio = true;
+    private Handler handler;
+
+
 
 
     @BindView(R.id.seekBarLayout)
@@ -103,12 +110,12 @@ public class SingleForwardRecordDetail extends BaseActivity {
 
     @BindView(R.id.imageViewPager)
     ViewPager viewPager;
+
     @BindView(R.id.pointing_images)
     LinearLayout linearLayoutImages;
-    private MediaPlayer player = null;
-    private boolean boolForAudio = true;
-    private Handler handler;
 
+    @BindView(R.id.revoke)
+    Button revoke;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +177,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        checkConnection();
         settingValues();
 
     }
@@ -229,6 +236,20 @@ public class SingleForwardRecordDetail extends BaseActivity {
             intent.putExtra(getString(R.string.permanentlogin_name), employeeId);
             startActivity(intent);
         }
+    }
+
+    @OnClick(R.id.revoke)
+    public void sendRevokeMessage(){
+        String[] forwardToArray, forwardByArray;
+        String forwardToInner, forwardByInner;
+        forwardByArray = forwardFrom.split("/");
+        forwardToArray = forwardTo.split("/");
+        forwardToInner = forwardByArray[0];
+        forwardByInner = forwardToArray[0];
+        submitToRevoke(forwardToInner,forwardByInner);
+
+
+
     }
 
     private void getSingleComplainDetail(String complainId) {
@@ -329,6 +350,9 @@ public class SingleForwardRecordDetail extends BaseActivity {
             reply.setVisibility(View.VISIBLE);
             forward.setVisibility(View.VISIBLE);
             acknowledged.setVisibility(View.VISIBLE);
+            if(checkDate(suggestedDate)){
+            revoke.setVisibility(View.VISIBLE);
+            }
             isSeenUpdate(reportingId);
         }else {
             reply.setVisibility(View.GONE);
@@ -345,6 +369,64 @@ public class SingleForwardRecordDetail extends BaseActivity {
 
     }
 
+    private boolean checkDate(String suggestedDate) {
+        String[] date = suggestedDate.split("-");
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        int day = Integer.parseInt(date[2]);
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        if(currentYear > year){
+            return true;
+        }else if(currentMonth > month){
+            return true;
+        }else if(currentDay > day){
+            return true;
+        }
+
+
+        return false;
+    }
+    private void submitToRevoke(String forwardTo, String forwardBy) {
+
+        String complainReportingId = UUID.randomUUID().toString();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RequestBody complain_id = RequestBody.create(MediaType.parse("text/plain"), complainId);
+        RequestBody complains_reporting_id = RequestBody.create(MediaType.parse("text/plain"), complainReportingId);
+        RequestBody forwards_to = RequestBody.create(MediaType.parse("text/plain"),forwardTo);
+        RequestBody forwards_by = RequestBody.create(MediaType.parse("text/plain"), forwardBy);
+        RequestBody forwards_message = RequestBody.create(MediaType.parse("text/plain"), getString(R.string.revoke_message));
+        RequestBody suggested_date_reply = RequestBody.create(MediaType.parse("text/plain"), suggestedDate);
+        RequestBody employeRqst = RequestBody.create(MediaType.parse("text/plain"), forwardTo);
+        RequestBody statusRqst = RequestBody.create(MediaType.parse("text/plain"), Constants.COMPLAIN_IN_PROCESS);
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        Call call = service.postReportingComplain(reportingId, complain_id, complains_reporting_id, forwards_to, forwards_by, forwards_message,suggested_date_reply, employeRqst, 1, statusRqst, 1, 0, 0 , 0);
+        call.enqueue(new Callback<TestClas>() {
+            @Override
+            public void onResponse(Call<TestClas> call, Response<TestClas> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
+//                    submitAudioToAttachment(complainReportingId);
+//                    submitFileToAttachment(complainReportingId);
+                }else {
+                    dissmissProgressDialogue();
+                    Log.d(TAG, "onResponse: Failed!");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TestClas> call, Throwable t) {
+                dissmissProgressDialogue();
+                Log.d(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+
+    }
     private void isSeenUpdate(String reportingId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)

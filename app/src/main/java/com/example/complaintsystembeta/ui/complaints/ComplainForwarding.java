@@ -223,7 +223,6 @@ public class ComplainForwarding extends BaseActivity {
 //        account = data.getString(getString(R.string.account_number));
 //        name = data.getString(getString(R.string.userName));
         arrayListStatus.add(Constants.COMPLAIN_IN_PROCESS);
-        arrayListStatus.add(Constants.COMPLAINS_RESOLVED);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayListStatus);
         confirmStatusSpinner.setAdapter(adapter);
 
@@ -274,8 +273,6 @@ public class ComplainForwarding extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
-
-
     }
 
     @Override
@@ -301,6 +298,7 @@ public class ComplainForwarding extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkConnection();
 
         previouseReportId = data.getString(Constants.REPORTING_ID);
         Log.d(TAG, "onStart: " + previouseReportId);
@@ -311,6 +309,7 @@ public class ComplainForwarding extends BaseActivity {
                 previouseReportId = data.getString(Constants.REPORTING_ID);
                 department.setText(forwardTo);
                 department.setEnabled(false);
+            arrayListStatus.add(Constants.COMPLAINS_RESOLVED);
 
         }
         designations.clear();
@@ -371,7 +370,6 @@ public class ComplainForwarding extends BaseActivity {
 
     @OnClick(R.id.audioPlay)
     public void audioPlay(){
-
         if(boolForAudio){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 audioPlay.setImageDrawable(getDrawable(R.drawable.pause_24dp));
@@ -386,7 +384,6 @@ public class ComplainForwarding extends BaseActivity {
             boolForAudio = true;
             onPlay(false);
         }
-
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -580,7 +577,6 @@ public class ComplainForwarding extends BaseActivity {
 
     private void setAutoCompleteTextOnAllEmployees(List<Employee> list) {
         Log.d(TAG, "onResponse: " + list.size());
-
         AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, list);
         department.setAdapter(adapter);
     }
@@ -591,7 +587,7 @@ public class ComplainForwarding extends BaseActivity {
             return;
         }
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         String uniqueID = UUID.randomUUID().toString();
@@ -668,7 +664,7 @@ public class ComplainForwarding extends BaseActivity {
             return;
         }
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         for (int j = 0; j < uriArrayList.size(); j++) {
@@ -837,6 +833,9 @@ public class ComplainForwarding extends BaseActivity {
         });
 
         stop.setOnClickListener(v -> {
+            if(recorder != null) {
+                onRecord(false);
+            }
             visibleAudio();
             dialog.dismiss();
         });

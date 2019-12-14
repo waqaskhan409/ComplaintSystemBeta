@@ -48,7 +48,11 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -113,8 +117,11 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         settingupValues();
     }
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
+    }
 
     private void settingupValues() {
 //        fetchComplains();
@@ -133,6 +140,7 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         allDept.add(Constants.SANITATION);
         allDept.add(Constants.ENGINA);
         allDept.add(Constants.FILTERS_ANALYTICS);
+        allDept.add(Constants.ALL_COMPLAINS);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allDept);
         spinnerDept.setAdapter(adapter);
 
@@ -165,6 +173,7 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        mText.setText(description);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

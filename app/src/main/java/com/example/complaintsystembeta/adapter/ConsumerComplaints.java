@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.ui.complaints.ComplainStatistics;
 import com.example.complaintsystembeta.ui.complaints.SingleComplainDetails;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class ConsumerComplaints extends RecyclerView.Adapter<ConsumerComplaints.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull ConsumerComplaintViewHolder holder, int position) {
+        holder.complainTitle.setText( allComplains.get(position).getAccount_number());
         holder.complainsStatus.setText( allComplains.get(position).getComplain_status());
         holder.complainsDate.setText(allComplains.get(position).getCreated_us());
 //        holder.complainsDate.setText( allComplains.get(position).getCreated_us());
@@ -55,7 +57,8 @@ public class ConsumerComplaints extends RecyclerView.Adapter<ConsumerComplaints.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
-        }else  if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_PENDING)){
+        }else  if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_PENDING) ||
+                allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_IN_PROCESS)){
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -71,7 +74,20 @@ public class ConsumerComplaints extends RecyclerView.Adapter<ConsumerComplaints.
 
 
 
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+//                if(holder.complainsStatus.getText().equals(Constants.COMPLAINS_RESOLVED)){
+                Intent intent = new Intent(context, ComplainStatistics.class);
+                intent.putExtra(holder.itemView.getContext().getString(R.string.complains_id), allComplains.get(position).getComplain_id());
+                intent.putExtra(Constants.PREVELDGES_ON_FORWARD, "normal_user");
+                intent.putExtra(Constants.STATUS_COMPLAIN,  holder.complainsStatus.getText().toString());
+                context.startActivity(intent);
 
+//                }
+                return false;
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.AllComplainsAdapter;
 import com.example.complaintsystembeta.adapter.AutoCompleteAdapter;
@@ -65,7 +66,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ManagingComplaints extends AppCompatActivity {
+public class ManagingComplaints extends BaseActivity {
     private static final String TAG = "ManagingComplaints";
     private List<AllComplains> allComplains = new ArrayList<>();
     private List<Employee> allEmployee = new ArrayList<>();
@@ -124,6 +125,7 @@ public class ManagingComplaints extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkConnection();
         redirectAdapters();
     }
 
@@ -149,8 +151,14 @@ public class ManagingComplaints extends AppCompatActivity {
                 fetchForwardComplains();
                 break;
 
+            case Constants.FORWARD_FROM:
+                fetchForwardFromComplains();
+                break;
+
+
+
             default:
-                Log.d(TAG, "redirectAdapters: No Data louded");
+                Log.d(TAG, "redirectAdapters: No Data loaded");
                 break;
         }
     }
@@ -236,7 +244,7 @@ public class ManagingComplaints extends AppCompatActivity {
 
     private void fetchResolvedComplains() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -282,6 +290,36 @@ public class ManagingComplaints extends AppCompatActivity {
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getTotalForwardsComplains(desId);
+
+        call.enqueue(new Callback<List<AllComplains>>() {
+            @Override
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
+                if(response.isSuccessful()){
+                    allComplains = response.body();
+                    Log.d(TAG, "onResponse: " + allComplains.size());
+                    setupAdapterForward();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+    }
+    private void fetchForwardFromComplains() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<AllComplains>> call = service.getTotalForwardsFromComplains(desId);
 
         call.enqueue(new Callback<List<AllComplains>>() {
             @Override
@@ -500,7 +538,6 @@ public class ManagingComplaints extends AppCompatActivity {
             filterListToday();
         }else if(item.getItemId() == R.id.weeklyComplains){
             filterListWeekly();
-
         }else if(item.getItemId() == R.id.monthlyComlains){
             filterListMonthly();
 
@@ -514,30 +551,112 @@ public class ManagingComplaints extends AppCompatActivity {
         allComplainsFilter.clear();
 
         int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);
         Log.d(TAG, "filterListMonthly: " + currentMonth);
-        searchView.setQuery("-"+String.valueOf(currentMonth)+"-", false);
-//        searchViewMethod("-"+String.valueOf(currentMonth)+"-");
+        String startWeekly, endWeekly;
+        startWeekly = currentYear + "-" + currentMonth + "-1" ;
+        endWeekly = currentYear + "-" + currentMonth +"-31" ;
+
+        Log.d(TAG, "filterListMonthly: " + startWeekly);
+        Log.d(TAG, "filterListMonthly: " + endWeekly);
+
+        switch (complainData){
+            case Constants.ALL_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.ALL_COMPLAINS);
+
+                break;
+
+            case Constants.NEW_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_NEW);
+
+                break;
+
+            case Constants.PENDING_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_PENDING);
+                break;
+
+            case Constants.RESOLVED_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_RESOLVED);
+
+                break;
+            default:
+                Log.d(TAG, "redirectAdapters: No Data loaded");
+                break;
+        }
+
+
+
     }
 
     private void filterListWeekly() {
-        Calendar calendar = Calendar.getInstance();
-//        int currentDay = calendar.DAY_OF_WEEK;
-        //Logic not clear
-//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        String input = "20160115";
-        String format = "yyyyMMdd";
-        SimpleDateFormat df = new SimpleDateFormat(format);
+//        int week = cal.get(Calendar.WEEK_OF_YEAR);
+//        Calendar cal = Calendar.getInstance();
+//        int currentMonth =  Calendar.getInstance().get(Calendar.YEAR);
+//        int currentYear =  Calendar.getInstance().get(Calendar.MONTH);
+//        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//
+//        cal.set(currentYear, currentMonth, currentDay);
+//
+//        // "calculate" the start date of the week
+//        Calendar first = (Calendar) cal.clone();
+//        first.add(Calendar.DAY_OF_WEEK,
+//                first.getFirstDayOfWeek() - first.get(Calendar.DAY_OF_WEEK));
+//
+//        // and add six days to the end date
+//        Calendar last = (Calendar) first.clone();
+//        last.add(Calendar.DAY_OF_YEAR, 6);
+//
+//        // print the result
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        Log.d(TAG, "filterListWeekly: "+ df.format(first.getTime()) + " -> " +
+//                df.format(last.getTime()));
+//        System.out.println();
+
+
         Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int week = cal.get(Calendar.WEEK_OF_YEAR);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+        c.add(Calendar.DAY_OF_MONTH, -dayOfWeek);
 
-//        System.out.println("Input " + input + " is in week " + week);
-//        final DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
-//        final DayOfWeek lastDayOfWeek = DayOfWeek.of(((firstDayOfWeek.getValue() + 5) % DayOfWeek.values().length) + 1);
+        Date weekStart = c.getTime();
+// we do not need the same day a week after, that's why use 6, not 7
+        c.add(Calendar.DAY_OF_MONTH, 6);
+        Date weekEnd = c.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startWeekly, endWeekly;
+        startWeekly = dateFormat.format(weekStart);
+        endWeekly = dateFormat.format(weekEnd);
 
-//            return week;
-        //        Log.d(TAG, "filterListWeekly: " + dayOfWeek);
+
+        Log.d(TAG, "filterListWeekly: start day:" + startWeekly);
+        Log.d(TAG, "filterListWeekly: start End:" + endWeekly);
+
+        switch (complainData){
+            case Constants.ALL_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.ALL_COMPLAINS);
+
+                break;
+
+            case Constants.NEW_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_NEW);
+
+                break;
+
+            case Constants.PENDING_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_PENDING);
+                break;
+
+            case Constants.RESOLVED_COMPLAINS:
+                getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_RESOLVED);
+
+                break;
+            default:
+                Log.d(TAG, "redirectAdapters: No Data loaded");
+                break;
+        }
+
+
     }
 
     private void filterListToday() {
@@ -580,7 +699,7 @@ public class ManagingComplaints extends AppCompatActivity {
         allComplainsFilter.clear();
         for (int i = 0; i < allComplains.size(); i++) {
             if(allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
-                    || allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
+                    || allComplains.get(i).getAccount_number().toLowerCase().contains(newText)
                     || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
                     || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
             ){

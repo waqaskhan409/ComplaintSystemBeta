@@ -19,11 +19,13 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.model.PermanentLogin;
+import com.example.complaintsystembeta.ui.Employees.AllEmployee;
 import com.example.complaintsystembeta.ui.about.About;
 import com.example.complaintsystembeta.ui.complaints.AllCatigoryComplainsFragment;
 import com.example.complaintsystembeta.ui.complaints.AllComplainsFragment;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.example.complaintsystembeta.ui.profile.Profile;
+import com.example.complaintsystembeta.ui.profile.ProfileEmployee;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
@@ -92,6 +94,12 @@ public class EmployeeNavigation extends BaseActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnection();
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -139,13 +147,14 @@ public class EmployeeNavigation extends BaseActivity
 //            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllComplainsFragment(accountNumber, nameS)).commit();
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllCatigoryComplainsFragment("",employeeId,userName,employeeId)).commit();
         } else if (id == R.id.profile) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new Profile(userName,cnic,employeeId)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new ProfileEmployee(userName, employeeId, cnic)).commit();
+        } else if (id == R.id.allEmployees) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new AllEmployee()).commit();
         }   else if (id == R.id.logout) {
-//            dao.updateUser(new PermanentLogin(cnicS, "",false, nameS, false));
-//              getDataFromSqlite();
+            dao.updateUser(new PermanentLogin(cnic, desId,false, userName, true, employeeId));
+              getDataFromSqlite();
               Intent intent = new Intent(this, LoginActivity.class);
-              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-              intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
               startActivity(intent);
         } else if (id == R.id.about) {
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, new About()).commit();

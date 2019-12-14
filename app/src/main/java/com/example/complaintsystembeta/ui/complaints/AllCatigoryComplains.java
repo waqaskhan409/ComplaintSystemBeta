@@ -49,6 +49,12 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @BindView(R.id.allComplains)
     LinearLayout linearLayoutAllComplains;
 
+    @BindView(R.id.delay)
+    LinearLayout delay;
+
+    @BindView(R.id.forwardFrom)
+    LinearLayout forwardFrom;
+
     @BindView(R.id.newComplains)
     LinearLayout linearLayoutNewComplains;
 
@@ -81,6 +87,13 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @BindView(R.id.allComplainsT)
     TextView allComplainsT;
+
+    @BindView(R.id.delayT)
+    TextView delayT;
+
+    @BindView(R.id.forwardFromT)
+    TextView forwardFromT;
+
     private Toolbar toolbar;
 
     @Override
@@ -132,7 +145,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
             @Override
             public void onResponse(Call<Forwards> call, Response<Forwards> response) {
                 if(response.isSuccessful()) {
-                    Log.d(TAG, "onResponseForwards: " + response.body().getForward());
+                    Log.d(TAG, "onResponseForwards:From " + response.body().getForward());
                     forwardComplainsT.setText(response.body().getForward());
                 }else{
                     Log.d(TAG, "onResponseForwards: Failed" );
@@ -143,6 +156,37 @@ public class AllCatigoryComplains extends AppCompatActivity {
             @Override
             public void onFailure(Call<Forwards> call, Throwable t) {
                 Log.d(TAG, "onResponseForwards: Failed" + t.getMessage() );
+
+            }
+        });
+
+    }
+
+    private void totalForwardsFrom() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<Forwards> call = service.getTotalForwardsFrom(employeeId);
+        Log.d(TAG, "totalForwardsFrom: Called");
+
+        call.enqueue(new Callback<Forwards>() {
+            @Override
+            public void onResponse(Call<Forwards> call, Response<Forwards> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, "totalForwardsFrom:From " + response.body().getForward());
+                    forwardFromT.setText(response.body().getForward());
+                }else{
+                    Log.d(TAG, "totalForwardsFrom: Failed" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Forwards> call, Throwable t) {
+                Log.d(TAG, "totalForwardsFrom: Failed" + t.getMessage() );
 
             }
         });
@@ -197,6 +241,23 @@ public class AllCatigoryComplains extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.forwardFrom)
+    public void redirectToEmployeeComplainsForwardFrom(){
+        Intent intent = new Intent(this, ManagingComplaints.class);
+        intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
+        intent.putExtra(getString(R.string.permanentlogin_name), userName);
+        startActivity(intent);
+    }
+    @OnClick(R.id.delay)
+    public void redirectToDelayEmployees(){
+        Intent intent = new Intent(this, ManagingComplaints.class);
+        intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
+        intent.putExtra(getString(R.string.permanentlogin_name), userName);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.complainAnalytics)
     public void redirectToComplainsAnalytics(){
 
@@ -211,6 +272,7 @@ public class AllCatigoryComplains extends AppCompatActivity {
         valuesForNew.clear();
         valuesForPending.clear();
         valuesForResolved.clear();
+        totalForwardsFrom();
         fetchComplains();
         totalForwards();
     }

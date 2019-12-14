@@ -54,18 +54,21 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         holder.complainerName.setText(allComplains.get(position).getAccount_number());
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
+            holder.leftborder.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
         }else if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
+            holder.leftborder.setBackground(context.getDrawable(R.drawable.resloved_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
             }
         } else {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
+            holder.leftborder.setBackground(context.getDrawable(R.drawable.pending_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.complainsStatus.setTextColor(context.getColor(R.color.white));
@@ -132,7 +135,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
     }
 
     class AllComplainViewHolder extends RecyclerView.ViewHolder{
-        private TextView complainerName, complainsDate, complainsBody, complainsStatus;
+        private TextView complainerName, complainsDate, complainsBody, complainsStatus, leftborder;
 
         public AllComplainViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -140,6 +143,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
             complainsDate = itemView.findViewById(R.id.complainCreatedDate);
             complainsBody = itemView.findViewById(R.id.complaintsBody);
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
+            leftborder = itemView.findViewById(R.id.leftBorder);
         }
     }
 }

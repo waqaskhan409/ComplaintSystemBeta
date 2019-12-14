@@ -1,6 +1,7 @@
 package com.example.complaintsystembeta.interfaace;
 
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.model.Consumer;
 import com.example.complaintsystembeta.model.Department;
 import com.example.complaintsystembeta.model.Designation;
 import com.example.complaintsystembeta.model.Employee;
@@ -26,8 +27,12 @@ import retrofit2.http.Part;
 
 public interface JsonApiHolder {
 
+    @GET("check_connection")
+    Call<TestClas> checkConnection();
+
     @GET("get_designations")
     Call<List<Designation>> getDesignations();
+
 
     @GET("get_department")
     Call<List<Department>> getDepartment();
@@ -64,6 +69,9 @@ public interface JsonApiHolder {
     @FormUrlEncoded
     Call<Employee> getSingleEmployeeForProfile(@Field("employee_id") String employeeId);
 
+    @POST("get_single_consumer_for_profile")
+    @FormUrlEncoded
+    Call<Consumer> getSingleConsumerForProfile(@Field("consumer_id") String employeeId);
 
 
 
@@ -135,9 +143,42 @@ public interface JsonApiHolder {
                                 );
 
     @Multipart
-    @POST("registeration")
-    Call<TestClas> postData(@Part MultipartBody.Part fileFront,
+    @POST("verify_registeration")
+    Call<TestClas> verifyRegistration(
+            @Part MultipartBody.Part fileFront,
+            @Part MultipartBody.Part fileBack,
+            @Part("account_number") RequestBody account,
+            @Part("cnic") RequestBody cnic,
+            @Part("name") RequestBody name,
+            @Part("email") RequestBody email,
+            @Part("pass") RequestBody password,
+            @Part("contact") RequestBody contact,
+            @Part("address") RequestBody address,
+            @Part("gender") RequestBody gender
+    );
+
+
+    @Multipart
+    @POST("update_registeration")
+    Call<TestClas> updateRegisteration(
+            @Part MultipartBody.Part fileFront,
                                 @Part MultipartBody.Part fileBack,
+            @Part MultipartBody.Part fileWasaBill,
+            @Part("account_number") RequestBody account,
+            @Part("cnic") RequestBody cnic,
+            @Part("name") RequestBody name,
+            @Part("email") RequestBody email,
+            @Part("pass") RequestBody password,
+            @Part("contact") RequestBody contact,
+            @Part("address") RequestBody address,
+            @Part("gender") RequestBody gender
+    );
+
+    @Multipart
+    @POST("registeration")
+    Call<TestClas> postData(
+//            @Part MultipartBody.Part fileFront,
+//                                @Part MultipartBody.Part fileBack,
                                 @Part MultipartBody.Part fileWasaBill,
                                 @Part("account_number") RequestBody account,
                                 @Part("cnic") RequestBody cnic,
@@ -192,9 +233,16 @@ public interface JsonApiHolder {
     @FormUrlEncoded
     Call<Forwards> getTotalForwards(@Field("des_id") String des_id);
 
+    @POST("get_forwards_from")
+    @FormUrlEncoded
+    Call<Forwards> getTotalForwardsFrom(@Field("des_id") String des_id);
+
     @POST("get_forwards_complains")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalForwardsComplains(@Field("des_id") String des_id);
+    @POST("get_forwards_from_complains")
+    @FormUrlEncoded
+    Call<List<AllComplains>> getTotalForwardsFromComplains(@Field("des_id") String des_id);
 
     @POST("get_single_complains_forwarding_with_attachment")
     @FormUrlEncoded
