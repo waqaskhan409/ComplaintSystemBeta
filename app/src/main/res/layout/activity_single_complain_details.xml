@@ -35,9 +35,11 @@
             <TextView
                 android:id="@+id/compliansBody"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:gravity="center_vertical"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:background="@drawable/layout_bg"
@@ -157,15 +159,7 @@
                     android:layout_weight="1"
                     android:id="@+id/confirmStatusSpinner"
                     ></Spinner>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/layout_bg"
-                    android:text="confirm status"
-                    android:id="@+id/confirmStatusButton"
-                    ></Button>
-            </LinearLayout>
+              </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

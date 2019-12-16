@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.complaintsystembeta.BaseActivity;
@@ -20,11 +21,13 @@ import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.ReportForward;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueForResolveMessage;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
@@ -48,6 +51,8 @@ public class ComplainStatistics extends BaseActivity {
 
     @BindView(R.id.recyclerViewForTree)
     RecyclerView treeRecycler;
+    @BindView(R.id.resolve)
+    TextView resolve;
     private List<ReportForward> list;
     private List<Employee> listEmployees;
 
@@ -72,6 +77,8 @@ public class ComplainStatistics extends BaseActivity {
 
 
 
+
+
     }
 
     @Override
@@ -91,11 +98,28 @@ public class ComplainStatistics extends BaseActivity {
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
         complainsId = data.getString(getString(R.string.complains_id));
         status = data.getString(Constants.STATUS_COMPLAIN);
+        if(status != null){
+            if(status.equals(Constants.COMPLAINS_RESOLVED)){
+                resolve.setVisibility(View.VISIBLE);
+            }else {
+                resolve.setVisibility(View.GONE);
+            }
+        }
+
         Log.d(TAG, "onStart: " + status);
         getSingleComplainForwardingDetail(complainsId);
         checkConnection();
 
     }
+
+    @OnClick(R.id.resolve)
+    public void showDialogue(){
+        BottomSheetDialogueForResolveMessage message = new BottomSheetDialogueForResolveMessage(complainsId);
+        message.show(getSupportFragmentManager(), "FragmentDialogue");
+    }
+
+
+
 
     private void get_forward_by(String complainId) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -173,6 +197,40 @@ public class ComplainStatistics extends BaseActivity {
         treeRecycler.setAdapter(timelineAdapter);
     }
 
+    private void getComplainResolve(String complainId) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<ReportForward>> listCall = service.getSingleComplainDetailForwarding(complainId);
+
+        listCall.enqueue(new Callback<List<ReportForward>>() {
+            @Override
+            public void onResponse(Call<List<ReportForward>> call, Response<List<ReportForward>> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Succefull");
+
+                    list = response.body();
+                    getEmployee(complainId);
+                    Log.d(TAG, "onResponse: " + list.size());
+
+
+                }else {
+                    Log.d(TAG, "onResponse: Failed!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReportForward>> call, Throwable t) {
+                Log.d(TAG, "onResponse: Failed! :" + t.getMessage());
+
+            }
+        });
+    }
     private void getSingleComplainForwardingDetail(String complainId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)

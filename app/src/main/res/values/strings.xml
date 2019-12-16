@@ -102,4 +102,5 @@
     <string name="please_wait">Please wait ...</string>
     <string name="detail_employee">DetailEmployee</string>
     <string name="revoke_message">The employee is not response in his suggested date</string>
+    <string name="message_for_resolve">Resolve Message</string>
 </resources>

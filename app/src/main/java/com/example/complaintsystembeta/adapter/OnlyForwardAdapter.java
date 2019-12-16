@@ -28,12 +28,16 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
     private List<AllComplains> allComplains;
     private Context context;
     private String employeId;
+    private String decisionForwardToOrFrom;
 
-    public OnlyForwardAdapter(List<AllComplains> allComplains, Context context, String employId, String userName) {
+
+
+    public OnlyForwardAdapter(List<AllComplains> allComplains, Context context, String employId, String userName, String decisionForwardToOrFrom) {
         this.allComplains = allComplains;
         this.context = context;
         this.employeId = employId;
         this.userName = userName;
+        this.decisionForwardToOrFrom = decisionForwardToOrFrom;
     }
 
 
@@ -48,6 +52,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull OnlyForwardViewHolder holder, int position) {
+        holder.complainerName.setText(allComplains.get(position).getAccount_number());
         holder.complainsDate.setText(allComplains.get(position).getCreated_us());
         holder.complainsStatus.setText(allComplains.get(position).getComplain_status());
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
@@ -88,6 +93,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
                 intent.putExtra(Constants.DESIGNATION_ID, userName);
                 intent.putExtra(Constants.EMPLOYEE_ID, employeId);
                 intent.putExtra(context.getString(R.string.permanentlogin_name), employeId);
+                intent.putExtra(Constants.CHOICE, decisionForwardToOrFrom);
                 holder.itemView.getContext().startActivity(intent);
             }
         });

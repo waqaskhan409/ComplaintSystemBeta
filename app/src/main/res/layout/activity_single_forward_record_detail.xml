@@ -39,9 +39,11 @@
     <TextView
         android:id="@+id/compliansBody"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="4dp"
         android:background="@drawable/layout_bg"
         android:layout_margin="10dp"
         android:hint="Remarks Body"
@@ -232,6 +234,7 @@
                 android:layout_marginRight="20dp"
                 android:text="Reply report"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:id="@+id/reply"
                 >
             </Button>
@@ -245,6 +248,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:id="@+id/forward"
+                android:visibility="gone"
                 >
             </Button>
         </LinearLayout>
@@ -256,6 +260,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:id="@+id/acklowledged"
+            android:visibility="gone"
             android:text="acknowledged"
             ></Button>
         <Button

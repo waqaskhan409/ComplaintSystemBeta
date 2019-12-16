@@ -2,6 +2,7 @@ package com.example.complaintsystembeta.interfaace;
 
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Consumer;
+import com.example.complaintsystembeta.model.DelayEmployees;
 import com.example.complaintsystembeta.model.Department;
 import com.example.complaintsystembeta.model.Designation;
 import com.example.complaintsystembeta.model.Employee;
@@ -9,6 +10,7 @@ import com.example.complaintsystembeta.model.Forwards;
 import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.Posts;
 import com.example.complaintsystembeta.model.ReportForward;
+import com.example.complaintsystembeta.model.Resolve;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.model.TestClas;
 
@@ -45,6 +47,10 @@ public interface JsonApiHolder {
 
     @GET("all_complains")
     Call<List<AllComplains>> getComplains();
+
+
+    @GET("get_total_delays")
+    Call<List<Employee>> getTotalDelays();
 
     @POST("get_sorted_complains_against_date_and_status")
     @FormUrlEncoded
@@ -86,6 +92,11 @@ public interface JsonApiHolder {
     @POST("forget_password")
     @FormUrlEncoded
     Call<TestClas> forget(@Field("email") String email);
+
+    @POST("update_is_delay")
+    @FormUrlEncoded
+    Call<TestClas> updateIsDelayed(@Field("reporting_id") String reportingId);
+
 
 
     @POST("update_is_acknowledged")
@@ -140,6 +151,14 @@ public interface JsonApiHolder {
             @Part("complain_id") RequestBody complain_id,
             @Part("complain_status") RequestBody complain_status,
             @Part("complain_body") RequestBody complain_body
+                                );
+    @Multipart
+    @POST("set_resolve_complain")
+    Call<TestClas> setResolveComplain(
+            @Part("resolve_id") RequestBody resolve_id,
+            @Part("complain_id") RequestBody complain_id,
+            @Part("resolve_by") RequestBody resolve_by,
+            @Part("resolve_body") RequestBody resolve_body
                                 );
 
     @Multipart
@@ -207,6 +226,12 @@ public interface JsonApiHolder {
             @Field("complain_id") String complainId
     );
 
+    @POST("get_complain_resolve")
+    @FormUrlEncoded
+    Call<Resolve> getComplainResolve(
+            @Field("complain_id") String complainId
+    );
+
     @POST("get_forward_to")
     @FormUrlEncoded
     Call<List<ReportForward>> get_forward_to(
@@ -220,6 +245,12 @@ public interface JsonApiHolder {
             @Field("des_id") String des_id
     );
 
+    @POST("get_filter_single_complains_forwarding_from")
+    @FormUrlEncoded
+    Call<List<ReportForward>> getFilterSingleComplainDetailForwardingFrom(
+            @Field("complain_id") String complainId,
+            @Field("des_id") String des_id
+    );
     @POST("update_status")
     @FormUrlEncoded
     Call<PostResponse> updateStatus(
@@ -240,6 +271,7 @@ public interface JsonApiHolder {
     @POST("get_forwards_complains")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalForwardsComplains(@Field("des_id") String des_id);
+
     @POST("get_forwards_from_complains")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalForwardsFromComplains(@Field("des_id") String des_id);

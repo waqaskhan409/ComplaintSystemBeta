@@ -17,7 +17,9 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.Forwards;
+import com.example.complaintsystembeta.ui.EmployeeNavigation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,12 @@ public class AllCatigoryComplainsFragment extends Fragment {
     @BindView(R.id.complainAnalytics)
     LinearLayout linearLayoutComplainAnalytics;
 
+    @BindView(R.id.delay)
+    LinearLayout delay;
+
+    @BindView(R.id.forwardFrom)
+    LinearLayout forwardFrom;
+
     @BindView(R.id.complainAnalyticsT)
     TextView complainsAnalyticsT;
 
@@ -81,6 +89,12 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
     @BindView(R.id.allComplainsT)
     TextView allComplainsT;
+
+    @BindView(R.id.forwardFromT)
+    TextView forwardFromT;
+
+    @BindView(R.id.delayT)
+    TextView delayT;
 
 
     public AllCatigoryComplainsFragment(String cnic, String desId, String userName, String employeeId) {
@@ -190,6 +204,22 @@ public class AllCatigoryComplainsFragment extends Fragment {
 //        intent.putExtra(Constants.ALL_COMPLAINS, getString(R.string.complain_redirect));
         startActivity(intent);
     }
+    @OnClick(R.id.forwardFrom)
+    public void redirectToEmployeeComplainsForwardFrom(){
+        Log.d(TAG, "redirectToEmployeeComplainsForwardFrom: Clicked");
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
+        intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
+        intent.putExtra(getString(R.string.permanentlogin_name), userName);
+        startActivity(intent); }
+    @OnClick(R.id.delay)
+    public void redirectToDelayEmployees(){
+        Intent intent = new Intent(getContext(), DelayedEmployee.class);
+        intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
+        intent.putExtra(getString(R.string.permanentlogin_name), userName);
+        startActivity(intent);
+    }
 
     @Override
     public void onStart() {
@@ -197,10 +227,43 @@ public class AllCatigoryComplainsFragment extends Fragment {
         valuesForNew.clear();
         valuesForPending.clear();
         valuesForResolved.clear();
+        ((EmployeeNavigation)getActivity()).checkConnection();
         fetchComplains();
         totalForwards();
+        totalForwardsFrom();
+        fetchTotalDelays();
     }
 
+    private void totalForwardsFrom() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<Forwards> call = service.getTotalForwardsFrom(employeeId);
+        Log.d(TAG, "totalForwardsFrom: Called");
+
+        call.enqueue(new Callback<Forwards>() {
+            @Override
+            public void onResponse(Call<Forwards> call, Response<Forwards> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, "totalForwardsFrom:From " + response.body().getForward());
+                    forwardFromT.setText(response.body().getForward());
+                }else{
+                    Log.d(TAG, "totalForwardsFrom: Failed" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Forwards> call, Throwable t) {
+                Log.d(TAG, "totalForwardsFrom: Failed" + t.getMessage() );
+
+            }
+        });
+
+    }
 
 
     private void fetchComplains() {
@@ -240,6 +303,39 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
+
+    }
+    private void fetchTotalDelays() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<Employee>> call = service.getTotalDelays();
+
+        call.enqueue(new Callback<List<Employee>>() {
+            @Override
+            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Failed!");
+                    return;
+                }
+                Log.d(TAG, "onResponse: "+ response.body());
+                List<Employee> list = response.body();
+                int count = 0;
+                for(Employee all: list){
+                    count = count + Integer.parseInt(all.getTotal());
+                }
+                delayT.setText(count + "");
+            }
+
+            @Override
+            public void onFailure(Call<List<Employee>> call, Throwable t) {
 
             }
         });

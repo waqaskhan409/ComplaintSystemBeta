@@ -46,6 +46,10 @@ public class AllEmployeesAdapter extends RecyclerView.Adapter<AllEmployeesAdapte
     @Override
     public void onBindViewHolder(@NonNull AllEmployeeViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called!");
+        if(allEmployees.get(position).getTotal() != null){
+            holder.delayTotal.setVisibility(View.VISIBLE);
+            holder.delayTotal.append(allEmployees.get(position).getTotal());
+        }
         holder.employeeName.setText(allEmployees.get(position).getFull_name());
         holder.employeeDesignation.setText(allEmployees.get(position).getDes_title());
         holder.employeeTag.setText(allEmployees.get(position).getFull_name().toUpperCase().charAt(0)+"" );
@@ -98,13 +102,14 @@ public class AllEmployeesAdapter extends RecyclerView.Adapter<AllEmployeesAdapte
     }
 
     class AllEmployeeViewHolder extends RecyclerView.ViewHolder{
-        private TextView employeeName, employeeDesignation, employeeTag;
+        private TextView employeeName, employeeDesignation, employeeTag, delayTotal;
 
         public AllEmployeeViewHolder(@NonNull View itemView) {
             super(itemView);
             employeeName = itemView.findViewById(R.id.employeeName);
             employeeDesignation = itemView.findViewById(R.id.employeeDesignation);
             employeeTag = itemView.findViewById(R.id.employeeTag);
+            delayTotal = itemView.findViewById(R.id.delayTotal);
         }
     }
 

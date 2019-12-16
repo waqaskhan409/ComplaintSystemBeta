@@ -57,6 +57,10 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.forwardTo.setText("Forwarded to: " + getTextFromEmployee(allReports.get(position).getForwards_to()));
         holder.forwardFrom.setText("Forwarded from: " + getTextFromEmployee(allReports.get(position).getForwards_by()));
         holder.date.setText(allReports.get(position).getForwards_date());
+        if(allReports.get(position).getIs_delay().equals("1")){
+            holder.itemView.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+            holder.complainBody.setTextColor(context.getColor(R.color.white));
+        }
         if(allReports.get(position).getIs_seen() !=null ) {
             if (allReports.get(position).getIs_seen().equals("1")) {
                 holder.imageView.setImageDrawable(context.getDrawable(R.drawable.seen));

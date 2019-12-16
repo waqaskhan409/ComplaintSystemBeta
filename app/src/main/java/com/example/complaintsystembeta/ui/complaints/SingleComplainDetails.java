@@ -2,6 +2,7 @@ package com.example.complaintsystembeta.ui.complaints;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,8 +19,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,6 +45,7 @@ import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PostResponse;
 import com.example.complaintsystembeta.model.ReportForward;
 import com.example.complaintsystembeta.model.SignUpData;
+import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueMessageForResolve;
 import com.example.complaintsystembeta.ui.login.EmployeeLogin;
 import com.squareup.picasso.Picasso;
 
@@ -69,23 +74,26 @@ public class SingleComplainDetails extends BaseActivity {
     private static final String TAG = "SingleComplainDetails";
     private Unbinder unbinder;
     private Bundle data;
-    private String complainId, user, userName = "", employeeId;
+    private String complainId, user, userName = "", employeeId, decisionForwardToOrFrom;
     private MediaPlayer   player = null;
-//    private String urlImages = "http://192.168.43.31:3000/uploads/";
     private ArrayList<String> arrayListStatus = new ArrayList<>();
     private ArrayList<String> uriArrayList = new ArrayList<>();
     private ArrayList<String> audioArrayList = new ArrayList<>();
+    private List<ReportForward> listFilter = new ArrayList<>();
+
     private Handler handler;
+    private SearchView searchView;
+
     List<ReportForward> list;
     List<Employee> listEmployees;
 
     private ImagesSwipe mImageSwipe;
     private TextView[] mDots;
-    @BindView(R.id.confirmStatusButton)
-    Button confirmStatusButton;
+//    @BindView(R.id.confirmStatusButton)
+//    Button confirmStatusButton;
 
     @BindView(R.id.confirmStatusSpinner)
-    Spinner confirmStatusSpinner;
+    public Spinner confirmStatusSpinner;
 
 
     @BindView(R.id.confirmStatusLayout)
@@ -152,6 +160,7 @@ public class SingleComplainDetails extends BaseActivity {
         complainId = data.getString(getString(R.string.complains_id));
         user = data.getString(Constants.PREVELDGES_ON_FORWARD);
         employeeId = data.getString(Constants.EMPLOYEE_ID);
+        decisionForwardToOrFrom = data.getString(Constants.CHOICE);
         Log.d(TAG, "onCreate: usernAME" + user);
 //        desId = data.getString(Constants.DESIGNATION_ID);
         userName = data.getString(Constants.DESIGNATION_ID);
@@ -167,22 +176,52 @@ public class SingleComplainDetails extends BaseActivity {
         if(employeeId == null){
             employeeId = "";
         }
-
+        if(decisionForwardToOrFrom == null){
+            decisionForwardToOrFrom = "";
+        }
         getSingleComplainDetail(complainId);
         arrayListStatus.add(Constants.COMPLAIN_IN_PROCESS);
         arrayListStatus.add(Constants.COMPLAINS_RESOLVED);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayListStatus);
         confirmStatusSpinner.setAdapter(adapter);
+        confirmStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(confirmStatusSpinner.getSelectedItem().toString().equals(Constants.COMPLAINS_RESOLVED)){
+                    BottomSheetDialogueMessageForResolve messageForResolve = new BottomSheetDialogueMessageForResolve(complainId, employeeId);
+                    messageForResolve.show(getSupportFragmentManager(), "ResolveFragment");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                if(confirmStatusSpinner.getSelectedItem().toString().equals(Constants.COMPLAINS_RESOLVED)){
+                    BottomSheetDialogueMessageForResolve messageForResolve = new BottomSheetDialogueMessageForResolve(complainId, employeeId);
+                    messageForResolve.show(getSupportFragmentManager(), "ResolveFragment");
+                }
+            }
+        });
 
         if(userName.equals(Constants.ADMIN)){
-//            forwardsLayout.setVisibility(View.VISIBLE);
             Log.d(TAG, "onCreate: COMPLAIN ID ADMIN" + complainId);
-
+            if(decisionForwardToOrFrom.equals(Constants.FORWARD_TO)){
             getFilterSingleComplainForwardingDetail(complainId);
+            }else if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)){
+                getFilterSingleComplainForwardingFromDetail(complainId);
+            }
             }else {
             Log.d(TAG, "onCreate: COMPLAIN IS NOT ADMIN" + complainId);
             confirmStatusLayout.setVisibility(View.GONE);
-            getSingleComplainForwardingDetail(complainId);
+            if(decisionForwardToOrFrom.equals(Constants.FORWARD_TO)){
+                getFilterSingleComplainForwardingDetail(complainId);
+            }else if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)){
+                getFilterSingleComplainForwardingFromDetail(complainId);
+
+            }else {
+                getSingleComplainForwardingDetail(complainId);
+
+            }
+
 
         }
 
@@ -218,19 +257,30 @@ public class SingleComplainDetails extends BaseActivity {
     protected void onStart() {
         super.onStart();
         checkConnection();
-
-
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case android.R.id.home:
-                    onBackPressed();
-                    return true;
-            }
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
 
+            case R.id.timeline:
+                timeline();
+                break;
+            default:
+                Log.d(TAG, "onOptionsItemSelected: nothing found!");
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void timeline() {
+        Intent intent = new Intent(this, ComplainStatistics.class);
+        intent.putExtra(getString(R.string.complains_id),complainId);
+        intent.putExtra(Constants.PREVELDGES_ON_FORWARD, "only view");
+        intent.putExtra(Constants.STATUS_COMPLAIN,  complainsStatus.getText().toString());
+        startActivity(intent);
     }
 
     @OnClick(R.id.forward)
@@ -251,7 +301,7 @@ public class SingleComplainDetails extends BaseActivity {
 ////        intent.putExtra(Constants.REPLY_TO_FORWARD, li);
 //        startActivity(intent);
 //    }
-    @OnClick(R.id.confirmStatusButton)
+//    @OnClick(R.id.confirmStatusButton)
     public void updateStatus(){
         String newStatus;
         newStatus = confirmStatusSpinner.getSelectedItem().toString();
@@ -319,7 +369,7 @@ public class SingleComplainDetails extends BaseActivity {
 //    }
     private void getSingleComplainDetail(String complainId) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.31:3000/api/")
+                .baseUrl(Constants.REST_API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -493,8 +543,85 @@ public class SingleComplainDetails extends BaseActivity {
             }
         });
     }
+    private void getFilterSingleComplainForwardingFromDetail(String complainId) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
+        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+
+        Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwardingFrom(complainId, employeeId);
+
+        listCall.enqueue(new Callback<List<ReportForward>>() {
+            @Override
+            public void onResponse(Call<List<ReportForward>> call, Response<List<ReportForward>> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Succefull");
+
+                    list = response.body();
+                    Log.d(TAG, "onResponse: getFilterSingleComplainDetailForwarding :" + list.size());
+                    getEmployee(complainId);
+
+
+                }else {
+                    Log.d(TAG, "onResponse: Failed!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReportForward>> call, Throwable t) {
+                Log.d(TAG, "onResponse: Failed! :" + t.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_detail, menu);
+        MenuItem menuItem = menu.findItem(R.id.search);
+
+
+        searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
+                searchViewMethod(newText);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void searchViewMethod(String newText) {
+        listFilter.clear();
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).getForwards_date().toLowerCase().contains(newText)
+                    || list.get(i).getForwards_by().toLowerCase().contains(newText)
+                    || list.get(i).getForwards_message().toLowerCase().contains(newText)
+                    || list.get(i).getForwards_to().toLowerCase().contains(newText)
+                    || list.get(i).getSuggested_date_reply().toLowerCase().contains(newText)
+                    || list.get(i).getStatus().toLowerCase().contains(newText)
+            ){
+                listFilter.add(list.get(i));
+            }
+        }
+        setupAdapter(listFilter, listEmployees);
+    }
+
     private void setupAdapter(List<ReportForward> list, List<Employee> listEmployees) {
-        ForwardAdapter allComplainsAdapter  = new ForwardAdapter(list, this, userName, user, listEmployees);
+        ForwardAdapter allComplainsAdapter  = new ForwardAdapter(list, this, userName, user, listEmployees, decisionForwardToOrFrom);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
     }

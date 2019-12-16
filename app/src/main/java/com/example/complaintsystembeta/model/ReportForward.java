@@ -29,6 +29,7 @@ public class ReportForward {
 
     private String employee_name;
     private String is_reply;
+    private String is_delay;
     private String status;
     private String is_current;
     private String is_seen;
@@ -229,7 +230,7 @@ public class ReportForward {
         this.is_public = is_public;
     }
 
-    public ReportForward(String complains_reporting_id, String complain_id, String forwards_to, String forwards_by, String forwards_date, String forwards_message, String suggested_date_reply, String reporting_attachments_id, String reporting_attachment_file_type, String reporting_attachment_name, String reporting_created_at, String des_id, String des_title, String des_scale, String department_id, String last_update_ts, String full_name, String employee_name, String is_reply, String status, String is_current, String is_seen, String is_acknowledged, String is_public) {
+    public ReportForward(String complains_reporting_id, String complain_id, String forwards_to, String forwards_by, String forwards_date, String forwards_message, String suggested_date_reply, String reporting_attachments_id, String reporting_attachment_file_type, String reporting_attachment_name, String reporting_created_at, String des_id, String des_title, String des_scale, String department_id, String last_update_ts, String full_name, String employee_name, String is_reply, String is_delay, String status, String is_current, String is_seen, String is_acknowledged, String is_public) {
         this.complains_reporting_id = complains_reporting_id;
         this.complain_id = complain_id;
         this.forwards_to = forwards_to;
@@ -249,10 +250,19 @@ public class ReportForward {
         this.full_name = full_name;
         this.employee_name = employee_name;
         this.is_reply = is_reply;
+        this.is_delay = is_delay;
         this.status = status;
         this.is_current = is_current;
         this.is_seen = is_seen;
         this.is_acknowledged = is_acknowledged;
         this.is_public = is_public;
+    }
+
+    public String getIs_delay() {
+        return is_delay;
+    }
+
+    public void setIs_delay(String is_delay) {
+        this.is_delay = is_delay;
     }
 }

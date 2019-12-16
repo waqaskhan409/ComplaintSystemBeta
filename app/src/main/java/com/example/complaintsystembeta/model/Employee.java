@@ -27,6 +27,7 @@ public class Employee implements Serializable {
     private String des_title;
     private String des_scale;
     private String department_id;
+    private String total;
     private String birth_date;
     private String department_name;
     private String department_description;
@@ -56,7 +57,7 @@ public class Employee implements Serializable {
         this.department_city_name = department_city_name;
     }
 
-    public Employee(String emp_des_id, String employee_id, String des_id, String cnic, String full_name, String father_name, String order_date, String order_letter_photo, String is_active, String last_update_ts, String appointment_date, String gender, String email, String local, String employee_photo, String des_title, String des_scale, String department_id, String birth_date, String department_name, String department_description, String department_city_name) {
+    public Employee(String emp_des_id, String employee_id, String des_id, String cnic, String full_name, String father_name, String order_date, String order_letter_photo, String is_active, String last_update_ts, String appointment_date, String gender, String email, String local, String employee_photo, String des_title, String des_scale, String department_id, String total, String birth_date, String department_name, String department_description, String department_city_name) {
         this.emp_des_id = emp_des_id;
         this.employee_id = employee_id;
         this.des_id = des_id;
@@ -75,6 +76,7 @@ public class Employee implements Serializable {
         this.des_title = des_title;
         this.des_scale = des_scale;
         this.department_id = department_id;
+        this.total = total;
         this.birth_date = birth_date;
         this.department_name = department_name;
         this.department_description = department_description;
@@ -231,5 +233,13 @@ public class Employee implements Serializable {
 
     public void setBirth_date(String birth_date) {
         this.birth_date = birth_date;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

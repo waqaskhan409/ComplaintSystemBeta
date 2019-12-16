@@ -91,8 +91,6 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @BindView(R.id.delayT)
     TextView delayT;
 
-    @BindView(R.id.forwardFromT)
-    TextView forwardFromT;
 
     private Toolbar toolbar;
 
@@ -162,36 +160,6 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     }
 
-    private void totalForwardsFrom() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
-        Call<Forwards> call = service.getTotalForwardsFrom(employeeId);
-        Log.d(TAG, "totalForwardsFrom: Called");
-
-        call.enqueue(new Callback<Forwards>() {
-            @Override
-            public void onResponse(Call<Forwards> call, Response<Forwards> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, "totalForwardsFrom:From " + response.body().getForward());
-                    forwardFromT.setText(response.body().getForward());
-                }else{
-                    Log.d(TAG, "totalForwardsFrom: Failed" );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Forwards> call, Throwable t) {
-                Log.d(TAG, "totalForwardsFrom: Failed" + t.getMessage() );
-
-            }
-        });
-
-    }
 
     @OnClick(R.id.allComplains)
     public void redirectToAllComplains(){
@@ -243,12 +211,12 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @OnClick(R.id.forwardFrom)
     public void redirectToEmployeeComplainsForwardFrom(){
+        Log.d(TAG, "redirectToEmployeeComplainsForwardFrom: Clicked");
         Intent intent = new Intent(this, ManagingComplaints.class);
         intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
-        startActivity(intent);
-    }
+        startActivity(intent); }
     @OnClick(R.id.delay)
     public void redirectToDelayEmployees(){
         Intent intent = new Intent(this, ManagingComplaints.class);
@@ -272,7 +240,6 @@ public class AllCatigoryComplains extends AppCompatActivity {
         valuesForNew.clear();
         valuesForPending.clear();
         valuesForResolved.clear();
-        totalForwardsFrom();
         fetchComplains();
         totalForwards();
     }

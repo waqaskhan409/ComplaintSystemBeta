@@ -49,6 +49,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -458,7 +459,6 @@ public class Profile extends Fragment {
 
 
     }
-
 
 
 }

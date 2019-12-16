@@ -79,6 +79,7 @@ public class ManagingComplaints extends BaseActivity {
 
     private Unbinder unbinder;
     private SearchView searchView;
+    private String decisionForwardToOrFrom;
 
 
 
@@ -117,6 +118,7 @@ public class ManagingComplaints extends BaseActivity {
         Log.d(TAG, "onCreate: " + complainData);
 
 //        simpleSearchView.setSuggestionsAdapter(new AutoCompleteAdapter(this, allEmployee));
+        redirectAdapters();
 
 
     }
@@ -126,7 +128,6 @@ public class ManagingComplaints extends BaseActivity {
     protected void onStart() {
         super.onStart();
         checkConnection();
-        redirectAdapters();
     }
 
     private void redirectAdapters() {
@@ -154,8 +155,6 @@ public class ManagingComplaints extends BaseActivity {
             case Constants.FORWARD_FROM:
                 fetchForwardFromComplains();
                 break;
-
-
 
             default:
                 Log.d(TAG, "redirectAdapters: No Data loaded");
@@ -297,7 +296,8 @@ public class ManagingComplaints extends BaseActivity {
                 if(response.isSuccessful()){
                     allComplains = response.body();
                     Log.d(TAG, "onResponse: " + allComplains.size());
-                    setupAdapterForward();
+                    decisionForwardToOrFrom = Constants.FORWARD_TO;
+                    setupAdapterForward((ArrayList<AllComplains>) allComplains);
                 }
             }
 
@@ -327,7 +327,8 @@ public class ManagingComplaints extends BaseActivity {
                 if(response.isSuccessful()){
                     allComplains = response.body();
                     Log.d(TAG, "onResponse: " + allComplains.size());
-                    setupAdapterForward();
+                    decisionForwardToOrFrom = Constants.FORWARD_FROM;
+                    setupAdapterForward((ArrayList<AllComplains>) allComplains);
                 }
             }
 
@@ -342,8 +343,8 @@ public class ManagingComplaints extends BaseActivity {
 
     }
 
-    private void setupAdapterForward() {
-        OnlyForwardAdapter allComplainsAdapter  = new OnlyForwardAdapter(allComplains, this, desId, userName);
+    private void setupAdapterForward(ArrayList<AllComplains> allComplainsFilter) {
+        OnlyForwardAdapter allComplainsAdapter  = new OnlyForwardAdapter(allComplainsFilter, this, desId, userName, decisionForwardToOrFrom);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
     }
@@ -577,8 +578,8 @@ public class ManagingComplaints extends BaseActivity {
 
             case Constants.RESOLVED_COMPLAINS:
                 getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_RESOLVED);
-
                 break;
+
             default:
                 Log.d(TAG, "redirectAdapters: No Data loaded");
                 break;
@@ -706,7 +707,11 @@ public class ManagingComplaints extends BaseActivity {
                 allComplainsFilter.add(allComplains.get(i));
             }
         }
-        setupAdapter(allComplainsFilter);
+        if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM) || decisionForwardToOrFrom.equals(Constants.FORWARD_TO)){
+            setupAdapterForward((ArrayList<AllComplains>) allComplainsFilter);
+        }else {
+            setupAdapter(allComplainsFilter);
+        }
     }
 
 

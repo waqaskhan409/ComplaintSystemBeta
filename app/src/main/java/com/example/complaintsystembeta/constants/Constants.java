@@ -6,6 +6,7 @@ public class Constants {
     public static final int RESULT_LOAD_FOR_IMAGES_FOR_PROVE = 1001;
     public static final String ALL_COMPLAINS = "ALL";
     public static final String NEW_COMPLAINS = "NEW";
+    public static final String NOT_DECIDED = "NOT DECIDED";
     public static final String RESOLVED_COMPLAINS = "RESOLVED";
     public static final String PENDING_COMPLAINS = "PENDING";
     public static final String EMPLOYEE_COMPLAINS = "EMPLOYEE";
@@ -54,4 +55,5 @@ public class Constants {
     public static final int CAMERA = 10001;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 10002;
     public static final String STATUS_COMPLAIN = "statusComplain";
+    public static final String CHOICE = "ChoiceBetweenToOrFrom";
 }

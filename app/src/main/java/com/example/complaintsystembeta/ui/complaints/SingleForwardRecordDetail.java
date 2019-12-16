@@ -62,6 +62,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     private String reportingId, designationTitle, employeeId, forwardFrom, forwardTo, remarksBody, suggestedDate, complainId, user;
     private Toolbar toolbar;
     private String forwardFromDes;
+    private String decisionForwardToOrFrom;
     private String isReply, isCurrent;
     private List<String> listReportingImages = new ArrayList<>();
     private List<String> listReportingAudio = new ArrayList<>();
@@ -246,9 +247,38 @@ public class SingleForwardRecordDetail extends BaseActivity {
         forwardToArray = forwardTo.split("/");
         forwardToInner = forwardByArray[0];
         forwardByInner = forwardToArray[0];
-        submitToRevoke(forwardToInner,forwardByInner);
+        submitToDelay(forwardToInner, forwardByInner);
 
 
+
+    }
+
+    private void submitToDelay(String fToInner, String fByInner) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.REST_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+          JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        Call call = service.updateIsDelayed(reportingId);
+        call.enqueue(new Callback<TestClas>() {
+            @Override
+            public void onResponse(Call<TestClas> call, Response<TestClas> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
+                    submitToRevoke(fToInner, fByInner);
+                }else {
+                    dissmissProgressDialogue();
+                    Log.d(TAG, "onResponse: Failed!");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TestClas> call, Throwable t) {
+                dissmissProgressDialogue();
+                Log.d(TAG, "onFailure: " + t.getMessage());
+            }
+        });
 
     }
 
@@ -294,10 +324,14 @@ public class SingleForwardRecordDetail extends BaseActivity {
                         viewPager.setAdapter(mImageSwipe);
                         addDotToLinearLayout(0);
                     }
-                    if(listReportingAudio.size() != 0){
+                    if(decisionForwardToOrFrom != null) {
+                        if (!decisionForwardToOrFrom.equals("")) {
+                            if (listReportingAudio.size() != 0) {
 
-                            audioLayout.setVisibility(View.VISIBLE);
+                                audioLayout.setVisibility(View.VISIBLE);
 
+                            }
+                        }
                     }
 
 
@@ -343,21 +377,37 @@ public class SingleForwardRecordDetail extends BaseActivity {
         isCurrent = data.getString(Constants.IS_CURRENT);
         forwardFromDes = data.getString(Constants.FORWARD_FROM_NAME_ID_DES);
         employeeId = data.getString(getString(R.string.permanentlogin_name));
+        decisionForwardToOrFrom = data.getString(Constants.CHOICE);
         Log.d(TAG, "settingValues: " + employeeId);
 
+        if(decisionForwardToOrFrom != null) {
+            if (decisionForwardToOrFrom.equals(Constants.FORWARD_TO)) {
+                if (user.equals("admin")) {
+                    reply.setVisibility(View.VISIBLE);
+                    forward.setVisibility(View.VISIBLE);
+                    acknowledged.setVisibility(View.VISIBLE);
+//                    audioLayout.setVisibility(View.VISIBLE);
 
-        if(user.equals("admin")){
-            reply.setVisibility(View.VISIBLE);
-            forward.setVisibility(View.VISIBLE);
-            acknowledged.setVisibility(View.VISIBLE);
-            if(checkDate(suggestedDate)){
-            revoke.setVisibility(View.VISIBLE);
+                    isSeenUpdate(reportingId);
+                } else {
+                    reply.setVisibility(View.GONE);
+                    forward.setVisibility(View.GONE);
+                    acknowledged.setVisibility(View.GONE);
+                    audioLayout.setVisibility(View.GONE);
+                }
+            } else if (decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)) {
+                reply.setVisibility(View.GONE);
+                forward.setVisibility(View.GONE);
+                acknowledged.setVisibility(View.GONE);
+//                audioLayout.setVisibility(View.VISIBLE);
+                if (checkDate(suggestedDate)) {
+                    revoke.setVisibility(View.VISIBLE);
+
+                } else {
+                    revoke.setVisibility(View.GONE);
+
+                }
             }
-            isSeenUpdate(reportingId);
-        }else {
-            reply.setVisibility(View.GONE);
-            forward.setVisibility(View.GONE);
-            acknowledged.setVisibility(View.GONE);
         }
 
         remarks.setText(remarksBody);
@@ -370,6 +420,10 @@ public class SingleForwardRecordDetail extends BaseActivity {
     }
 
     private boolean checkDate(String suggestedDate) {
+        if(suggestedDate.equals(Constants.NOT_DECIDED)){
+            return true;
+        }
+
         String[] date = suggestedDate.split("-");
         int year = Integer.parseInt(date[0]);
         int month = Integer.parseInt(date[1]);
@@ -410,8 +464,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
             public void onResponse(Call<TestClas> call, Response<TestClas> response) {
                 if(response.isSuccessful()){
                     Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
-//                    submitAudioToAttachment(complainReportingId);
-//                    submitFileToAttachment(complainReportingId);
+                    redirectToBackActivity();
                 }else {
                     dissmissProgressDialogue();
                     Log.d(TAG, "onResponse: Failed!");
@@ -427,6 +480,11 @@ public class SingleForwardRecordDetail extends BaseActivity {
         });
 
     }
+
+    private void redirectToBackActivity() {
+        onBackPressed();
+    }
+
     private void isSeenUpdate(String reportingId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.REST_API)

@@ -310,22 +310,18 @@ public class Registration extends BaseActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.d(TAG, "onFailure: Failed loading Firebase ML kit");
-                    showSnackBar("cannot load model", "");
+                    showSnackBar("Cannot load ML model", "");
                 }
             });
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-    void checkCnicAgainstCard(String cnicI){
-        String cnicT = cnicED.getEditText().getText().toString();
-        Log.d(TAG, "scanTextFromUri: " + cnicI);
-        Log.d(TAG, "scanTextFromUri: " + cnicT);
-
-        if(cnicI.contains(cnicT)){
-            Toast.makeText(this, "CNIC correct", Toast.LENGTH_SHORT).show();
+    void checkCnicAgainstCard(String scannedAccount){
+        String accountNumberString = accountED.getEditText().getText().toString();
+        if(scannedAccount.contains(accountNumberString)){
+            Toast.makeText(this, "Bill Image correct", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "scanTextFromUri: Correct" + cnic);
-
         }else {
             showSnackBar("You must have to upload original cnic image with correct format","");
         }
@@ -525,7 +521,7 @@ public class Registration extends BaseActivity {
                     final InputStream imageStream = getContentResolver().openInputStream(imageUriForWasaBill);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                     imageForWasaBill.setImageBitmap(selectedImage);
-//                    scanTextFromUri(imageUriForWasaBill);
+                    scanTextFromUri(imageUriForWasaBill);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

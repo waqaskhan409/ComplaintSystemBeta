@@ -18,13 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.profile.DetailProfile"
+        <activity android:name=".ui.complaints.DelayedEmployee"
             android:theme="@style/AppThemeS"
             ></activity>
         <activity
-            android:name=".ui.complaints.ComplainStatistics"
+            android:name=".ui.profile.DetailProfile"
             android:theme="@style/AppThemeS"
             />
+        <activity
+            android:name=".ui.complaints.ComplainStatistics"
+            android:theme="@style/AppThemeS" />
         <activity
             android:name=".ui.complaints.SingleForwardRecordDetail"
             android:theme="@style/AppThemeS"
@@ -52,10 +55,7 @@
         <activity
             android:name=".ui.complaints.AllCatigoryComplains"
             android:theme="@style/AppThemeS" />
-        <activity
-            android:name=".ui.login.EmployeeLogin"
-
-            />
+        <activity android:name=".ui.login.EmployeeLogin" />
         <activity
             android:name=".ui.complaints.ComposeComplaints"
             android:theme="@style/AppThemeS"
@@ -72,8 +72,7 @@
         </activity>
         <activity
             android:name=".ui.login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/AppThemeS"

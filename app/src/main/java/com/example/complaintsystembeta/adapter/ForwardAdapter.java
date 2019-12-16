@@ -31,13 +31,15 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
     private Context context;
     private String name;
     private String desId;
+    private String decisionForwardToOrFrom;
 
-    public ForwardAdapter(List<ReportForward> allReports, Context context, String desId, String name, List<Employee> listEmployees) {
+    public ForwardAdapter(List<ReportForward> allReports, Context context, String desId, String name, List<Employee> listEmployees, String decisionForwardToOrFrom) {
         this.allReports = allReports;
         this.context = context;
         this.name = name;
         this.desId = desId;
         this.allEmployees = listEmployees;
+        this.decisionForwardToOrFrom = decisionForwardToOrFrom;
 
     }
 
@@ -49,12 +51,16 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
         return new ForwardAdapterViewHolder(view);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ForwardAdapterViewHolder holder, int position) {
         holder.complainsDate.setText("Suggested Date: " + allReports.get(position).getSuggested_date_reply());
         holder.forwardTo.setText("Forwarded to: " + getTextFromEmployee(allReports.get(position).getForwards_to()));
         holder.forwardFrom.setText("Forwarded from: " + getTextFromEmployee(allReports.get(position).getForwards_by()));
+        if(allReports.get(position).getIs_delay().equals("1")){
+            holder.itemView.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
+            holder.complainBody.setTextColor(context.getColor(R.color.white));
+        }
         if(allReports.get(position).getIs_seen() !=null ) {
             if (allReports.get(position).getIs_seen().equals("1")) {
                 holder.imageView.setImageDrawable(context.getDrawable(R.drawable.seen));
@@ -142,6 +148,7 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
                 intent.putExtra(Constants.IS_CURRENT, allReports.get(position).isIs_current());
                 intent.putExtra(Constants.IS_REPLY, allReports.get(position).isIs_reply());
                 intent.putExtra(context.getString(R.string.permanentlogin_name), desId);
+                intent.putExtra(Constants.CHOICE, decisionForwardToOrFrom);
                 context.startActivity(intent);
             }
         });
