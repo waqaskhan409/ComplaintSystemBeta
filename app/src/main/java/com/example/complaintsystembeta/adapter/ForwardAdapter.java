@@ -21,6 +21,9 @@ import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.ReportForward;
 import com.example.complaintsystembeta.ui.complaints.SingleForwardRecordDetail;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.ForwardAdapterViewHolder>{
@@ -57,6 +60,13 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
         holder.complainsDate.setText("Suggested Date: " + allReports.get(position).getSuggested_date_reply());
         holder.forwardTo.setText("Forwarded to: " + getTextFromEmployee(allReports.get(position).getForwards_to()));
         holder.forwardFrom.setText("Forwarded from: " + getTextFromEmployee(allReports.get(position).getForwards_by()));
+
+        try {
+            holder.days.setText(getDays(allReports.get(position).getForwards_date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         if(allReports.get(position).getIs_delay().equals("1")){
             holder.itemView.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
             holder.complainBody.setTextColor(context.getColor(R.color.white));
@@ -182,6 +192,35 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
         return "";
     }
 
+    private String getDays(String created_us) throws ParseException {
+        String[] arr = created_us.split("T");
+        String[] createdDate = arr[0].split("-");
+       /* int year = Integer.parseInt(createdDate[0]);
+        int month = Integer.parseInt(createdDate[1]);
+        int day = Integer.parseInt(createdDate[2]);
+
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);*/
+
+        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - dateEarly.getTime()) / (24 * 60 * 60 * 1000);
+
+        Log.d(TAG, "getDays: " + a);
+        if ( a == 0){
+            return "Today";
+        }else if( a == 1){
+            return "Yesterday";
+        }
+
+
+
+        return String.valueOf(a) + " Days ago";
+    }
+
+
     private String getNameFromEmployee(String employeeId) {
         for (int i = 0; i < allEmployees.size(); i++) {
             Log.d(TAG, "getTextFromEmployee: " + allEmployees.get(i).getEmployee_id());
@@ -202,7 +241,7 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
     }
 
     static class ForwardAdapterViewHolder extends RecyclerView.ViewHolder{
-        private TextView complainBody, complainsDate, forwardTo, forwardFrom;
+        private TextView complainBody, complainsDate, forwardTo, forwardFrom, days;
         private ImageView imageView;
 
         private ImageView imageViewCircle1, imageViewCircle2;
@@ -214,6 +253,7 @@ public class ForwardAdapter  extends RecyclerView.Adapter<ForwardAdapter.Forward
             forwardTo = itemView.findViewById(R.id.forwardTo);
             forwardFrom = itemView.findViewById(R.id.forwardBy);
             imageView = itemView.findViewById(R.id.imageForSeen);
+            days = itemView.findViewById(R.id.days);
 
 //            imageViewCircle1 = itemView.findViewById(R.id.circle1);
 //            imageViewCircle2 = itemView.findViewById(R.id.circle2);

@@ -6,10 +6,51 @@
     android:layout_margin="20dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filters"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal"
+
+        >
+
+    </TextView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="15dp"
+        android:visibility="gone"
+        android:background="@drawable/layout_bg"
+        android:weightSum="8"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Select Days"
+            android:textSize="20sp"
+            android:layout_weight="4"
+            ></TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="4"
+            android:hint="Days"
+            android:paddingLeft="10dp"
+            android:inputType="number"
+            android:background="@drawable/layout_bg"
+            android:id="@+id/days"
+            ></EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
         android:padding="15dp"
         android:background="@drawable/layout_bg"
         android:weightSum="8"
@@ -49,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="5"
+            android:focusable="false"
             android:padding="10dp"
             android:background="@drawable/layout_bg"
             android:id="@+id/dateTo"
@@ -76,6 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:padding="10dp"
+            android:focusable="false"
             android:id="@+id/dateFrom"
             android:background="@drawable/layout_bg"
            android:hint="click me"
@@ -85,7 +128,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
 
         >
         <Button

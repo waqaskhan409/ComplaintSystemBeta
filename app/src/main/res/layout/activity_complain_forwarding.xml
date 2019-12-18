@@ -57,6 +57,7 @@
         android:layout_marginRight="4dp"
         android:id="@+id/suggestedDateReply"
         android:padding="10dp"
+            android:focusable="false"
         android:layout_marginLeft="4dp"
         android:hint="Suggest date to reply ..."
         android:layout_marginBottom="5dp"

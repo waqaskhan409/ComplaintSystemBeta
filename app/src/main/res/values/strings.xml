@@ -103,4 +103,5 @@
     <string name="detail_employee">DetailEmployee</string>
     <string name="revoke_message">The employee is not response in his suggested date</string>
     <string name="message_for_resolve">Resolve Message</string>
+    <string name="filters">Apply filters</string>
 </resources>

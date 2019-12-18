@@ -17,6 +17,7 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.model.DelayEmployees;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.Forwards;
 import com.example.complaintsystembeta.ui.EmployeeNavigation;
@@ -212,8 +213,10 @@ public class AllCatigoryComplainsFragment extends Fragment {
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
         startActivity(intent); }
+
     @OnClick(R.id.delay)
     public void redirectToDelayEmployees(){
+//        Intent intent = new Intent(getContext(), ManagingComplaints.class);
         Intent intent = new Intent(getContext(), DelayedEmployee.class);
         intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
@@ -316,6 +319,7 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
         JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
+//        Call<List<Employee>> call = service.getTotalForwardsFromWithDelay(employeeId);
         Call<List<Employee>> call = service.getTotalDelays();
 
         call.enqueue(new Callback<List<Employee>>() {

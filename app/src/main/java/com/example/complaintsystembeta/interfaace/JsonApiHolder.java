@@ -268,6 +268,10 @@ public interface JsonApiHolder {
     @FormUrlEncoded
     Call<Forwards> getTotalForwardsFrom(@Field("des_id") String des_id);
 
+    @POST("get_total_forwards_from_with_delay")
+    @FormUrlEncoded
+    Call<Forwards> getTotalForwardsFromWithDelay(@Field("des_id") String des_id);
+
     @POST("get_forwards_complains")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalForwardsComplains(@Field("des_id") String des_id);

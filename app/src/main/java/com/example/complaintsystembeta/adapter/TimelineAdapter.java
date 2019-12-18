@@ -20,6 +20,9 @@ import com.example.complaintsystembeta.model.ReportForward;
 import com.example.complaintsystembeta.ui.complaints.SingleForwardRecordDetail;
 import com.github.vipulasri.timelineview.TimelineView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.TimelineViewHolder>{
@@ -57,9 +60,16 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.forwardTo.setText("Forwarded to: " + getTextFromEmployee(allReports.get(position).getForwards_to()));
         holder.forwardFrom.setText("Forwarded from: " + getTextFromEmployee(allReports.get(position).getForwards_by()));
         holder.date.setText(allReports.get(position).getForwards_date());
+        try {
+            holder.days.setText(getDays(allReports.get(position).getForwards_date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         if(allReports.get(position).getIs_delay().equals("1")){
             holder.itemView.setBackground(context.getDrawable(R.drawable.complains_analytics_drawable));
             holder.complainBody.setTextColor(context.getColor(R.color.white));
+            holder.date.setTextColor(context.getColor(R.color.white));
         }
         if(allReports.get(position).getIs_seen() !=null ) {
             if (allReports.get(position).getIs_seen().equals("1")) {
@@ -187,6 +197,33 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         });
 
     }
+    private String getDays(String created_us) throws ParseException {
+        String[] arr = created_us.split("T");
+        String[] createdDate = arr[0].split("-");
+       /* int year = Integer.parseInt(createdDate[0]);
+        int month = Integer.parseInt(createdDate[1]);
+        int day = Integer.parseInt(createdDate[2]);
+
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);*/
+
+        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - dateEarly.getTime()) / (24 * 60 * 60 * 1000);
+
+        Log.d(TAG, "getDays: " + a);
+        if ( a == 0){
+            return "Today";
+        }else if( a == 1){
+            return "Yesterday";
+        }
+
+
+
+        return String.valueOf(a) + " Days ago";
+    }
 
     private String getTextFromEmployee(String employeeId) {
         for (int i = 0; i < allEmployees.size(); i++) {
@@ -236,7 +273,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
     static class TimelineViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView complainBody, complainsDate, forwardTo, forwardFrom, date;
+        private TextView complainBody, complainsDate, forwardTo, forwardFrom, date, days;
         private ImageView imageView;
         private TimelineView mTimelineView;
 
@@ -251,6 +288,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             date = itemView.findViewById(R.id.date);
             forwardFrom = itemView.findViewById(R.id.forwardBy);
             imageView = itemView.findViewById(R.id.imageForSeen);
+            days = itemView.findViewById(R.id.days);
             mTimelineView = (TimelineView) itemView.findViewById(R.id.timeline);
             mTimelineView.initLine(viewType);
 

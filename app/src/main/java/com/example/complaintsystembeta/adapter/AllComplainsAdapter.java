@@ -21,6 +21,11 @@ import com.example.complaintsystembeta.ui.complaints.ComplainStatistics;
 import com.example.complaintsystembeta.ui.complaints.SingleComplainDetails;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapter.AllComplainViewHolder> {
@@ -52,6 +57,13 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         holder.complainsStatus.setText(allComplains.get(position).getComplain_status());
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
         holder.complainerName.setText(allComplains.get(position).getAccount_number());
+        Log.d(TAG, "onBindViewHolder Date: " + allComplains.get(position).getCreated_us());
+        try {
+            holder.dayElapsed.setText(getDays(allComplains.get(position).getCreated_us()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.leftborder.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
@@ -102,6 +114,35 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         });
 
     }
+
+    private String getDays(String created_us) throws ParseException {
+       String[] arr = created_us.split("T");
+        String[] createdDate = arr[0].split("-");
+       /* int year = Integer.parseInt(createdDate[0]);
+        int month = Integer.parseInt(createdDate[1]);
+        int day = Integer.parseInt(createdDate[2]);
+
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);*/
+
+        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - dateEarly.getTime()) / (24 * 60 * 60 * 1000);
+
+        Log.d(TAG, "getDays: " + a);
+        if ( a == 0){
+            return "Today";
+        }else if( a == 1){
+            return "Yesterday";
+        }
+
+
+
+        return String.valueOf(a) + " Days ago";
+    }
+
     public void deleteItem(int position) {
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_RESOLVED)){
             allComplainsObject = allComplains.get(position);
@@ -135,7 +176,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
     }
 
     class AllComplainViewHolder extends RecyclerView.ViewHolder{
-        private TextView complainerName, complainsDate, complainsBody, complainsStatus, leftborder;
+        private TextView complainerName, complainsDate, complainsBody, complainsStatus, leftborder, dayElapsed;
 
         public AllComplainViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -144,6 +185,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
             complainsBody = itemView.findViewById(R.id.complaintsBody);
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
             leftborder = itemView.findViewById(R.id.leftBorder);
+            dayElapsed = itemView.findViewById(R.id.complainDate);
         }
     }
 }

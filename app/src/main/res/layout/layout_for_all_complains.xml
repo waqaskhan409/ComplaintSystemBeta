@@ -72,6 +72,24 @@
             android:ellipsize="end"
             android:maxLines="1"
             ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_bg"
+            android:id="@+id/complainDate"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="7dp"
+            android:paddingRight="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/complaintsBody"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:textSize="15sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            ></TextView>
 </RelativeLayout>
 </androidx.cardview.widget.CardView>
 

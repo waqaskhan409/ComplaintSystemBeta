@@ -550,7 +550,6 @@ public class ManagingComplaints extends BaseActivity {
 
     private void filterListMonthly() {
         allComplainsFilter.clear();
-
         int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
         int currentYear =  Calendar.getInstance().get(Calendar.YEAR);
         Log.d(TAG, "filterListMonthly: " + currentMonth);
@@ -558,18 +557,23 @@ public class ManagingComplaints extends BaseActivity {
         startWeekly = currentYear + "-" + currentMonth + "-1" ;
         endWeekly = currentYear + "-" + currentMonth +"-31" ;
 
+        if(decisionForwardToOrFrom != null) {
+            if (decisionForwardToOrFrom.equals(Constants.FORWARD_TO) || decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)) {
+//                searchViewMethod();
+                searchView.setQuery(currentYear + "-" + currentMonth + "-", true);
+                return;
+            }
+        }
         Log.d(TAG, "filterListMonthly: " + startWeekly);
         Log.d(TAG, "filterListMonthly: " + endWeekly);
 
         switch (complainData){
             case Constants.ALL_COMPLAINS:
                 getDataFromServer(startWeekly, endWeekly, Constants.ALL_COMPLAINS);
-
                 break;
 
             case Constants.NEW_COMPLAINS:
                 getDataFromServer(startWeekly, endWeekly, Constants.COMPLAINS_NEW);
-
                 break;
 
             case Constants.PENDING_COMPLAINS:
@@ -628,8 +632,12 @@ public class ManagingComplaints extends BaseActivity {
         String startWeekly, endWeekly;
         startWeekly = dateFormat.format(weekStart);
         endWeekly = dateFormat.format(weekEnd);
-
-
+        if(decisionForwardToOrFrom != null) {
+            if (decisionForwardToOrFrom.equals(Constants.FORWARD_TO) || decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)) {
+                searchView.setQuery(startWeekly,true);
+                return;
+            }
+        }
         Log.d(TAG, "filterListWeekly: start day:" + startWeekly);
         Log.d(TAG, "filterListWeekly: start End:" + endWeekly);
 
@@ -666,7 +674,8 @@ public class ManagingComplaints extends BaseActivity {
         Date date = new Date();
         String dateString = dateFormat.format(date);
         Log.d(TAG, "filterListToday: " + dateString);
-      searchViewMethod(dateString);
+        searchView.setQuery(dateString,true);
+//        searchViewMethod(dateString);
     }
 
     @Override
@@ -707,8 +716,12 @@ public class ManagingComplaints extends BaseActivity {
                 allComplainsFilter.add(allComplains.get(i));
             }
         }
-        if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM) || decisionForwardToOrFrom.equals(Constants.FORWARD_TO)){
-            setupAdapterForward((ArrayList<AllComplains>) allComplainsFilter);
+        if(decisionForwardToOrFrom != null) {
+            if (decisionForwardToOrFrom.equals(Constants.FORWARD_FROM) || decisionForwardToOrFrom.equals(Constants.FORWARD_TO)) {
+                setupAdapterForward((ArrayList<AllComplains>) allComplainsFilter);
+            } else {
+                setupAdapter(allComplainsFilter);
+            }
         }else {
             setupAdapter(allComplainsFilter);
         }
