@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
@@ -90,12 +91,7 @@ public class BaseActivity extends AppCompatActivity {
         return matcher.matches();
     }
     public void checkConnection() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<TestClas> call = service.checkConnection();
 

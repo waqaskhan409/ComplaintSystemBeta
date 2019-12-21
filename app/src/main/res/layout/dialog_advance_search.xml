@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="15dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@drawable/layout_bg"
         android:weightSum="8"
         >

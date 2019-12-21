@@ -42,6 +42,7 @@ import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.BuildConfig;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.MainActivity;
@@ -383,10 +384,7 @@ public class ComposeComplaints extends BaseActivity {
         if(fileName == null){
             return;
         }
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
         String uniqueID = UUID.randomUUID().toString();
         File attachAudio = new File(getRealPathFromURI(Uri.parse(Uri.decode(fileName))));
         RequestBody requestBodyFront = RequestBody.create(MediaType.parse("audio/3gp"), attachAudio);
@@ -395,7 +393,6 @@ public class ComposeComplaints extends BaseActivity {
         RequestBody fileTypeAttach = RequestBody.create(MediaType.parse("text/plain"), "audio/3gp");
         RequestBody complainId = RequestBody.create(MediaType.parse("text/plain"), complianId);
         RequestBody attchmentId = RequestBody.create(MediaType.parse("text/plain"), uniqueID);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call<TestClas> call = service.postAttachment(fileuploadAttach, attchmentId, filenameAttach, fileTypeAttach, complainId);
         call.enqueue(new Callback<TestClas>() {
             @Override
@@ -435,15 +432,12 @@ public class ComposeComplaints extends BaseActivity {
     }
 
     private void submitComplainBody(String complainId, String complainBody) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
+
         RequestBody complainBodyRqst = RequestBody.create(MediaType.parse("text/plain"), complainBody);
         RequestBody complainIdRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
         RequestBody cnicRqst = RequestBody.create(MediaType.parse("text/plain"), account);
         RequestBody complainStatusRqst = RequestBody.create(MediaType.parse("text/plain"), Constants.COMPLAINS_NEW);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call<TestClas> call = service.postComplain(cnicRqst, complainIdRqst, complainStatusRqst, complainBodyRqst);
         call.enqueue(new Callback<TestClas>() {
             @Override
@@ -474,10 +468,8 @@ public class ComposeComplaints extends BaseActivity {
             redirectToAllComplains();
             return;
         }
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
+
         for (int j = 0; j < uriArrayList.size(); j++) {
             String uniqueID = UUID.randomUUID().toString();
             File attachImage = new File(getRealPathFromURI(uriArrayList.get(j)));
@@ -487,7 +479,6 @@ public class ComposeComplaints extends BaseActivity {
             RequestBody fileTypeAttach = RequestBody.create(MediaType.parse("text/plain"), "image/jpg");
             RequestBody complainId = RequestBody.create(MediaType.parse("text/plain"), complain_id);
             RequestBody attchmentId = RequestBody.create(MediaType.parse("text/plain"), uniqueID);
-            JsonApiHolder service = retrofit.create(JsonApiHolder.class);
             Call<TestClas> call = service.postAttachment(fileuploadAttach, attchmentId, filenameAttach, fileTypeAttach, complainId);
             call.enqueue(new Callback<TestClas>() {
                 @Override

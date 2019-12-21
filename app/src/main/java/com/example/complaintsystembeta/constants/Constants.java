@@ -56,4 +56,5 @@ public class Constants {
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 10002;
     public static final String STATUS_COMPLAIN = "statusComplain";
     public static final String CHOICE = "ChoiceBetweenToOrFrom";
+    public static final String DELAY = "Delay";
 }

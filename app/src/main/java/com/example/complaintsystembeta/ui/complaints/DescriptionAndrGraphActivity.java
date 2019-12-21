@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueAnalyticsFilterSearch;
@@ -196,12 +197,8 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
 
 
     public void getDataFromServer(String dateTo, String dateFrom, String status) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getSortedComplainsAgainstDateAndStatus(dateTo, dateFrom, status);
 
@@ -227,12 +224,8 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
         });
     }
     private void fetchComplains(String departments) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getTotalCoplainsByDepartment(departments);
 
@@ -273,12 +266,7 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
     }
 
     public void fetchComplains(String departments, String dateTo, String dateFrom) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<List<AllComplains>> call = service.getTotalCoplainsByDepartmentSortByTime(departments, dateTo, dateFrom);
 

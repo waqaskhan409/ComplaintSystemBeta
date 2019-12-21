@@ -30,8 +30,10 @@ public class AllComplains {
     @SerializedName("created_at")
     private String created_at;
 
+    private String days;
 
-    public AllComplains(String complain_id, String account_number, String complain_body, String complain_status, String created_us, String attachment_id, String attachment_name, String attachment_file_type, String created_at) {
+
+    public AllComplains(String complain_id, String account_number, String complain_body, String complain_status, String created_us, String attachment_id, String attachment_name, String attachment_file_type, String created_at, String days) {
         this.complain_id = complain_id;
         this.account_number = account_number;
         this.complain_body = complain_body;
@@ -41,6 +43,7 @@ public class AllComplains {
         this.attachment_name = attachment_name;
         this.attachment_file_type = attachment_file_type;
         this.created_at = created_at;
+        this.days = days;
     }
 
     public String getAttachment_id() {
@@ -116,5 +119,11 @@ public class AllComplains {
     }
 
 
+    public String getDays() {
+        return days;
+    }
 
+    public void setDays(String days) {
+        this.days = days;
+    }
 }

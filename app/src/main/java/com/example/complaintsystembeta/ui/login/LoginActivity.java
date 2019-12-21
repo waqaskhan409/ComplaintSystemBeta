@@ -23,6 +23,7 @@ import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
@@ -234,12 +235,8 @@ public class LoginActivity extends BaseActivity {
     }
     public void getDataFromServer(String email) {
         showProgressDialogue("Email sending", "Please wait...");
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<TestClas> call = service.forget(email);
 
@@ -268,12 +265,8 @@ public class LoginActivity extends BaseActivity {
         });
     }
     private void getDataThroughRetrofit2() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<SignUpData>> call = service.getPost();
         call.enqueue(new Callback<List<SignUpData>>() {

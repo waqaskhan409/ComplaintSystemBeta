@@ -30,6 +30,7 @@ import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
@@ -328,11 +329,7 @@ public class Registration extends BaseActivity {
     }
 
     void testData(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 //        Call<SignUpData> call = service.postData(fileuploadFront, fileuploadBack, fileWasaBillUpload, cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst
 //        );
         Call<SignUpData> call = service.testData(new SignUpData("id",
@@ -368,10 +365,7 @@ public class Registration extends BaseActivity {
 
 
     private void getDataFromRestApi() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
 //        File frontImage = new File(getRealPathFromURI(imageUriForFront));
 //        File backImage = new File(getRealPathFromURI(imageUriForBack));
@@ -403,7 +397,6 @@ public class Registration extends BaseActivity {
         RequestBody mobileRqst = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
         RequestBody genderRqst = RequestBody.create(MediaType.parse("text/plain"), gender);
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call<TestClas> call = service.postData(fileWasaBillUpload, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst);
 //        Call<SignUpData> call = service.testData(new SignUpData("id",
 //                "54401-6275270-3",

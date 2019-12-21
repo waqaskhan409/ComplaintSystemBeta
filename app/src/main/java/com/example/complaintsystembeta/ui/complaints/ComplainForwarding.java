@@ -54,6 +54,7 @@ import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.AutoCompleteAdapter;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Department;
 import com.example.complaintsystembeta.model.Designation;
@@ -514,13 +515,7 @@ public class ComplainForwarding extends BaseActivity {
         return returnValue;
     }
     private void getSingleEmployee() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<Employee>> call = service.getSingleEmployee(forwardTo);
         call.enqueue(new Callback<List<Employee>>() {
             @Override
@@ -543,12 +538,7 @@ public class ComplainForwarding extends BaseActivity {
     }
 
     private void getEmployees() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<List<Employee>> call = service.getEmployee();
         call.enqueue(new Callback<List<Employee>>() {

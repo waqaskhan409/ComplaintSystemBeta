@@ -58,12 +58,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
         holder.complainerName.setText(allComplains.get(position).getAccount_number());
         Log.d(TAG, "onBindViewHolder Date: " + allComplains.get(position).getCreated_us());
-        try {
-            holder.dayElapsed.setText(getDays(allComplains.get(position).getCreated_us()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        holder.dayElapsed.setText(allComplains.get(position).getDays() );
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.leftborder.setBackground(context.getDrawable(R.drawable.new_complains_drawables));

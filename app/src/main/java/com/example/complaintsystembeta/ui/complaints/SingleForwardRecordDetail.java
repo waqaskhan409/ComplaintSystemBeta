@@ -29,6 +29,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.ReportForward;
@@ -254,11 +255,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     }
 
     private void submitToDelay(String fToInner, String fByInner) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-          JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
         Call call = service.updateIsDelayed(reportingId);
         call.enqueue(new Callback<TestClas>() {
             @Override
@@ -283,13 +280,8 @@ public class SingleForwardRecordDetail extends BaseActivity {
     }
 
     private void getSingleComplainDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.getSingleComplainDetailForwardingWithAttachment(complainId);
 
@@ -445,10 +437,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     private void submitToRevoke(String forwardTo, String forwardBy) {
 
         String complainReportingId = UUID.randomUUID().toString();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
         RequestBody complain_id = RequestBody.create(MediaType.parse("text/plain"), complainId);
         RequestBody complains_reporting_id = RequestBody.create(MediaType.parse("text/plain"), complainReportingId);
         RequestBody forwards_to = RequestBody.create(MediaType.parse("text/plain"),forwardTo);
@@ -457,7 +446,6 @@ public class SingleForwardRecordDetail extends BaseActivity {
         RequestBody suggested_date_reply = RequestBody.create(MediaType.parse("text/plain"), suggestedDate);
         RequestBody employeRqst = RequestBody.create(MediaType.parse("text/plain"), forwardTo);
         RequestBody statusRqst = RequestBody.create(MediaType.parse("text/plain"), Constants.COMPLAIN_IN_PROCESS);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call call = service.postReportingComplain(reportingId, complain_id, complains_reporting_id, forwards_to, forwards_by, forwards_message,suggested_date_reply, employeRqst, 1, statusRqst, 1, 0, 0 , 0);
         call.enqueue(new Callback<TestClas>() {
             @Override
@@ -486,11 +474,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
     }
 
     private void isSeenUpdate(String reportingId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<TestClas> call = service.updateIsSeen(reportingId);
 
@@ -513,11 +497,7 @@ public class SingleForwardRecordDetail extends BaseActivity {
 
     }
     private void isAcknowledgedUpdate(String reportingId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<TestClas> call = service.updateIsAcknowledged(reportingId);
 

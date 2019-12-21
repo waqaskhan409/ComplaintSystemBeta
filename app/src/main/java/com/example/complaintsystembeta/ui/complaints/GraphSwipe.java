@@ -13,6 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.github.mikephil.charting.charts.BarChart;
@@ -174,16 +175,13 @@ public class GraphSwipe extends PagerAdapter {
 
     }
     private void fetchComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getTotalCoplainsByDepartment(Constants.ALL_COMPLAINS);
 
         call.enqueue(new Callback<List<AllComplains>>() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
                 if(!response.isSuccessful()){
@@ -217,6 +215,7 @@ public class GraphSwipe extends PagerAdapter {
         });
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void getArrayListForGraphInteger() {
         valuesForGraphs.clear();
         valuesForGraphs.add(valuesForResolved.size());

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Consumer;
@@ -177,12 +178,8 @@ public class Profile extends Fragment {
 
 
     private void fetchComplains(String employeeId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<Employee> call = service.getSingleEmployeeForProfile(employeeId);
 
@@ -211,12 +208,8 @@ public class Profile extends Fragment {
     }
 
     private void fetchConsumer(String accountNumber) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<Consumer> call = service.getSingleConsumerForProfile(accountNumber);
 
@@ -367,10 +360,7 @@ public class Profile extends Fragment {
 
 
     private void getDataFromRestApi() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
         if(imageUriForBack == null ){
 //            ("Kindly, attach the bill as a evidence", "");
@@ -410,7 +400,6 @@ public class Profile extends Fragment {
         RequestBody mobileRqst = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
         RequestBody genderRqst = RequestBody.create(MediaType.parse("text/plain"), "defined");
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call<TestClas> call = service.updateRegisteration(fileuploadFront, fileuploadBack, fileWasaBillUpload, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst);
 //        Call<SignUpData> call = service.testData(new SignUpData("id",
 //                "54401-6275270-3",

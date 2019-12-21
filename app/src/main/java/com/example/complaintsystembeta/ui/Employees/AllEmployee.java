@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.AllEmployeesAdapter;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
 
@@ -67,14 +68,9 @@ public class AllEmployee extends Fragment {
 
 
     private void getEmployees() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
-        Call<List<Employee>> call = service.getEmployee();
+        Call<List<Employee>> call = service.getTotalDelays();
         call.enqueue(new Callback<List<Employee>>() {
             @Override
             public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {

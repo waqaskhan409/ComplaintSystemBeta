@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Resolve;
 import com.example.complaintsystembeta.model.TestClas;
@@ -76,11 +77,7 @@ public class BottomSheetDialogueForResolveMessage extends BottomSheetDialogFragm
 
     private void sendDataToServer() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.REST_API)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
         Call<Resolve> call = service.getComplainResolve(complainId);
         call.enqueue(new Callback<Resolve>() {
                 @SuppressLint("LongLogTag")

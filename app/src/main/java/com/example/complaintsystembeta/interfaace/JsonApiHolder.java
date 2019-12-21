@@ -251,6 +251,12 @@ public interface JsonApiHolder {
             @Field("complain_id") String complainId,
             @Field("des_id") String des_id
     );
+    @POST("get_filter_single_complains_forwarding_from_all_delays")
+    @FormUrlEncoded
+    Call<List<ReportForward>> getFilterSingleComplainDetailForwardingFromAllDelays(
+            @Field("complain_id") String complainId,
+            @Field("des_id") String des_id
+    );
     @POST("update_status")
     @FormUrlEncoded
     Call<PostResponse> updateStatus(
@@ -279,6 +285,10 @@ public interface JsonApiHolder {
     @POST("get_forwards_from_complains")
     @FormUrlEncoded
     Call<List<AllComplains>> getTotalForwardsFromComplains(@Field("des_id") String des_id);
+
+    @POST("get_forwards_from_complains_all_delays")
+    @FormUrlEncoded
+    Call<List<AllComplains>> getTotalForwardsFromComplainsAllDelays(@Field("des_id") String des_id);
 
     @POST("get_single_complains_forwarding_with_attachment")
     @FormUrlEncoded

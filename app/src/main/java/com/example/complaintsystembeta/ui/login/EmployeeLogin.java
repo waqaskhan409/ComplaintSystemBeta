@@ -17,6 +17,7 @@ import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.Repository.PermanentLoginRepository;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PermanentLogin;
@@ -140,12 +141,8 @@ public class EmployeeLogin extends BaseActivity {
 
     }
     private void getDataThroughRetrofit2() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<Employee>> call = service.getEmployee();
         call.enqueue(new Callback<List<Employee>>() {

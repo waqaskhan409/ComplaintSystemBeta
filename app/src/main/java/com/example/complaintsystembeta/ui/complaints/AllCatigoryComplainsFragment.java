@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.DelayEmployees;
@@ -22,7 +23,10 @@ import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.Forwards;
 import com.example.complaintsystembeta.ui.EmployeeNavigation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -117,15 +121,13 @@ public class AllCatigoryComplainsFragment extends Fragment {
         // Inflate the layout for this fragment
 
         unbinder = ButterKnife.bind(this, view);
+        getWeek();
+
         return view;
     }
     private void totalForwards() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<Forwards> call = service.getTotalForwards(employeeId);
 
@@ -216,9 +218,9 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
     @OnClick(R.id.delay)
     public void redirectToDelayEmployees(){
-//        Intent intent = new Intent(getContext(), ManagingComplaints.class);
-        Intent intent = new Intent(getContext(), DelayedEmployee.class);
-        intent.putExtra(getString(R.string.complain_redirect), Constants.FORWARD_FROM);
+        Intent intent = new Intent(getContext(), ManagingComplaints.class);
+//        Intent intent = new Intent(getContext(), DelayedEmployee.class);
+        intent.putExtra(getString(R.string.complain_redirect), Constants.DELAY);
         intent.putExtra(Constants.PREVELDGES_ON_FORWARD, employeeId);
         intent.putExtra(getString(R.string.permanentlogin_name), userName);
         startActivity(intent);
@@ -238,12 +240,8 @@ public class AllCatigoryComplainsFragment extends Fragment {
     }
 
     private void totalForwardsFrom() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<Forwards> call = service.getTotalForwardsFrom(employeeId);
         Log.d(TAG, "totalForwardsFrom: Called");
@@ -270,12 +268,8 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
 
     private void fetchComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getComplains();
 
@@ -312,39 +306,63 @@ public class AllCatigoryComplainsFragment extends Fragment {
 
     }
     private void fetchTotalDelays() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
-//        Call<List<Employee>> call = service.getTotalForwardsFromWithDelay(employeeId);
-        Call<List<Employee>> call = service.getTotalDelays();
+        Call<Forwards> call = service.getTotalForwardsFromWithDelay(employeeId);
+//        Call<List<Employee>> call = service.getTotalDelays();
 
-        call.enqueue(new Callback<List<Employee>>() {
+        call.enqueue(new Callback<Forwards>() {
             @Override
-            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+            public void onResponse(Call<Forwards> call, Response<Forwards> response) {
                 if(!response.isSuccessful()){
                     Log.d(TAG, "onResponse: Failed!");
                     return;
                 }
                 Log.d(TAG, "onResponse: "+ response.body());
-                List<Employee> list = response.body();
-                int count = 0;
-                for(Employee all: list){
-                    count = count + Integer.parseInt(all.getTotal());
-                }
-                delayT.setText(count + "");
+                Forwards list = response.body();
+
+                delayT.setText(list.getForward());
+
             }
 
             @Override
-            public void onFailure(Call<List<Employee>> call, Throwable t) {
+            public void onFailure(Call<Forwards> call, Throwable t) {
 
             }
         });
 
     }
+
+    public String getWeek(){
+//        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+
+        long l = 10 * (24 * 60 * 60 * 1000);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - l) /*/ (24 * 60 * 60 * 1000)*/;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(a);
+        int year, month, days ;
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) +1;
+        days = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Log.d(TAG, "getDays: " + a);
+        Log.d(TAG, "getDays: " + days);
+        Log.d(TAG, "getDays: " + month);
+        if ( a == 0){
+            return "Today";
+        }else if( a == 1){
+            return "Yesterday";
+        }
+
+
+
+        return String.valueOf(a) + " Days ago";
+    }
+
 
     private void getArrayListForGraphInteger() {
         allComplainsT.setText(String.valueOf(valuesForNew.size() + valuesForPending.size() + valuesForResolved.size()));

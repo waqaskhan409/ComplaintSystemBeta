@@ -39,6 +39,7 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.ConsumerComplaints;
 import com.example.complaintsystembeta.adapter.ForwardAdapter;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Employee;
@@ -204,10 +205,14 @@ public class SingleComplainDetails extends BaseActivity {
 
         if(userName.equals(Constants.ADMIN)){
             Log.d(TAG, "onCreate: COMPLAIN ID ADMIN" + complainId);
+            Log.d(TAG, "onCreate: COMPLAIN ID ADMIN" + decisionForwardToOrFrom);
             if(decisionForwardToOrFrom.equals(Constants.FORWARD_TO)){
-            getFilterSingleComplainForwardingDetail(complainId);
+                getFilterSingleComplainForwardingDetail(complainId);
             }else if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)){
                 getFilterSingleComplainForwardingFromDetail(complainId);
+            } else if(decisionForwardToOrFrom.equals(Constants.DELAY)){
+                decisionForwardToOrFrom = Constants.FORWARD_FROM;
+                getFilterSingleComplainForwardingFromDetailAllDelay(complainId);
             }
             }else {
             Log.d(TAG, "onCreate: COMPLAIN IS NOT ADMIN" + complainId);
@@ -217,12 +222,13 @@ public class SingleComplainDetails extends BaseActivity {
             }else if(decisionForwardToOrFrom.equals(Constants.FORWARD_FROM)){
                 getFilterSingleComplainForwardingFromDetail(complainId);
 
+            }else if(decisionForwardToOrFrom.equals(Constants.DELAY)){
+                decisionForwardToOrFrom = Constants.FORWARD_FROM;
+                getFilterSingleComplainForwardingFromDetailAllDelay(complainId);
             }else {
                 getSingleComplainForwardingDetail(complainId);
 
             }
-
-
         }
 
 
@@ -314,12 +320,7 @@ public class SingleComplainDetails extends BaseActivity {
     }
 
     private void updateStatusOnDatabase(String newStatus, String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<PostResponse> listCall = service.updateStatus(complainId, newStatus);
 
@@ -368,13 +369,8 @@ public class SingleComplainDetails extends BaseActivity {
 //
 //    }
     private void getSingleComplainDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> listCall = service.getSingleComplainDetail(complainId);
 
@@ -441,13 +437,8 @@ public class SingleComplainDetails extends BaseActivity {
         }
     }
     private void getEmployee(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<Employee>> listCall = service.getEmployee();
 
@@ -476,13 +467,8 @@ public class SingleComplainDetails extends BaseActivity {
         });
     }
     private void getSingleComplainForwardingDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.getSingleComplainDetailForwarding(complainId);
 
@@ -510,13 +496,8 @@ public class SingleComplainDetails extends BaseActivity {
         });
     }
     private void getFilterSingleComplainForwardingDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwarding(complainId, employeeId);
 
@@ -544,15 +525,39 @@ public class SingleComplainDetails extends BaseActivity {
         });
     }
     private void getFilterSingleComplainForwardingFromDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        JsonApiHolder service = RestApi.getApi();
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwardingFrom(complainId, employeeId);
+
+        listCall.enqueue(new Callback<List<ReportForward>>() {
+            @Override
+            public void onResponse(Call<List<ReportForward>> call, Response<List<ReportForward>> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Succefull");
+
+                    list = response.body();
+                    Log.d(TAG, "onResponse: getFilterSingleComplainDetailForwarding :" + list.size());
+                    getEmployee(complainId);
+
+
+                }else {
+                    Log.d(TAG, "onResponse: Failed!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReportForward>> call, Throwable t) {
+                Log.d(TAG, "onResponse: Failed! :" + t.getMessage());
+
+            }
+        });
+    }
+    private void getFilterSingleComplainForwardingFromDetailAllDelay(String complainId) {
+        JsonApiHolder service = RestApi.getApi();
+        RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
+
+        Call<List<ReportForward>> listCall = service.getFilterSingleComplainDetailForwardingFromAllDelays(complainId, employeeId);
 
         listCall.enqueue(new Callback<List<ReportForward>>() {
             @Override

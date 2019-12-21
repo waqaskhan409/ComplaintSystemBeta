@@ -25,10 +25,14 @@ import com.example.complaintsystembeta.ui.complaints.ComposeComplaints;
 import com.example.complaintsystembeta.ui.complaints.ManagingComplaints;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -40,12 +44,16 @@ public class BottomSheetDialogueFilterSearch extends BottomSheetDialogFragment {
     private DatePickerDialog.OnDateSetListener mDateListenerTo, mDateListenerFrom;
 
 
+    @BindView(R.id.days)
+    EditText daysED;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.dialog_advance_search, container, false);
         if (unbinder == null) {
-            unbinder = ButterKnife.bind(getActivity(), view);
+            unbinder = ButterKnife.bind(this, view);
         }
 
 
@@ -89,12 +97,21 @@ public class BottomSheetDialogueFilterSearch extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Submited");
-                String dateTo, dateFrom, status;
+                String dateTo, dateFrom, status, days;
                 dateTo = edTo.getText().toString().trim();
                 dateFrom = edFrom.getText().toString().trim();
+                days = daysED.getText().toString().trim();
+                Date date = new Date();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String dateFromForNull = dateFormat.format(date);
                 status = spinnerAdvance.getSelectedItem().toString();
-                if (dateTo.equals("") || dateFrom.equals("")) {
-                    Log.d(TAG, "onClick: dates is not selected");
+                if(!(days.equals("") || days.isEmpty())){
+                    Log.d(TAG, "onClick: " + getDate(days));
+                    ((ManagingComplaints) getActivity()).getDataFromServer(getDate(days), dateFromForNull, status);
+
+                    dismiss();
+                } else if (dateTo.equals("") || dateFrom.equals("")) {
+                    ((ManagingComplaints) getActivity()).getDataFromServer("2019-10-01", dateFromForNull, status);
                     dismiss();
                 } else {
                     ((ManagingComplaints) getActivity()).getDataFromServer(dateTo, dateFrom, status);
@@ -136,6 +153,33 @@ public class BottomSheetDialogueFilterSearch extends BottomSheetDialogFragment {
 
         return view;
 }
+
+
+
+    @SuppressLint("LongLogTag")
+    public String getDate(String day){
+//        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+
+        long l = Integer.parseInt(day) * (24 * 60 * 60 * 1000);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - l) /*/ (24 * 60 * 60 * 1000)*/;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(a);
+        int year, month, days ;
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) + 1;
+        days = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Log.d(TAG, "getDays: " + a);
+        Log.d(TAG, "getDays: " + days);
+        Log.d(TAG, "getDays: " + month);
+        Log.d(TAG, "getYear: " + year + "-" + month + "-" + days);
+
+        return year + "-" + month + "-" + days;
+    }
+
     public void datePickerFrom() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

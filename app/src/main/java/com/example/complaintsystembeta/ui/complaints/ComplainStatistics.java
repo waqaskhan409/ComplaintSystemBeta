@@ -18,6 +18,7 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.ForwardAdapter;
 import com.example.complaintsystembeta.adapter.TimelineAdapter;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.ReportForward;
@@ -122,12 +123,8 @@ public class ComplainStatistics extends BaseActivity {
 
 
     private void get_forward_by(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.get_forward_by(complainId);
 
@@ -232,13 +229,9 @@ public class ComplainStatistics extends BaseActivity {
         });
     }
     private void getSingleComplainForwardingDetail(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
         RequestBody accountRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.getSingleComplainDetailForwarding(complainId);
 
@@ -268,12 +261,8 @@ public class ComplainStatistics extends BaseActivity {
 
 /*
     private void get_forward_to(String complainId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+               JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<ReportForward>> listCall = service.get_forward_to(complainId);
 

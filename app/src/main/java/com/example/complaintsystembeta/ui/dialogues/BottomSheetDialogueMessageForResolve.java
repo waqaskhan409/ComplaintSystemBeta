@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.complaints.ManagingComplaints;
@@ -106,15 +107,11 @@ public class BottomSheetDialogueMessageForResolve extends BottomSheetDialogFragm
     private void sendDataToServer() {
         String resolveId = UUID.randomUUID().toString();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.REST_API)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+        JsonApiHolder service = RestApi.getApi();
             RequestBody resolveMsgeRqst = RequestBody.create(MediaType.parse("text/plain"), resolveMessage);
             RequestBody complainIdRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
             RequestBody resolveIdRqst = RequestBody.create(MediaType.parse("text/plain"), resolveId);
             RequestBody employeIdRqst = RequestBody.create(MediaType.parse("text/plain"), employeeId);
-            JsonApiHolder service = retrofit.create(JsonApiHolder.class);
             Call<TestClas> call = service.setResolveComplain(resolveIdRqst, complainIdRqst, employeIdRqst, resolveMsgeRqst);
             call.enqueue(new Callback<TestClas>() {
                 @SuppressLint("LongLogTag")

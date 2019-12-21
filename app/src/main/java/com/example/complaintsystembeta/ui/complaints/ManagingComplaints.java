@@ -38,6 +38,7 @@ import com.example.complaintsystembeta.adapter.ConsumerComplaints;
 import com.example.complaintsystembeta.adapter.OnlyForwardAdapter;
 import com.example.complaintsystembeta.adapter.SwipeToArchiveCallback;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Employee;
@@ -156,6 +157,10 @@ public class ManagingComplaints extends BaseActivity {
                 fetchForwardFromComplains();
                 break;
 
+            case Constants.DELAY:
+                fetchTotalDelays();
+                break;
+
             default:
                 Log.d(TAG, "redirectAdapters: No Data loaded");
                 break;
@@ -163,12 +168,7 @@ public class ManagingComplaints extends BaseActivity {
     }
 
     private void fetchNewComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getComplains();
 
         call.enqueue(new Callback<List<AllComplains>>() {
@@ -201,13 +201,7 @@ public class ManagingComplaints extends BaseActivity {
 
 
     private void fetchPendingComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getComplains();
 
         call.enqueue(new Callback<List<AllComplains>>() {
@@ -242,12 +236,8 @@ public class ManagingComplaints extends BaseActivity {
 
 
     private void fetchResolvedComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
 
         Call<List<AllComplains>> call = service.getComplains();
 
@@ -281,15 +271,8 @@ public class ManagingComplaints extends BaseActivity {
 
 
     private void fetchForwardComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getTotalForwardsComplains(desId);
-
         call.enqueue(new Callback<List<AllComplains>>() {
             @Override
             public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
@@ -312,13 +295,8 @@ public class ManagingComplaints extends BaseActivity {
 
     }
     private void fetchForwardFromComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getTotalForwardsFromComplains(desId);
 
         call.enqueue(new Callback<List<AllComplains>>() {
@@ -337,28 +315,61 @@ public class ManagingComplaints extends BaseActivity {
 
             }
         });
+    }
 
+    private void fetchTotalDelays() {
+        JsonApiHolder service = RestApi.getApi();
+        Call<List<AllComplains>> call = service.getTotalForwardsFromComplainsAllDelays(desId);
 
+        call.enqueue(new Callback<List<AllComplains>>() {
+            @Override
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Failed!");
+                    return;
+                }
+                Log.d(TAG, "onResponse: "+ response.body());
+                List<AllComplains> list = response.body();
+                decisionForwardToOrFrom = Constants.DELAY;
+                setupAdapterForward((ArrayList<AllComplains>) list);
+            }
 
+            @Override
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
+
+            }
+        });
 
     }
 
     private void setupAdapterForward(ArrayList<AllComplains> allComplainsFilter) {
+        for (AllComplains allComplains1: allComplainsFilter) {
+            try {
+                Log.d(TAG, "setupAdapter: " + allComplains1.getCreated_us());
+                if(allComplains1.getCreated_us() !=  null) {
+                    String days = getDays(allComplains1.getCreated_us());
+                    if(days.equals("0")){
+
+                        allComplains1.setDays("Today");
+                    }else if(days.equals("1")){
+                        allComplains1.setDays("Yesterday");
+
+                    }else {
+                        allComplains1.setDays(getDays(allComplains1.getCreated_us()) + " Days ago");
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         OnlyForwardAdapter allComplainsAdapter  = new OnlyForwardAdapter(allComplainsFilter, this, desId, userName, decisionForwardToOrFrom);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
     }
 
     private void fetchAllComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getComplains();
-
         call.enqueue(new Callback<List<AllComplains>>() {
             @Override
             public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
@@ -371,6 +382,7 @@ public class ManagingComplaints extends BaseActivity {
                 List<AllComplains>  list = response.body();
                 allComplains = list;
                 setupAdapter(allComplains);
+
             }
 
             @Override
@@ -380,7 +392,44 @@ public class ManagingComplaints extends BaseActivity {
         });
 
     }
+
+    private String getDays(String created_us) throws ParseException {
+        String[] arr = created_us.split("T");
+       /* int year = Integer.parseInt(createdDate[0]);
+        int month = Integer.parseInt(createdDate[1]);
+        int day = Integer.parseInt(createdDate[2]);
+
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);*/
+
+        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - dateEarly.getTime()) / (24 * 60 * 60 * 1000);
+        return String.valueOf(a);
+    }
+
     private void setupAdapter(List<AllComplains> allComplains) {
+        for (AllComplains allComplains1: allComplains) {
+            try {
+                Log.d(TAG, "setupAdapter: " + allComplains1.getCreated_us());
+                if(allComplains1.getCreated_us() !=  null) {
+                    String days = getDays(allComplains1.getCreated_us());
+                    if(days.equals("0")){
+
+                        allComplains1.setDays("Today");
+                    }else if(days.equals("1")){
+                        allComplains1.setDays("Yesterday");
+
+                    }else {
+                    allComplains1.setDays(getDays(allComplains1.getCreated_us()) + " Days ago");
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         AllComplainsAdapter allComplainsAdapter  = new AllComplainsAdapter(allComplains, this, "");
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
@@ -712,6 +761,7 @@ public class ManagingComplaints extends BaseActivity {
                     || allComplains.get(i).getAccount_number().toLowerCase().contains(newText)
                     || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
                     || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
+                    || allComplains.get(i).getDays().toLowerCase().contains(newText)
             ){
                 allComplainsFilter.add(allComplains.get(i));
             }
@@ -729,13 +779,7 @@ public class ManagingComplaints extends BaseActivity {
 
 
     public void getDataFromServer(String dateTo, String dateFrom, String status) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getSortedComplainsAgainstDateAndStatus(dateTo, dateFrom, status);
 
         call.enqueue(new Callback<List<AllComplains>>() {

@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Consumer;
@@ -119,10 +120,7 @@ public class ProfileVerification extends Fragment {
 
 
     private void updateVerification() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
 
         if(imageUriForBack == null ){
 //            ("Kindly, attach the bill as a evidence", "");
@@ -158,7 +156,6 @@ public class ProfileVerification extends Fragment {
         RequestBody mobileRqst = RequestBody.create(MediaType.parse("text/plain"), "defined");
         RequestBody genderRqst = RequestBody.create(MediaType.parse("text/plain"), "defined");
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
         Call<TestClas> call = service.verifyRegistration(fileuploadFront, fileuploadBack, accountRqst,cnicRqst, nameRqst, emailRqst, passRqst, mobileRqst, addressRqst, genderRqst);
 //        Call<SignUpData> call = service.testData(new SignUpData("id",
 //                "54401-6275270-3",

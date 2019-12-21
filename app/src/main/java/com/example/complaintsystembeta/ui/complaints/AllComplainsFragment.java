@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Consumer;
@@ -124,12 +125,7 @@ public class AllComplainsFragment extends Fragment {
     }
 
     private void fetchConsumer(String accountNumber) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
+        JsonApiHolder service = RestApi.getApi();
 
         Call<Consumer> call = service.getSingleConsumerForProfile(accountNumber);
 
@@ -181,13 +177,7 @@ public class AllComplainsFragment extends Fragment {
     }
 
     private void fetchComplains() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
+        JsonApiHolder service = RestApi.getApi();
         Call<List<AllComplains>> call = service.getComplains();
 
         call.enqueue(new Callback<List<AllComplains>>() {

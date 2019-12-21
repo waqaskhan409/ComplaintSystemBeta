@@ -14,8 +14,11 @@ import android.view.MenuItem;
 
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.adapter.AllEmployeesAdapter;
+import com.example.complaintsystembeta.adapter.OnlyForwardAdapter;
 import com.example.complaintsystembeta.constants.Constants;
+import com.example.complaintsystembeta.constants.RestApi;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
+import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.ui.Employees.AllEmployee;
 
@@ -36,6 +39,8 @@ public class DelayedEmployee extends AppCompatActivity {
     private static final String TAG = "DelayedEmployee";
     private Toolbar toolbar;
     private Unbinder unbinder;
+    private Bundle data;
+    private String employeeId, userName, decision;
     private LinearLayoutManager linearLayoutManager;
 
 
@@ -47,8 +52,9 @@ public class DelayedEmployee extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delayed_employee);
-        if(unbinder == null){
+        if(unbinder == null || data == null){
             unbinder = ButterKnife.bind(this);
+            data = getIntent().getExtras();
         }
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -59,6 +65,7 @@ public class DelayedEmployee extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        gettingValues();
         fetchTotalDelays();
 
     }
@@ -77,40 +84,44 @@ public class DelayedEmployee extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+    }
+
+    private void gettingValues() {
+        userName = data.getString(getString(R.string.permanentlogin_name));
+        employeeId = data.getString(Constants.PREVELDGES_ON_FORWARD);
+        decision = Constants.FORWARD_FROM;
+
+
+
     }
 
     private void fetchTotalDelays() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.REST_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        JsonApiHolder service = RestApi.getApi();
+        Call<List<AllComplains>> call = service.getTotalForwardsFromComplainsAllDelays(employeeId);
 
-        JsonApiHolder service = retrofit.create(JsonApiHolder.class);
-
-        Call<List<Employee>> call = service.getTotalDelays();
-
-        call.enqueue(new Callback<List<Employee>>() {
+        call.enqueue(new Callback<List<AllComplains>>() {
             @Override
-            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+            public void onResponse(Call<List<AllComplains>> call, Response<List<AllComplains>> response) {
                 if(!response.isSuccessful()){
                     Log.d(TAG, "onResponse: Failed!");
                     return;
                 }
                 Log.d(TAG, "onResponse: "+ response.body());
-                List<Employee> list = response.body();
-                setAdapter((ArrayList<Employee>) list);
+                List<AllComplains> list = response.body();
+                setAdapter((ArrayList<AllComplains>) list);
             }
 
             @Override
-            public void onFailure(Call<List<Employee>> call, Throwable t) {
+            public void onFailure(Call<List<AllComplains>> call, Throwable t) {
 
             }
         });
 
     }
 
-    private void setAdapter(ArrayList<Employee> list) {
-        AllEmployeesAdapter allEmployee = new AllEmployeesAdapter(list);
+    private void setAdapter(ArrayList<AllComplains> list) {
+        OnlyForwardAdapter allEmployee = new OnlyForwardAdapter(list, this, employeeId, userName, decision);
         recyclerViewForDelayedEmployees.setAdapter(allEmployee);
     }
     @Override
