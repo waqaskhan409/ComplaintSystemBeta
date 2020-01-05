@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':daysmonthyearingivendate'
 rootProject.name='ComplaintSystemBeta'

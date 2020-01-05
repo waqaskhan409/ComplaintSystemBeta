@@ -56,7 +56,10 @@ public class LoginActivity extends BaseActivity {
     boolean checkCon = false;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+            ,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public static final int RequestPermissionCode = 1;
     private static final String LOG_TAG = "AudioRecordTest";
@@ -85,8 +88,9 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        unbinder = ButterKnife.bind(this);
-
+        if(unbinder == null) {
+            unbinder = ButterKnife.bind(this);
+        }
         dao = new PermanentLoginRepository(getApplication());
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
@@ -156,7 +160,12 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+
+        }else {
+            checkConnection();
+        }
         getDataFromSqlite();
 
     }
@@ -236,8 +245,6 @@ public class LoginActivity extends BaseActivity {
     public void getDataFromServer(String email) {
         showProgressDialogue("Email sending", "Please wait...");
         JsonApiHolder service = RestApi.getApi();
-
-
         Call<TestClas> call = service.forget(email);
 
         call.enqueue(new Callback<TestClas>() {

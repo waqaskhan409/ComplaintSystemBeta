@@ -2,7 +2,9 @@ package com.example.complaintsystembeta.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AllComplains {
+import java.io.Serializable;
+
+public class AllComplains implements Serializable {
     @SerializedName("complain_id")
     private String complain_id;
 
@@ -27,13 +29,22 @@ public class AllComplains {
     @SerializedName("attachment_file_type")
     private String attachment_file_type;
 
+    @SerializedName("lat")
+    private String lat;
+
+    @SerializedName("lng")
+    private String lng;
+
     @SerializedName("created_at")
     private String created_at;
 
     private String days;
 
+    private String Cou;
 
-    public AllComplains(String complain_id, String account_number, String complain_body, String complain_status, String created_us, String attachment_id, String attachment_name, String attachment_file_type, String created_at, String days) {
+
+
+    public AllComplains(String complain_id, String account_number, String complain_body, String complain_status, String created_us, String attachment_id, String attachment_name, String attachment_file_type, String lat, String lng, String created_at, String days, String cou) {
         this.complain_id = complain_id;
         this.account_number = account_number;
         this.complain_body = complain_body;
@@ -42,8 +53,11 @@ public class AllComplains {
         this.attachment_id = attachment_id;
         this.attachment_name = attachment_name;
         this.attachment_file_type = attachment_file_type;
+        this.lat = lat;
+        this.lng = lng;
         this.created_at = created_at;
         this.days = days;
+        Cou = cou;
     }
 
     public String getAttachment_id() {
@@ -125,5 +139,29 @@ public class AllComplains {
 
     public void setDays(String days) {
         this.days = days;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getCou() {
+        return Cou;
+    }
+
+    public void setCou(String cou) {
+        Cou = cou;
     }
 }

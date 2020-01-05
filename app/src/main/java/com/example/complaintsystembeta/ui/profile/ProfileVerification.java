@@ -36,6 +36,7 @@ import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.model.Consumer;
 import com.example.complaintsystembeta.model.TestClas;
+import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.complaints.AllComplainsFragment;
 import com.example.complaintsystembeta.ui.complaints.Compliants;
 
@@ -242,6 +243,18 @@ public class ProfileVerification extends Fragment {
 
         }else {
 //            showSnackBar(getString(R.string.error_upload_images), "");
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!((MainActivity)getActivity()).checkWifiOnAndConnected() && !((MainActivity)getActivity()).checkMobileDataOnAndConnected()){
+            ((MainActivity)getActivity()).showSnackBarWifi(getString(R.string.wifi_message));
+
+
+        }else {
+            ((MainActivity)getActivity()).checkConnection();
         }
     }
 

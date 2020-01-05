@@ -150,6 +150,8 @@ public interface JsonApiHolder {
             @Part("account_number") RequestBody account,
             @Part("complain_id") RequestBody complain_id,
             @Part("complain_status") RequestBody complain_status,
+            @Part("lat") RequestBody complainant_lat,
+            @Part("lng") RequestBody complainant_lng,
             @Part("complain_body") RequestBody complain_body
                                 );
     @Multipart

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CompliantSystem</string>
+    <string name="app_name">CompliantSystem MCQ</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -62,7 +62,7 @@
     <string name="user_email">Email address</string>
     <string name="gender">Please select your gender</string>
     <string name="compose_complain">Please put complain here</string>
-    <string name="app_vendor_name">Complaint System For Q-WASA</string>
+    <string name="app_vendor_name">Complaint System</string>
     <string name="account">Account number</string>
     <string name="error_account">please put account number</string>
     <string name="error_account_syntax">Please follow this format: XXX-XXX-XXX</string>
@@ -104,4 +104,9 @@
     <string name="revoke_message">The employee is not response in his suggested date</string>
     <string name="message_for_resolve">Resolve Message</string>
     <string name="filters">Apply filters</string>
+    <string name="enable_locations">Kindly, enable locations please</string>
+    <string name="allc_complains_object">all_single_complain</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="gil_team">Build by GIL team</string>
+    <string name="wifi_message">Please enable wifi or connect to the wifi or enable mobile data</string>
 </resources>

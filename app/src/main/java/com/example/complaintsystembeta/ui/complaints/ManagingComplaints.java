@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.example.complaintsystembeta.BaseActivity;
@@ -83,7 +84,8 @@ public class ManagingComplaints extends BaseActivity {
     private String decisionForwardToOrFrom;
 
 
-
+    @BindView(R.id.complainsBar)
+    ProgressBar complainsBar;
 
 
 
@@ -129,6 +131,11 @@ public class ManagingComplaints extends BaseActivity {
     protected void onStart() {
         super.onStart();
         checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
     }
 
     private void redirectAdapters() {
@@ -151,6 +158,7 @@ public class ManagingComplaints extends BaseActivity {
 
             case Constants.FORWARD_COMPLAINS:
                 fetchForwardComplains();
+
                 break;
 
             case Constants.FORWARD_FROM:
@@ -189,6 +197,7 @@ public class ManagingComplaints extends BaseActivity {
                 }
 
                 setupAdapter(allComplains);
+                complainsBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -224,6 +233,8 @@ public class ManagingComplaints extends BaseActivity {
                 }
 
                 setupAdapter(allComplains);
+                complainsBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -259,6 +270,8 @@ public class ManagingComplaints extends BaseActivity {
 
                 allComplains.toArray();
                 setupAdapter(allComplains);
+                complainsBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -281,6 +294,8 @@ public class ManagingComplaints extends BaseActivity {
                     Log.d(TAG, "onResponse: " + allComplains.size());
                     decisionForwardToOrFrom = Constants.FORWARD_TO;
                     setupAdapterForward((ArrayList<AllComplains>) allComplains);
+                    complainsBar.setVisibility(View.GONE);
+
                 }
             }
 
@@ -307,6 +322,8 @@ public class ManagingComplaints extends BaseActivity {
                     Log.d(TAG, "onResponse: " + allComplains.size());
                     decisionForwardToOrFrom = Constants.FORWARD_FROM;
                     setupAdapterForward((ArrayList<AllComplains>) allComplains);
+                    complainsBar.setVisibility(View.GONE);
+
                 }
             }
 
@@ -332,6 +349,8 @@ public class ManagingComplaints extends BaseActivity {
                 List<AllComplains> list = response.body();
                 decisionForwardToOrFrom = Constants.DELAY;
                 setupAdapterForward((ArrayList<AllComplains>) list);
+                complainsBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -382,6 +401,7 @@ public class ManagingComplaints extends BaseActivity {
                 List<AllComplains>  list = response.body();
                 allComplains = list;
                 setupAdapter(allComplains);
+                complainsBar.setVisibility(View.GONE);
 
             }
 

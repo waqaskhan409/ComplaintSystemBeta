@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,9 +19,11 @@ import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.model.AllComplains;
 import com.example.complaintsystembeta.ui.complaints.ComplainStatistics;
+import com.example.complaintsystembeta.ui.complaints.MapsActivity;
 import com.example.complaintsystembeta.ui.complaints.SingleComplainDetails;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
@@ -84,6 +87,18 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
 
         Log.d(TAG, "onBindViewHolder: " + allComplains.get(position).getComplain_id());
 
+
+        holder.maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra(context.getString(R.string.allc_complains_object), (Serializable) allComplains.get(position));
+                context.startActivity(intent);
+            }
+        });
+
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +120,15 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
 
 //                }
                 return false;
+            }
+        });
+
+        holder.maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra(context.getString(R.string.allc_complains_object), (Serializable) allComplains.get(position));
+                context.startActivity(intent);
             }
         });
 
@@ -172,7 +196,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
 
     class AllComplainViewHolder extends RecyclerView.ViewHolder{
         private TextView complainerName, complainsDate, complainsBody, complainsStatus, leftborder, dayElapsed;
-
+        private ImageView maps;
         public AllComplainViewHolder(@NonNull View itemView) {
             super(itemView);
             complainerName = itemView.findViewById(R.id.complaintsId);
@@ -181,6 +205,7 @@ public class AllComplainsAdapter extends RecyclerView.Adapter<AllComplainsAdapte
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
             leftborder = itemView.findViewById(R.id.leftBorder);
             dayElapsed = itemView.findViewById(R.id.complainDate);
+            maps = itemView.findViewById(R.id.maps);
         }
     }
 }

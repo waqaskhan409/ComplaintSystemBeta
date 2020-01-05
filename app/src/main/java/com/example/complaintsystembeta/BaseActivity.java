@@ -5,8 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -56,6 +59,20 @@ public class BaseActivity extends AppCompatActivity {
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }
+    public  void showSnackBarWifi(String dialogue){
+        snackbar =Snackbar.make((findViewById(android.R.id.content)), dialogue, Snackbar.LENGTH_LONG);
+        View view = snackbar.getView();
+        TextView textView = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+        view.setBackgroundColor(Color.RED);
+        textView.setTextColor(Color.WHITE);
+        snackbar.setAction("Settings", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+            }
+        });
+        snackbar.show();
+    }
     public boolean checkAccountNumber(String account){
         String[] accountPortions = account.split("-");
         if(accountPortions.length != 3){
@@ -65,6 +82,27 @@ public class BaseActivity extends AppCompatActivity {
         }
 
     }
+    public boolean checkWifiOnAndConnected() {
+        WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        if (wifiMgr.isWifiEnabled()) { // Wi-Fi adapter is ON
+
+            WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+
+            if( wifiInfo.getNetworkId() == -1 ){
+                return false; // Not connected to an access point
+            }
+            return true; // Connected to an access point
+        } else {
+            return false; // Wi-Fi adapter is OFF
+        }
+    }
+    public boolean checkMobileDataOnAndConnected() {
+        boolean mobileDataAllowed = Settings.Secure.getInt(getContentResolver(), "mobile_data", 1) == 1;
+        return mobileDataAllowed;
+    }
+
+
     public boolean checkCNICFormat(String userName) {
         String[] cnicPortions = userName.split("-");
         if(cnicPortions.length != 3){

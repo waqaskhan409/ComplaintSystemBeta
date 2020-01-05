@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.interfaace.JsonApiHolder;
@@ -35,7 +36,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AllCatigoryComplains extends AppCompatActivity {
+public class AllCatigoryComplains extends BaseActivity {
 
     private static final String TAG = "AllCatigoryComplains";
     private Unbinder unbinder;
@@ -70,8 +71,15 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @BindView(R.id.complainAnalytics)
     LinearLayout linearLayoutComplainAnalytics;
 
+
     @BindView(R.id.complainAnalyticsT)
     TextView complainsAnalyticsT;
+
+    @BindView(R.id.newMessageLayout)
+    LinearLayout newMessageLayout;
+
+    @BindView(R.id.newMessageT)
+    TextView newMessageT;
 
     @BindView(R.id.forwardComplainsT)
     TextView forwardComplainsT;
@@ -90,7 +98,6 @@ public class AllCatigoryComplains extends AppCompatActivity {
 
     @BindView(R.id.delayT)
     TextView delayT;
-
 
     private Toolbar toolbar;
 
@@ -237,11 +244,17 @@ public class AllCatigoryComplains extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
         valuesForNew.clear();
         valuesForPending.clear();
         valuesForResolved.clear();
         fetchComplains();
         totalForwards();
+
     }
 
 

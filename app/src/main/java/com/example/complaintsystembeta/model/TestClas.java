@@ -14,6 +14,13 @@ public class TestClas {
         this.success = success;
     }
 
+//    const success = {
+//            success: "Success"
+//    }
+//    const fail= {
+//            error: "Query failed with sql message:+ " +e;
+//    }
+
     public String getError() {
         return error;
     }

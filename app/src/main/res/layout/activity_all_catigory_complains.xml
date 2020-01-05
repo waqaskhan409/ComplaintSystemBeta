@@ -230,6 +230,8 @@
                 android:paddingBottom="10dp"
                 android:id="@+id/forwardComplains"
                 android:layout_height="wrap_content">
+
+
                 <TextView
                     android:layout_width="50dp"
                     android:layout_margin="10dp"
@@ -244,10 +246,26 @@
                     android:paddingLeft="10dp"
                     android:orientation="horizontal"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="40dp"
+                        android:background="@drawable/new_messages"
+                        android:gravity="center"
+                        android:id="@+id/newMessageLayout"
+                        android:layout_height="40dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:textColor="#FFF"
+                            android:text="0"
+                            android:id="@+id/newMessageT"
+                            android:textSize="20sp"
+                            android:layout_height="wrap_content"
+                            ></TextView>
+                    </LinearLayout>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Forward To  "
+                        android:text="Inbox  "
+                        android:layout_marginLeft="5dp"
                         android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/white"
@@ -257,7 +275,7 @@
                         android:layout_width="30dp"
                         android:layout_marginLeft="5dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/forward"></ImageView>
+                        android:src="@drawable/inbox"></ImageView>
                 </LinearLayout>
             </LinearLayout>
 
@@ -340,7 +358,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Forward From "
+                        android:text="Send "
                         android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/white"
@@ -350,7 +368,7 @@
                         android:layout_width="30dp"
                         android:layout_marginLeft="5dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/reply"></ImageView>
+                        android:src="@drawable/forward"></ImageView>
                 </LinearLayout>
             </LinearLayout>
 

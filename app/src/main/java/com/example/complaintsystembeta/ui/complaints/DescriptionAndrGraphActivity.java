@@ -122,6 +122,11 @@ public class DescriptionAndrGraphActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
     }
 
     private void settingupValues() {

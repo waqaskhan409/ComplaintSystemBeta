@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.complaintsystembeta">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,14 +25,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".ui.complaints.DelayedEmployee"
-            android:theme="@style/AppThemeS"
-            ></activity>
+        android:usesCleartextTraffic="true"
+        >
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".ui.complaints.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
+        <activity
+            android:name=".ui.complaints.DelayedEmployee"
+            android:theme="@style/AppThemeS" />
         <activity
             android:name=".ui.profile.DetailProfile"
-            android:theme="@style/AppThemeS"
-            />
+            android:theme="@style/AppThemeS" />
         <activity
             android:name=".ui.complaints.ComplainStatistics"
             android:theme="@style/AppThemeS" />
@@ -39,7 +63,8 @@
         <activity
             android:name=".ui.complaints.ComplainForwarding"
             android:theme="@style/AppThemeS"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".ui.complaints.SingleComplainDetails"
             android:theme="@style/AppThemeS"
@@ -63,7 +88,9 @@
         <activity
             android:name=".ui.registration.Registration"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".splash.SplashScreen">
+        <activity android:name=".splash.SplashScreen"
+            android:theme="@style/AppThemeN"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

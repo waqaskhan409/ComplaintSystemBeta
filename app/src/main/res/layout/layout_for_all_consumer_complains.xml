@@ -21,15 +21,33 @@
         android:orientation="vertical"
         android:padding="6dp"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="8"
+            >
         <TextView
             android:id="@+id/complaintsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-
+            android:layout_weight="8"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:text="Complain's Name"></TextView>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/maps"
+                android:layout_weight="1"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_height="30dp"
+                android:src="@drawable/maps"
+                ></ImageView>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/complaintsBody"
@@ -56,6 +74,24 @@
             android:paddingLeft="27dp"
             android:paddingRight="27dp"
             android:text="@string/complain_status"
+            android:textColor="@color/white"
+            android:textSize="16sp"></TextView>
+        <TextView
+            android:id="@+id/days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/complain_forward_drawable"
+            android:ellipsize="end"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:paddingLeft="27dp"
+            android:paddingRight="27dp"
+            android:text="Today"
             android:textColor="@color/white"
             android:textSize="16sp"></TextView>
 

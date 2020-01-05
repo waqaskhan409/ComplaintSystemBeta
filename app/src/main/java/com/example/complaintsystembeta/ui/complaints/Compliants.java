@@ -35,7 +35,10 @@ import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.SignUpData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,6 +135,11 @@ public class Compliants extends BaseActivity{
     protected void onStart() {
         super.onStart();
         checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
     }
 
 
@@ -224,11 +232,47 @@ public class Compliants extends BaseActivity{
     }
 
     private void setupAdapter(ArrayList<AllComplains> allComplains) {
+
+        for (AllComplains allComplains1: allComplains) {
+            try {
+                Log.d(TAG, "setupAdapter: " + allComplains1.getCreated_us());
+                if(allComplains1.getCreated_us() !=  null) {
+                    String days = getDays(allComplains1.getCreated_us());
+                    if(days.equals("0")){
+
+                        allComplains1.setDays("Today");
+                    }else if(days.equals("1")){
+                        allComplains1.setDays("Yesterday");
+
+                    }else {
+                        allComplains1.setDays(getDays(allComplains1.getCreated_us()) + " Days ago");
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         ConsumerComplaints allComplainsAdapter  = new ConsumerComplaints(allComplains, this, name);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(allComplainsAdapter);
     }
+    private String getDays(String created_us) throws ParseException {
+        String[] arr = created_us.split("T");
+       /* int year = Integer.parseInt(createdDate[0]);
+        int month = Integer.parseInt(createdDate[1]);
+        int day = Integer.parseInt(createdDate[2]);
 
+        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH)+1;
+        int currentDay =  Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);*/
+
+        Date dateEarly=new SimpleDateFormat("yyyy-MM-dd").parse(arr[0]);
+        Date dateLater = new Date();
+
+        long a = (dateLater.getTime() - dateEarly.getTime()) / (24 * 60 * 60 * 1000);
+        return String.valueOf(a);
+    }
 
     //    @OnClick(R.id.fp_btn)
     public void changeActivity(){
@@ -303,7 +347,7 @@ public class Compliants extends BaseActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
+        inflater.inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.search);
 
 
@@ -324,6 +368,7 @@ public class Compliants extends BaseActivity{
                             || allComplains.get(i).getComplain_status().toLowerCase().contains(newText)
                             || allComplains.get(i).getCreated_us().toLowerCase().contains(newText)
                             || allComplains.get(i).getComplain_body().toLowerCase().contains(newText)
+                            || allComplains.get(i).getDays().toLowerCase().contains(newText)
                     ){
                         allComplainsFilter.add(allComplains.get(i));
                     }

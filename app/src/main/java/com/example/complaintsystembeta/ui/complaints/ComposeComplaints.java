@@ -8,14 +8,20 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -76,12 +82,14 @@ import static java.security.AccessController.getContext;
 
 public class ComposeComplaints extends BaseActivity {
     private static final String TAG = "ComposeComplaints";
-    private String checkEmployee, complian;
+    private String checkEmployee, complian, lat, lng;
     private Unbinder unbinder;
     private Boolean boolForAudio = true;
     private ArrayList<Uri> uriArrayList = new ArrayList<>();
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
     String AudioSavePathInDevice = null;
+    private LocationManager mLocationManager;
+
     MediaRecorder mediaRecorder ;
     int i = 0;
     Random random ;
@@ -102,7 +110,7 @@ public class ComposeComplaints extends BaseActivity {
     private Bundle data;
     private String account, name;
     Toolbar toolbar;
-
+    private boolean mLocationPermissionGranted = false;
 
 
     // Requesting permission to RECORD_AUDIO
@@ -146,6 +154,7 @@ public class ComposeComplaints extends BaseActivity {
     LinearLayout layout;
 
 
+    @SuppressLint("NewApi")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,30 +177,89 @@ public class ComposeComplaints extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-    }
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Constants.LOCATION_REFRESH_TIME,
+                Constants.LOCATION_REFRESH_DISTANCE, mLocationListener);
+        checkMapServices();
+
+    }
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            //your code here
+            lat = String.valueOf(location.getLatitude());
+            lng = String.valueOf(location.getLongitude());
+            Log.d(TAG, "onLocationChanged: latitude: " + lat);
+            Log.d(TAG, "onLocationChanged: longitude: " + lng);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
     @Override
     protected void onStart() {
         super.onStart();
         checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
+    }
+    private boolean checkMapServices() {
+        if (isMapsEnabled()) {
+                return true;
+        }
+        return false;
     }
 
-    /*private void isImagePermissionGranted() {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(enableGpsIntent, Constants.PERMISSIONS_REQUEST_ENABLE_GPS);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+    public boolean isMapsEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.CAMERA},
-                            Constants.MY_PERMISSIONS_REQUEST_CAMERA);
-                }
-
-            }
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+            return false;
         }
-    */
+        return true;
+    }
+
     @OnClick(R.id.audioToText)
     public void audioToText(){
         audioToText.startAnimation(buttonClick);
@@ -289,7 +357,13 @@ public class ComposeComplaints extends BaseActivity {
                     // main logic
                 } else {
                     Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();}
-
+            case Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+            }
         }
         if (!permissionToRecordAccepted ) finish();
 
@@ -368,7 +442,9 @@ public class ComposeComplaints extends BaseActivity {
     private void gettingValues() {
         complian = compliantTv.getEditText().getText().toString();
         String complainId = UUID.randomUUID().toString();
-        if(complian.equals("") || complian == null){
+        if(lat == null || lng == null || lat.isEmpty() || lng.isEmpty()){
+            showSnackBar(getString(R.string.enable_locations), "");
+        }else if(complian.equals("") || complian == null){
             compliantTv.setError(getString(R.string.complain_body_error));
             compliantTv.requestFocus();
         }else if(uriArrayList.size() == 0){
@@ -438,7 +514,9 @@ public class ComposeComplaints extends BaseActivity {
         RequestBody complainIdRqst = RequestBody.create(MediaType.parse("text/plain"), complainId);
         RequestBody cnicRqst = RequestBody.create(MediaType.parse("text/plain"), account);
         RequestBody complainStatusRqst = RequestBody.create(MediaType.parse("text/plain"), Constants.COMPLAINS_NEW);
-        Call<TestClas> call = service.postComplain(cnicRqst, complainIdRqst, complainStatusRqst, complainBodyRqst);
+        RequestBody complainLatRqst = RequestBody.create(MediaType.parse("text/plain"), lat);
+        RequestBody complainLngRqst = RequestBody.create(MediaType.parse("text/plain"), lng);
+        Call<TestClas> call = service.postComplain(cnicRqst, complainIdRqst, complainStatusRqst, complainLatRqst, complainLngRqst, complainBodyRqst);
         call.enqueue(new Callback<TestClas>() {
             @Override
             public void onResponse(Call<TestClas> call, Response<TestClas> response) {
@@ -554,8 +632,33 @@ public class ComposeComplaints extends BaseActivity {
                     setupOnImagesLinearLayout();
                 }
                 break;
+            case Constants.PERMISSIONS_REQUEST_ENABLE_GPS: {
+                if (mLocationPermissionGranted) {
+//                    getChatrooms();
+                } else {
+                    getLocationPermission();
+                }
+            }
         }
 
+    }
+
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+//            getChatrooms();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
     private void setupOnImagesLinearLayout() {

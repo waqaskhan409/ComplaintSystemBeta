@@ -105,7 +105,13 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        checkConnection();
+        if(!checkWifiOnAndConnected() && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+
+        }else {
+            checkConnection();
+        }
+
     }
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {

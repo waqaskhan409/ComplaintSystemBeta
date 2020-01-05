@@ -59,6 +59,7 @@ public class BottomSheetDialogueAnalyticsFilterSearch extends BottomSheetDialogF
         Spinner spinnerAdvance = view.findViewById(R.id.spinnerAdvance);
 
         List<String> list = new ArrayList<>();
+        list.add(Constants.ALL_COMPLAINS);
         list.add(Constants.ENGINEERING);
         list.add(Constants.ADMINISTRATION);
         list.add(Constants.ACCOUNT);
@@ -66,7 +67,6 @@ public class BottomSheetDialogueAnalyticsFilterSearch extends BottomSheetDialogF
         list.add(Constants.TECHNICAL);
         list.add(Constants.SANITATION);
         list.add(Constants.ENGINA);
-        list.add(Constants.ALL_COMPLAINS);
         ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, list);
         spinnerAdvance.setAdapter(adapter);
 

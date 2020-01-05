@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.complaintsystembeta.BaseActivity;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.model.Employee;
 
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
-public class DetailProfile extends AppCompatActivity {
+public class DetailProfile extends BaseActivity {
     private static final String TAG = "DetailProfile";
     private Employee employee;
     private Unbinder unbinder;
@@ -78,6 +79,13 @@ public class DetailProfile extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         settingValues();
+
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+
+        }else {
+            checkConnection();
+        }
 
     }
 

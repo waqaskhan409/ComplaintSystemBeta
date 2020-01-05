@@ -57,4 +57,8 @@ public class Constants {
     public static final String STATUS_COMPLAIN = "statusComplain";
     public static final String CHOICE = "ChoiceBetweenToOrFrom";
     public static final String DELAY = "Delay";
+    public static final long LOCATION_REFRESH_TIME = 1000;
+    public static final float LOCATION_REFRESH_DISTANCE = 20;
+    public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 101;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 102;
 }

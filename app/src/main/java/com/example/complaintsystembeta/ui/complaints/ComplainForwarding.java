@@ -300,6 +300,11 @@ public class ComplainForwarding extends BaseActivity {
     protected void onStart() {
         super.onStart();
         checkConnection();
+        if(!checkWifiOnAndConnected()  && !checkMobileDataOnAndConnected()){
+            showSnackBarWifi(getString(R.string.wifi_message));
+        }else {
+            checkConnection();
+        }
 
         previouseReportId = data.getString(Constants.REPORTING_ID);
         Log.d(TAG, "onStart: " + previouseReportId);

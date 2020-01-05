@@ -74,6 +74,12 @@ public class AllCatigoryComplainsFragment extends Fragment {
     @BindView(R.id.delay)
     LinearLayout delay;
 
+    @BindView(R.id.newMessageLayout)
+    LinearLayout newMessageLayout;
+
+    @BindView(R.id.newMessageT)
+    TextView newMessageT;
+
     @BindView(R.id.forwardFrom)
     LinearLayout forwardFrom;
 
@@ -137,6 +143,10 @@ public class AllCatigoryComplainsFragment extends Fragment {
                 if(response.isSuccessful()) {
                     Log.d(TAG, "onResponseForwards: " + response.body().getForward());
                     forwardComplainsT.setText(response.body().getForward());
+                    if(response.body().getForward1().equals("0")){
+                        newMessageLayout.setVisibility(View.GONE);
+                    }
+                    newMessageT.setText(response.body().getForward1());
                 }else{
                     Log.d(TAG, "onResponseForwards: Failed" );
 

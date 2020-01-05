@@ -37,6 +37,7 @@ import com.example.complaintsystembeta.model.Consumer;
 import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.model.PermanentLogin;
 import com.example.complaintsystembeta.model.TestClas;
+import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.login.LoginActivity;
 import com.example.complaintsystembeta.ui.registration.Registration;
 import com.squareup.picasso.Picasso;
@@ -150,6 +151,17 @@ public class Profile extends Fragment {
         addressEd.setText(address);
         phoneEd.setText(phone);
     }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!((MainActivity)getActivity()).checkWifiOnAndConnected()  && !((MainActivity)getActivity()).checkMobileDataOnAndConnected()){
+            ((MainActivity)getActivity()).showSnackBarWifi(getString(R.string.wifi_message));
+
+        }else {
+            ((MainActivity)getActivity()).checkConnection();
+        }
+    }
 
     @OnClick(R.id.editSubmit)
     public void editSubmit(){

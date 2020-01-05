@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.complaintsystembeta.R;
 import com.example.complaintsystembeta.constants.Constants;
 import com.example.complaintsystembeta.model.AllComplains;
+import com.example.complaintsystembeta.ui.complaints.MapsActivity;
 import com.example.complaintsystembeta.ui.complaints.SingleComplainDetails;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,6 +70,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
 //        holder.complainerName.setText(allC);
         Log.d(TAG, "onBindViewHolder: f" + allComplains.get(position).getComplain_id());
         Log.d(TAG, "onBindViewHolder: f" + employeId);
+//        if()
         if(allComplains.get(position).getComplain_status().equals(Constants.COMPLAINS_NEW)) {
             holder.complainsStatus.setBackground(context.getDrawable(R.drawable.new_complains_drawables));
             holder.complainsStatus.setPadding(50, 7, 50, 7);
@@ -106,6 +109,15 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
                 holder.itemView.getContext().startActivity(intent);
             }
         });
+        holder.maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra(context.getString(R.string.allc_complains_object), (Serializable) allComplains.get(position));
+                context.startActivity(intent);
+            }
+        });
+
     }
     private String getDays(String created_us) throws ParseException {
         String[] arr = created_us.split("T");
@@ -143,7 +155,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
 
     class OnlyForwardViewHolder extends RecyclerView.ViewHolder{
         private TextView complainerName, complainsDate, complainsBody, complainsStatus, dayElapsed;
-        private ImageView imageViewCircle1, imageViewCircle2;
+        private ImageView imageViewCircle1, imageViewCircle2, maps;
         private TextView textView1, textView2, textView3;
         public OnlyForwardViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -154,7 +166,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
             dayElapsed = itemView.findViewById(R.id.complainDate);
 
 //
-//            imageViewCircle1 = itemView.findViewById(R.id.circle1);
+            maps = itemView.findViewById(R.id.maps);
 //            imageViewCircle2 = itemView.findViewById(R.id.circle2);
 //            textView1 = itemView.findViewById(R.id.textView3);
 //            textView2 = itemView.findViewById(R.id.textView2);

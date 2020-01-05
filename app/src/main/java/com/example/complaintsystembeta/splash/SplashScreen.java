@@ -25,7 +25,6 @@ public class SplashScreen extends BaseActivity {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     finish();
-
                 }catch (InterruptedException e) {
                     e.printStackTrace();
                 }
