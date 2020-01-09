@@ -61,6 +61,17 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
         holder.complainsDate.setText(allComplains.get(position).getCreated_us());
         holder.complainsStatus.setText(allComplains.get(position).getComplain_status());
         holder.complainsBody.setText(allComplains.get(position).getComplain_body());
+        Log.d(TAG, "onBindViewHolder: " + allComplains.get(position).getCou());
+        if(allComplains.get(position).getCou() != null){
+            if(allComplains.get(position).getCou().equals("0")){
+                holder.unread.setVisibility(View.INVISIBLE);
+            }else {
+                holder.unread.setVisibility(View.VISIBLE);
+                holder.unread.setText(allComplains.get(position).getCou());
+            }
+        }else {
+            holder.unread.setVisibility(View.INVISIBLE);
+        }
         try {
             holder.dayElapsed.setText(getDays(allComplains.get(position).getCreated_us()));
         } catch (ParseException e) {
@@ -154,7 +165,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
     }
 
     class OnlyForwardViewHolder extends RecyclerView.ViewHolder{
-        private TextView complainerName, complainsDate, complainsBody, complainsStatus, dayElapsed;
+        private TextView complainerName, complainsDate, complainsBody, complainsStatus, dayElapsed, unread;
         private ImageView imageViewCircle1, imageViewCircle2, maps;
         private TextView textView1, textView2, textView3;
         public OnlyForwardViewHolder(@NonNull View itemView) {
@@ -164,6 +175,7 @@ public class OnlyForwardAdapter extends RecyclerView.Adapter<OnlyForwardAdapter.
             complainsBody = itemView.findViewById(R.id.complaintsBody);
             complainsStatus = itemView.findViewById(R.id.complaintsStatus);
             dayElapsed = itemView.findViewById(R.id.complainDate);
+            unread = itemView.findViewById(R.id.unread);
 
 //
             maps = itemView.findViewById(R.id.maps);
