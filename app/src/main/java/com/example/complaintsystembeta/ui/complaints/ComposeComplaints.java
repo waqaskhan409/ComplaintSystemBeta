@@ -104,7 +104,7 @@ public class ComposeComplaints extends BaseActivity {
     private MediaRecorder recorder = null;
 
     private ImageButton play = null;
-    private MediaPlayer   player = null;
+    private MediaPlayer player = null;
     TextView textView;
     private Uri cameraImage = null;
     private Bundle data;
