@@ -24,7 +24,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="registration">Registration</string>
-    <string name="forget_password">forget password</string>
+    <string name="forget_password">Forgot Password?</string>
     <string name="is_wasa_employee">Wasa Employee</string>
     <string name="cnin">CNIC</string>
     <string name="userName">Full Name</string>

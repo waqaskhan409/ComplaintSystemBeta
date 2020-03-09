@@ -46,6 +46,8 @@ import com.example.complaintsystembeta.model.Employee;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueCompose;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueFilterSearch;
 import com.google.android.gms.vision.text.Line;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -78,7 +80,6 @@ public class ManagingComplaints extends BaseActivity {
     private String complainData = "", desId, userName;
     private Bundle data;
     private DatePickerDialog.OnDateSetListener mDateListenerTo, mDateListenerFrom;
-
     private Unbinder unbinder;
     private SearchView searchView;
     private String decisionForwardToOrFrom;
@@ -589,6 +590,7 @@ public class ManagingComplaints extends BaseActivity {
 
     }
 
+//    private FirebaseInstanceId instanceId  = FirebaseInstanceId.getInstance().getToken();
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

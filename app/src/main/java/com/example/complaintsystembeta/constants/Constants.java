@@ -32,6 +32,7 @@ public class Constants {
     public static final String REMARKS_BODY = "remarks_body";
     public static final String SUGGEST_DATE = "SUGGEST_DATE";
     public static final String REST_API = "http://192.168.43.31:3000/api/";
+//    public static final String REST_API = "https://qwasa.herokuapp.com/api_mobile/";
     public static final String PREVELDGES_ON_FORWARD = "previldges";
     public static final String ACCOUNT_NUMBER = "cnic";
     public static final String COMPLAIN_FILTER = "complain_filter";
@@ -57,6 +58,8 @@ public class Constants {
     public static final String STATUS_COMPLAIN = "statusComplain";
     public static final String CHOICE = "ChoiceBetweenToOrFrom";
     public static final String DELAY = "Delay";
+    public static final String CONSUMER = "consumer";
+    public static final String EMPLOYEES = "employee";
     public static final long LOCATION_REFRESH_TIME = 1000;
     public static final float LOCATION_REFRESH_DISTANCE = 20;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 101;

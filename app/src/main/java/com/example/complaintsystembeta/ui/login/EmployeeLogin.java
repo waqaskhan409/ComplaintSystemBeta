@@ -25,9 +25,17 @@ import com.example.complaintsystembeta.model.SignUpData;
 import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.complaints.AllCatigoryComplains;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +54,8 @@ public class EmployeeLogin extends BaseActivity {
     private PermanentLoginRepository permanentLoginRepository;
     private List<PermanentLogin> list;
     String cnicS, passwordS;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     boolean checkCon = false;
     private PermanentLoginRepository dao;
 
@@ -158,10 +168,37 @@ public class EmployeeLogin extends BaseActivity {
                     showSnackBar("your request to the server is failed", "");
                     return;
                 }
+                final String[] token = new String[1];
                 Log.d(TAG, "onResponse: " + response.message());
                 List<Employee>  list = response.body();
                 for (Employee l : list){
                     if(l.getCnic().equals(cnicS) && l.getCnic().equals(passwordS)){
+
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                token[0] = instanceIdResult.getToken();
+                                Map<String, Object> user = new HashMap<>();
+                                user.put("employee", l.getEmployee_id());
+                                user.put("device_token", token[0]);
+                                db.collection("users")
+                                        .document(Constants.EMPLOYEES)
+                                        .collection("notification")
+                                        .document(l.getEmployee_id())
+                                        .set(user)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.d(TAG, "onComplete: posted");
+                                                }else {
+                                                    Log.d(TAG, "onError: Error");
+
+                                                }
+                                            }
+                                        });
+                            }
+                        });
 
                         dissmissProgressDialogue();
                         Log.d(TAG, "onResponse: " + l.getDes_id());

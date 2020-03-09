@@ -53,7 +53,10 @@ import com.example.complaintsystembeta.interfaace.JsonApiHolder;
 import com.example.complaintsystembeta.model.TestClas;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueCompose;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,6 +64,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -86,6 +91,8 @@ public class ComposeComplaints extends BaseActivity {
     private Unbinder unbinder;
     private Boolean boolForAudio = true;
     private ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private FirebaseFirestore dbConsumer = FirebaseFirestore.getInstance();
+    private FirebaseFirestore dbEmployee = FirebaseFirestore.getInstance();
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
     String AudioSavePathInDevice = null;
     private LocationManager mLocationManager;
@@ -521,6 +528,39 @@ public class ComposeComplaints extends BaseActivity {
             @Override
             public void onResponse(Call<TestClas> call, Response<TestClas> response) {
                 if(response.isSuccessful()){
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("notification_message",complainBody);
+//                    user.put("device_token", token[0]);
+//                    dbConsumer.collection("users")
+//                            .document(Constants.CONSUMER)
+//                            .collection("notification")
+//                            .document(account)
+//                            .update(user)
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if(task.isSuccessful()){
+//                                        Log.d(TAG, "onComplete: posted");
+//                                    }else {
+//                                        Log.d(TAG, "onError: Error");
+//                                    }
+//                                }
+//                            });
+                    dbEmployee.collection("users")
+                            .document(Constants.EMPLOYEES)
+                            .collection("notification")
+                            .document("50")
+                            .update(user)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Log.d(TAG, "onComplete: posted");
+                                    }else {
+                                        Log.d(TAG, "onError: Error");
+                                    }
+                                }
+                            });
                 Log.d(TAG, "onResponse: userName:" + response.body().getSuccess());
                     submitAudioToAttachment(complainId);
                     submitFileToAttachment(complainId);

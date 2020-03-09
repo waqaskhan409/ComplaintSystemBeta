@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -32,8 +33,18 @@ import com.example.complaintsystembeta.ui.EmployeeNavigation;
 import com.example.complaintsystembeta.ui.MainActivity;
 import com.example.complaintsystembeta.ui.dialogues.BottomSheetDialogueForgetPassword;
 import com.example.complaintsystembeta.ui.registration.Registration;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +62,7 @@ public class LoginActivity extends BaseActivity {
     private Unbinder unbinder;
     private PermanentLoginRepository permanentLoginRepository;
     private List<PermanentLogin> list;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     String cnicS, passwordS;
     private PermanentLoginRepository dao;
     boolean checkCon = false;
@@ -285,12 +297,45 @@ public class LoginActivity extends BaseActivity {
                     showSnackBar("your request to the server is failed", "");
                     return;
                 }
+                final String[] token = new String[1];
+
                 Log.d(TAG, "onResponse: " + response.message());
                 List<SignUpData>  list = response.body();
+
+
+
                 for (SignUpData l : list){
                     Log.d(TAG, "onResponse: " + l.getUser_cnic());
                     Log.d(TAG, "onResponse: " + l.getUser_password());
                     if(l.getUser_cnic().equals(cnicS) && l.getUser_password().equals(passwordS)){
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                token[0] = instanceIdResult.getToken();
+                                Map<String, Object> user = new HashMap<>();
+                                user.put("consumer", l.getAccount_number());
+                                user.put("device_token", token[0]);
+                                db.collection("users")
+                                        .document(Constants.CONSUMER)
+                                        .collection("notification")
+                                        .document(l.getAccount_number())
+                                        .set(user)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.d(TAG, "onComplete: posted");
+                                                }else {
+                                                    Log.d(TAG, "onError: Error");
+
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+
+
+
                         permanentLoginRepository.updateUser(new PermanentLogin(cnicS,"", true, "", false, "null"));
                         dissmissProgressDialogue();
                         if(getDataFromSqlite()){
